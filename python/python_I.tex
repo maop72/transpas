@@ -1,0 +1,3358 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Programación en Python},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Programación en Python]{Programación en Python}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+%\author[GSyC]{Departamento de Sistemas Telemáticos y Computación (GSyC)}
+\author[GSyC]{Escuela Tec. Superior de Ingeniería de Telecomunicación}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2016]{Septiembre de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+\begin{frame}
+  \frametitle{Contenidos}
+\begin{small}
+  \tableofcontents
+\end{small}
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------
+\section{El Lenguaje Python}
+%%---------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{El Lenguaje Python}
+  \begin{itemize}
+  \item Lenguaje \emph{de autor} creado por Guido van Rossum en 1989
+  \item Muy relacionado originalmente con el S.O. \emph{Amoeba}
+  \item Disponible en Unix, Linux, MacOS, Windows, 
+  \item Libre
+  \item Lenguaje de Script Orientado a Objetos (no muy puro)
+  \item Muy alto nivel
+  \item Librería muy completa
+
+ \end{itemize}
+\end{frame}
+
+%%---------------------------------------------
+\begin{frame}[fragile]
+  \begin{itemize}
+  \item Verdadero lenguaje de propósito general 
+  \item Sencillo, compacto 
+  \item Sintaxis clara
+  \item Interpretado \verb|=>| Lento
+  \item Ofrece persistencia
+  \item Recolector de basuras
+  \item Muy maduro y muy popular
+  \item Aplicable para software de uso general
+%  \item \htlink{Puede competir con Java}{http://www.python.org/~rmasse/papers/java-python96} \\
+%   Se pueden generar bytecodes java\\
+%   Muy adecuado para applets
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+Programa python
+\begin{verbatim}
+for x in xrange(1000000):
+          print x
+\end{verbatim}
+Su equivalente Java
+\begin{verbatim}
+public class ConsoleTest {
+       public static void main(String[] args) {
+              for (int i = 0; i < 1000000; i++) {
+                                System.out.println(i);
+                                                }
+                         }
+}
+\end{verbatim}
+\end{frame}
+
+
+%The range function generates an internal temporary list which is (usually) then handled item by item, whereas xrange produces an interator through which you can pass without the expense of what could be a large temporary list object.
+
+%So xrange is the one to use if you're looking to generate a huge list of numbers to pass through in something like a for loop, but range is much more flexible as it truely generates an anonymous list.
+
+%%---------------------------------------------------------
+
+\begin{frame}[fragile]
+Programa python
+\begin{scriptsize}
+\begin{verbatim}
+for i in xrange(1000):
+          x={}
+          for j in xrange(1000):
+              x[j]=i
+              x[j]
+\end{verbatim}
+\end{scriptsize}
+Su equivalente Java
+\begin{scriptsize}
+\begin{verbatim}
+import java.util.Hashtable;
+public class HashTest {
+    public static void main(String[] args) {
+       for (int i = 0; i < 1000; i++) {
+           Hashtable x = new Hashtable();
+           for (int j = 0; j < 1000; j++) {
+               x.put(new Integer(i), new Integer(j));
+               x.get(new Integer(i));
+           }
+       }
+    } }
+\end{verbatim}
+\end{scriptsize}
+\end{frame}
+
+
+
+
+
+%\begin{frame}[fragile]
+%\section{El Lenguaje Tcl}
+%\emph{Tool Command Language}
+%\begin{itemize}
+%\item Lenguaje de script
+%\item Pensado para integrar aplicaciones
+%\item Creado por John Ousterhout a finales de los 80
+%\item Tcl-Tk pasó a ser muy popular para hacer interfaces gráficos en
+%  Unix
+%\item A mediados de los 90 se porta a otros S.O. (Windows,
+%  Mac), lo que permitía entornos gráficos multiplataforma 
+%\end{itemize}
+%\end{frame}
+%
+%
+
+
+
+%\begin{frame}[fragile]
+%Un script TCL tiene este aspecto
+%\begin{verbatim}
+%  #!/usr/bin/tcl
+%  proc power {base p} {
+%      set result 1
+%      while {$p > 0} {
+%          set result [expr $result * $base]
+%          set p [expr $p - 1]
+%      }
+%      return $result
+%  }
+%\end{verbatim}
+%\end{frame}
+%%
+%\begin{frame}[fragile]
+%\section{Enlaces sobre Tcl}
+%\begin{itemize}
+
+%\item TCL Developer Exchange 
+
+%\hturl{http://www.scriptics.com}
+%\item Official Tcl/Tk Contributed Sources Archive 
+
+%\hturl{http://www.neosoft.com/tcl}
+
+%\end{itemize}
+
+%Tutoriales
+%\begin{itemize}
+%\item \hturl{http://www.cujo.com/tcl_tut.html}
+%\item Tutorial en español
+
+% \hturl{
+%http://www.etsimo.uniovi.es/tcl/tutorial}
+
+%\end{itemize}
+%\end{frame}
+
+%%----------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Librerías}
+Python dispone de librerías \emph{Nativas} y \emph{Normalizadas} para
+  \begin{itemize}
+  \item Cadenas, listas, tablas hash, pilas, colas
+  \item Números Complejos
+  \item Serialización, Copia profunda y Persistencia de Objetos
+  \item Regexp
+  \item Unicode, Internacionalización del Software
+  \item Programación Concurrente
+  \item Acceso a BD, Ficheros Comprimidos, Control de Cambios...
+  \end{itemize}
+\end{frame}
+
+%%--------------------
+
+\begin{frame}[fragile]
+Librerías relacionadas con Internet:
+  \begin{itemize}
+  \item CGIs, URLs, HTTP, FTP, 
+  \item pop3, IMAP, telnet
+  \item Cookies, Mime, XML, XDR
+  \item Diversos formatos multimedia 
+  \item Criptografía 
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+La referencia sobre todas las funciones de librería podemos encontrarlas
+en la documentación oficial, disponible en el web en muchos formatos
+\begin{itemize}
+\item
+Hasta la versión 2.5.4 (diciembre de 2008), se denomina
+\emph{python library reference}
+\item
+Desde la versión 2.6, se denomina \emph{python standard library}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Inconvenientes de Python}
+Además de su velocidad limitada y necesidad de intérprete\\
+(Como todo lenguaje interpretado)
+\begin{itemize}
+
+\item 
+No siempre compatible hacia atrás
+\item 
+Uniformidad. \\Ej:
+\verb| función len(), método  items()|
+\item 
+Algunos aspectos de la OO
+
+\begin{small}
+%\begin{verbatim}
+\emph{Python is a hybrid language. It has functions for procedural programming and objects for OO programming. Python bridges the two worlds by allowing functions and methods to interconvert using the explicit ``self'' parameter of every method def. When a function is inserted into an object, the first argument automagically becomes a reference to the receiver.} 
+%\end{verbatim}
+% sacado de la ruby FAQ 2.1 How Does Ruby Compare With Python? 
+
+\end{small}
+\item 
+...
+\end{itemize}
+
+
+\end{frame}
+
+%--------------------------------------------------------------------
+\section{Programación en Python}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+El intérprete de python se puede usar 
+\begin{itemize}
+\item 
+En modo interactivo
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~$ python
+Python 2.5.2 (r252:60911, Oct  5 2008, 19:24:49) 
+[GCC 4.3.2] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print "hola mundo"
+hola mundo
+>>> 3/2
+1
+>>> 3/2.0
+1.5
+  \end{verbatim}
+  \end{scriptsize}
+\item 
+Mediante scripts
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+print "hola mundo"    #esto es un comentario
+euros=415
+pesetas=euros*166.386
+print str(euros) + " euros son "+ str(pesetas) + " pesetas"
+\end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+La línea
+\verb|#!/usr/bin/python| 
+indica al S.O. dónde está el intérprete que sabe procesar el fuente
+\begin{itemize}
+\item 
+Debe ser exactamente la primera línea
+\item
+No puede haber espacios entre la admiración y la barra
+\end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#Este ejemplo es doblemente incorrecto
+#! /usr/bin/python -tt
+# -*- coding: utf-8 -*-
+# ¡MAL!
+  \end{verbatim}
+  \end{footnotesize}
+
+En distintos Unix el intérprete puede estar en distintos sitios.
+Para aumentar la compatibilidad, a veces
+se usa
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/env python
+print "Hola mundo"
+  \end{verbatim}
+  \end{footnotesize}
+
+Aunque (en Linux) esto no permite pasar parámetros como \verb|-tt|
+
+\end{frame}
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+%Identificadores Sensible mayúsculas
+%\item
+% deberia admitir caracteres españoles, desde interprete sí, desde
+% programa no
+
+\frametitle{Operadores }
+  \begin{center}
+En orden de precedencia decreciente:
+  \end{center}
+  
+
+  \begin{scriptsize}
+\begin{verbatim}
+  +x, -x, ~x    Unary operators
+  x ** y    Power 
+  x * y, x / y, x % y    Multiplication, division, modulo
+  x + y, x - y    Addition, subtraction
+  x << y, x >> y    Bit shifting
+  x & y    Bitwise and
+  x | y    Bitwise or
+  x < y, x <= y, x > y, x >= y, x == y, x != y,
+  x <> y, x is y, x is not y, x in s, x not in s  
+                         Comparison, identity, 
+                         sequence membership tests
+  not x     Logical negation
+  x and y    Logical and
+  lambda args: expr            Anonymous function
+\end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%----------------------------------------
+
+\begin{frame}[fragile]
+
+Identificadores (nombre de objetos, de funciones...):
+\begin{itemize}
+\item
+Letras inglesas de 'a' a 'z', en mayúsculas o minúsculas. Barra baja '\_' y números
+\item Sensible a mayúsculas/minúsculas
+\end{itemize}
+
+
+
+
+
+Se puede usar utf-8 y latin-1 (iso-8859-1) en las cadenas y comentarios
+\begin{itemize}
+\item
+Si el editor no marca adecuadamente la codificación del fichero, 
+aparecerá un error
+  \begin{scriptsize}
+  \begin{verbatim}
+SyntaxError: Non-ASCII character '\xc3' in file ./holamundo.py on 
+line 4, but no encoding declared; 
+see http://www.python.org/peps/pep-0263.html for details
+  \end{verbatim}
+  \end{scriptsize}
+y será necesario añadir
+en la segunda línea del fuente
+  \begin{scriptsize}
+  \begin{verbatim}
+# -*- coding: utf-8 -*-
+  \end{verbatim}
+  \end{scriptsize}
+o bien
+  \begin{scriptsize}
+  \begin{verbatim}
+# -*- coding: iso-8859-1 -*-
+  \end{verbatim}
+  \end{scriptsize}
+o bien
+  \begin{scriptsize}
+  \begin{verbatim}
+# -*- coding: Win-1252 -*-
+  \end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+En cualquier Unix/Linux a partir de mediados de la década del año 2000, 
+la codificación habitual es utf-8
+\item
+En Windows lo habitual es Win-1252, aunque suele indicarse iso-8859-1 (latin-1),
+que es muy similar (y más general)
+\item
+Si vamos a trabajar en Linux y en Windows, cualquier editor de calidad
+podrá trabajar en ambos formatos, no es necesario recodificar cada vez
+que cambiemos la plataforma
+\footnote{Consulta las transparencias sobre editores de texto
+para ver cómo configurar vim en Windows para que siempre use utf-8}
+\end{itemize}
+
+\end{frame}
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Python es
+\begin{itemize}
+\item Dinámicamente tipado, (\emph{dynamically typed}). No es estáticamente tipado (\emph{statically typed})
+
+Una variable puede cambiar su tipo, dinámicamente 
+\item Fuertemente tipado, (\emph{strongly typed}). No es débilmente tipado (\emph{weakly typed})
+
+Este concepto no es absoluto, decimos que ciertos lenguajes tienen tipado más fuerte
+o más débil que otros 
+
+
+Si algún objeto, variable, método, función... espera cierto tipo de objeto/de dato:
+
+
+\begin{itemize}
+\item
+Un lenguaje fuertemente tipado ha de recibir o bien exactamente ese tipo o bien
+uno muy parecido, de forma que pueda hacerse una conversión automática sin pérdida
+de información
+
+Obliga al programador a conversiones explícitas. Esto resulta rígido, tal vez
+farragoso, pero facilita la seguridad
+\item
+Un lenguaje débilemente tipado, admite casi cualquier cosa.
+
+Esto resulta cómodo, flexible, potencialmente peligroso
+\end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\begin{frame}[fragile]
+
+En Python la declaración de variables es implícita \\(no hay declaración explícita)
+\begin{itemize}
+\item Las variables ``nacen'' cuando se les asigna un valor
+\item Las variables ``desaparecen'' cuando se sale de su ámbito
+\end{itemize}  
+\begin{itemize}
+  
+\item 
+La declaración implícita de variables como en perl puede provocar resultados desastrosos
+\end{itemize}
+
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/perl
+$sum_elementos= 3 + 4 + 17;
+$media=suma_elementos / 3;    # deletreamos mal la variable
+print $media;   # y provocamos resultado incorrecto
+\end{verbatim}
+\end{scriptsize}
+
+\begin{itemize}
+\item 
+Pero Python no permite referenciar variables a las que nunca se ha
+asignado un valor.
+\end{itemize}
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python 
+sum_elementos= 3 + 4 + 17
+media=suma_elementos / 3    # deletreamos mal la variable
+print media;   # y el intéprete nos avisa con un error
+\end{verbatim}
+\end{scriptsize}
+
+
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funciones predefinidas}  
+\begin{itemize}
+  
+\item 
+\verb|abs()|   valor absoluto
+\item 
+\verb|float()|  convierte a float
+\item 
+\verb|int()|  convierte a int
+\item 
+\verb|str()|  convierte a string
+\item 
+\verb|round()|  redondea
+\item 
+\verb|raw_input()|  acepta un valor desde teclado
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+%--------------------------------------------------------------------
+
+
+
+
+
+
+%\begin{frame}[fragile]
+%\frametitle{Un programa en Python}
+
+%\begin{scriptsize}
+%\begin{verbatim}
+%def buildConnectionString(params):
+%    """Build a connection string from a dictionary of parameters.
+%
+%    Returns string."""
+%    return ";".join(["%s=%s" % (k, v) for k, v in params.items()])
+%
+%if __name__ == "__main__":
+%    myParams = {"server":"blablabla", \
+%                "database":"master", \
+%                "uid":"sa", \
+%                "pwd":"secret" \
+%                }
+%    print buildConnectionString(myParams) 
+%\end{verbatim}
+%\end{scriptsize}
+%
+%Ejecución:
+%\begin{scriptsize}
+%\begin{verbatim}
+%xterm$ python odbchelper.py
+%server=blablabla;uid=sa;database=master;pwd=secret
+%\end{verbatim}
+%\end{scriptsize}
+%$
+ 
+%\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Sangrado y separadores de sentencias}
+
+\begin{itemize}
+\item ¡En Python NO hay llaves ni \verb|begin-end| para encerrar bloques
+  de código! Un mayor nivel de sangrado indica que comienza un bloque,
+  y un menor nivel indica que termina un bloque.
+  
+\item Las sentencias se terminan al acabarse la línea (salvo casos
+  especiales donde la sentencia queda ``abierta'': en mitad de
+  expresiones entre paréntesis, corchetes o llaves).
+  
+\item El carácter \verb|\| se utiliza para extender una sentencia más
+  allá de una linea, en los casos en que no queda ``abierta''. 
+
+\item El carácter \verb|:| se utiliza como separador en sentencias
+  compuestas. Ej.: para separar la definición de una función de su
+  código.
+  
+\item El carácter \verb|;| se utiliza como separador de sentencias
+  escritas en la misma línea.
+
+\end{itemize}
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+La recomendación oficial es emplear 4 espacios para cada nivel de sangrado
+ \begin{itemize}
+ \item
+ \emph{PEP-8  Style Guide for Python Code}
+ \item
+ David Goodger, \emph{Code Like a Pythonista: Idiomatic Python}
+
+ Traducción al español:
+
+% Raúl González Duque, 
+\emph{Programa como un Pythonista: Python Idiomático}
+ \end{itemize}
+\item
+Emplear 8 espacios o emplear tabuladores es legal
+\item
+Mezclar espacios con tabulares es muy peligroso. 
+
+Para que el intérprete lo advierta
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -t
+  \end{verbatim}
+  \end{scriptsize}
+
+Para que el intérprete lo prohiba
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt 
+  \end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+
+En python3 no es necesario, no permite mezclar espacios
+y tabuladores 
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%\frametitle{El atributo \_\_name\_\_ de un módulo}
+%
+%Los módulos son objetos, con ciertos atributos predefinidos.
+%
+%El atributo \verb|__name__|:
+%\begin{itemize}
+%\item si el módulo es importado (con \verb|import|), contiene el
+%  nombre del fichero, sin trayecto ni extensión
+
+
+
+%--------------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%\frametitle{El atributo \_\_name\_\_ de un módulo}
+%
+%Los módulos son objetos, con ciertos atributos predefinidos.
+%
+%El atributo \verb|__name__|:
+%\begin{itemize}
+%\item si el módulo es importado (con \verb|import|), contiene el
+%  nombre del fichero, sin trayecto ni extensión
+%\item si el módulo es un programa que se ejecuta sólo, contiene el
+%  valor \verb|__main__|
+%\end{itemize}
+%
+%Puede escribirse ejecución condicionada a cómo se use el módulo:
+%\begin{scriptsize}
+%\begin{verbatim}
+%if __name__ == "__main__": 
+%    ...
+%\end{verbatim}
+%\end{scriptsize}
+%  
+%\end{frame}
+
+
+%--------------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%\frametitle{Importar módulos}
+%
+%\begin{itemize}
+%\item \verb|import nombre-módulo               | \\permite acceder a los
+%  símbolos del módulo con la sintaxis \verb|nombre-módulo.X|
+%\item \verb|from nombre-módulo import a, b, c  | \\incorpora
+%  los símbolos a, b, c al espacio de nombres, siendo accesibles
+%  directamente (sin cualificarlos con el nombre del módulo)
+%\item \verb|from nombre-módulo import *        | \\incorpora los
+%  símbolos del módulo al espacio de nombres, siendo accesibles
+%  directamente (sin cualificarlos con el nombre del módulo).
+%\end{itemize}
+%\end{frame}
+
+
+%--------------------------------------------------------------------
+\subsection{Tipos de objeto}
+%--------------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Tipos de objeto}
+
+En python todo son objetos: cadenas, listas, diccionarios, funciones, módulos\ldots
+
+\begin{itemize}
+\item
+En los lenguajes de scripting más antiguos como bash o tcl, el único 
+tipo de datos es la cadena
+\item
+Los lenguajes imperativos más habituales (C, C++, pascal\ldots) suelen
+tener (con variantes) los tipos: booleano, carácter, cadena, entero, real y matriz
+\item
+Python tiene booleanos, enteros, reales y cadenas. Y además, 
+cadenas unicode, listas, tuplas, números complejos, diccionarios,
+conjuntos...        
+
+\begin{itemize}
+\item
+En terminología python se denominan \emph{tipos de objeto}
+\item
+Estos tipos de objeto de alto nivel facilitan mucho el trabajo del programador
+\end{itemize}
+
+\end{itemize}
+
+%Ejemplos de objetos Python: Strings, listas, funciones, módulos\ldots
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En python es muy importante distinguir entre
+\begin{itemize}
+\item
+Objetos inmutables: Números, cadenas y tuplas
+
+
+\begin{itemize}
+\item
+Se pasan a las funciones por valor
+\item
+Si están declarados fuera de una función son
+globales y para modificarlos dentro de la función,
+es necesaria la sentencia \emph{global}
+\end{itemize}
+
+
+\item
+Objetos mutables: Todos los demás
+
+\begin{itemize}
+\item
+Se pasan a las funciones por referencia
+\item
+Si están declarados fuera de una función son
+globales, pero no hace falta la 
+sentencia \emph{global}
+para modificarlos dentro de la función, puesto que pueden
+ser modificados a través de sus métodos
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Comprobación de tipos}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import types
+if type("a") == types.StringType:
+    print "ok, es una cadena"
+else:
+    print "no es una cadena"
+  \end{verbatim}
+  \end{scriptsize}
+
+Tipos de objeto habituales:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+BooleanType
+IntType
+LongType
+FloatType
+StringType
+ListType
+TupleType
+DictType
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\subsection{Cadenas}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Cadenas }
+
+\begin{itemize}
+\item No existe tipo \verb|char|
+\item 
+Comilla simple o doble \\
+\verb|print "hola"|   \\
+\verb|print 'hola'|  \\
+\verb|print 'me dijo "hola"'|    \\   
+más legible que
+\verb|print 'me dijo \'hola\''|    
+\item 
+Puede haber caracteres especiales\\
+\verb|print "hola\nque tal"|   
+\item 
+Cadenas crudas\\
+\verb|print r"""hola\nque tal"""|   
+
+\end{itemize}
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item 
+Una cadena se puede expandir en más de una línea\\
+\verb|print "hola\  |  \\
+\verb|       que tal  "|  
+
+\item El operador \verb|+| concatena cadenas, y el \verb|*| las repite
+  un número entero de veces
+\item
+Para concatenar una cadena con un objeto de tipo diferente, podemos
+convertir el objeto en cadena mediante la función \verb|str()|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> gamma=0.12
+>>> print "gamma vale "+str(gamma)
+gamma vale 0.12
+  \end{verbatim}
+  \end{footnotesize}
+
+\item Se puede acceder a los caracteres de cadenas mediante índices y
+  rodajas como en las listas
+\item
+Las cadenas son inmutables. Sería erróneo \verb|a[1]=...|
+\end{itemize}
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+
+
+
+%\begin{frame}[fragile]
+
+%\begin{itemize}
+%\item El operador \verb|%| permite hacer formateo de cadenas (al estilo
+%  de \verb|sprintf| en C) apoyándose en tuplas:
+
+%\begin{scriptsize}
+%\begin{verbatim}
+%>>> uid = "sa"
+%>>> pwd = "secret"
+%>>> print pwd + " is not a good password for " + uid      
+%secret is not a good password for sa
+%>>> print "%s is not a good password for %s" % (pwd, uid) 
+%secret is not a good password for sa
+%>>> userCount = 6
+%>>> print "Users connected: %d" % (userCount, )           
+%Users connected: 6
+%>>> print "Users connected: " + userCount                 
+%Traceback (innermost last):
+%  File "<interactive input>", line 1, in ?
+%TypeError: cannot add type "int" to string
+%\end{verbatim}
+%\end{scriptsize}
+%
+%\end{itemize}  
+
+%\end{frame}
+
+
+%--------------------------------------------------------------------
+\subsection{Listas}
+%--------------------------------------------------------------------
+
+
+
+\begin{frame}[fragile]
+\frametitle{Listas}
+
+
+\vspace{-6mm}
+\begin{itemize}
+\item Tipo de datos predefinido en Python, va mucho más allá de los
+  arrays
+\item Es un conjunto \emph{indexado} de elementos, no necesariamente homogéneos
+\item Sintaxis:Identificador de lista, mas índice entre corchetes
+\item Cada elemento se separa del anterior por un carácter \verb|,|
+\end{itemize}
+  \begin{scriptsize}
+\begin{verbatim}
+a=['rojo','amarillo']
+a.append('verde')
+print a
+print a[2]
+print len(a)
+
+b=['uno',2, 3.0]
+
+\end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item El primer elemento tiene índice 0.
+\item Un índice negativo accede a los elementos empezando por el final
+  de la lista. El último elemento tiene índice -1.
+\item Pueden referirse \emph{rodajas} (\emph{slices}) de listas
+  escribiendo dos índices entre el carácter \verb|:|
+\item La rodaja va desde el \emph{primero, incluido}, al \emph{último,
+    excluido}.
+\item Si no aparece el primero, se entiende que empieza en el primer
+  elemento (0)
+\item Si no aparece el segundo, se entiende que termina en el último
+  elemento (incluido). 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+a=[0,1,2,3,4]
+print a      # [0, 1, 2, 3, 4]
+print a[1]   # 1 
+print a[0:2] # [0,1]
+print a[3:]  # [3,4]
+print a[-1]  # 4
+print a[:-1] # [0, 1, 2, 3]
+print a[:-2] # [0, 1, 2]
+\end{verbatim}
+  \end{scriptsize}
+  \begin{center}
+La misma sintaxis se aplica a las cadenas
+  \end{center}
+
+  \begin{scriptsize}
+\begin{verbatim}
+a="niño"
+print a[-1]
+\end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item \verb|append()| añade un elemento al final de la lista
+\item \verb|insert()| inserta un elemento en la posición indicada
+\end{itemize}  
+
+\begin{scriptsize}
+\begin{verbatim}
+>>> li
+['a', 'b', 'blablabla', 'z', 'example']
+>>> li.append("new")               
+>>> li
+['a', 'b', 'blablabla', 'z', 'example', 'new']
+>>> li.insert(2, "new")           
+>>> li
+['a', 'b', 'new', 'blablabla', 'z', 'example', 'new']
+\end{verbatim}
+\end{scriptsize}
+
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+\item \verb|index()| busca en la lista un elemento y devuelve el
+  índice de la primera aparición del elemento en la lista. Si no
+  aparece se eleva una excepción.
+\item El operador \verb|in| devuelve \emph{true}  si un elemento aparece en la
+  lista, y \emph{false} en caso contrario.
+\end{itemize}
+
+\begin{scriptsize}
+\begin{verbatim}
+lista=['cero','uno','dos']
+>>> print lista
+['cero', 'uno', 'dos']
+>>> lista.index('uno')
+1
+>>> lista=['cero','uno','dos']
+>>> print lista
+['cero', 'uno', 'dos']
+>>> "doce" in lista
+False
+>>> print lista.index('uno')
+1
+>>> print lista.index('doce')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: 'doce' is not in list
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item \verb|remove()| elimina la primera aparición de un elemento en
+  la lista. Si no aparece, eleva una excepción.
+\item \verb|pop()| devuelve el último elemento de la lista, y lo elimina. (Pila) 
+\item \verb|pop(0)| devuelve el primer elemento de la lista, y lo elimina. (Cola)
+\end{itemize}
+
+\begin{scriptsize}
+\begin{verbatim}
+ >>> li
+['a', 'b', 'new', 'blablabla', 'z', 'example', 'new', 'two', 'elements']
+>>> li.remove("new") 
+>>> li
+['a', 'b', 'blablabla', 'z', 'example', 'new', 'two', 'elements']
+>>> li.remove("c")   
+Traceback (innermost last):
+  File "<interactive input>", line 1, in ?
+ValueError: list.remove(x): x not in list
+>>> li.pop()         
+'elements'
+>>> li
+['a', 'b', 'blablabla', 'z', 'example', 'new', 'two'] 
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item El operador \verb|+| concatena dos listas, devolviendo una nueva
+  lista
+\item El operador \verb|*| concatena repetitivamente una lista a sí
+  misma
+\end{itemize}
+
+\begin{scriptsize}
+\begin{verbatim}
+>>> li = ['a', 'b', 'blablabla']
+>>> li = li + ['example', 'new'] 
+>>> li
+['a', 'b', 'blablabla', 'example', 'new']
+>>> li += ['two']                
+>>> li
+['a', 'b', 'blablabla', 'example', 'new', 'two']
+>>> li = [1, 2] * 3              
+>>> li
+[1, 2, 1, 2, 1, 2]
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funciones, métodos y operadores}
+
+El lenguaje python:
+
+
+\begin{itemize}
+\item
+Emplea el modelo de programación imperativa convencional
+
+Por tanto usa funciones, cuya sintaxis es
+
+\verb| funcion(objeto)|
+
+\item
+Emplea el modelo de programación orientada a objetos
+
+Por tanto usa métodos, cuya sintaxis es
+
+\verb| objeto.metodo() |
+
+\item
+Es de muy alto nivel, cuenta con operadores con funcionalidad
+avanzada
+
+La sintaxis de un operador es
+
+\verb| elemento1 operador elemento2|
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+Este script emplea la función \verb|len()|, el método \verb|pop()|
+y el operador \verb|in|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+lista=["rojo","amarillo","verde"]
+print len(lista)         # 3
+print "blanco" in lista  # False
+print lista.pop()        # verde
+print lista              # ['rojo', 'amarillo']
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Inversión de una lista}
+
+\begin{itemize}
+\item El método \verb|reverse()| invierte las posiciones de los elementos en una
+  lista.
+\end{itemize}
+No devuelve nada, simplemente altera la lista
+sobre la que se aplican.
+\begin{scriptsize}
+\begin{verbatim}
+>>> a=['sota', 'caballo', 'rey']
+>>> a.reverse()
+>>> print a
+['rey', 'caballo', 'sota']
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ordenar una lista}
+\begin{itemize}
+\item
+La función \verb|sorted()| devuelve una lista ordenada (no la
+modifica)
+\item
+El método \verb|sort()| ordena una lista (Modifica la lista, devuelve
+\emph{None})
+\end{itemize}
+
+Ambas admiten personalizar la ordenación, pasando como argumento
+una función que compare dos elementos y devuelva
+
+\begin{itemize}
+\item
+Un valor negativo si están ordenados
+\item
+Cero si son iguales
+\item
+Un valor positivo si están desordenados
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+mi_lista=[ "gamma", "alfa", "beta"]
+
+print sorted(mi_lista)  # alfa, beta, gamma
+print mi_lista          # gamma, alfa, beta. No ha cambiado. 
+
+print mi_lista.sort() # Devuelve 'None'
+print mi_lista          # alfa, beta, gamma. La ha ordenado
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+mi_lista=[  ['IV',4] , ['XX',20], ['III',3]  ]  
+
+def mi_ordena(a,b):
+    if a[1] < b[1]:
+        return -1
+    elif  a[1] > b[1]:
+        return 1
+    else:
+        return 0
+
+mi_lista.sort(mi_ordena)
+print mi_lista
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Split, join}
+Es muy frecuente trocear una cadena para formar en un lista (split) y concatenar los elementos de
+una lista para formar una cadena (join)
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+mi_cadena="esto es una prueba"
+print mi_cadena.split() # ['esto', 'es', 'una', 'prueba']
+
+print "esto-tambien".split("-")    # ['esto', 'tambien']
+
+mi_lista=["as","dos","tres"]
+print mi_lista.join() # ¡ERROR! Parecería lógico que join()
+                      # fuera un método del tipo lista. Pero no
+                      # lo es
+
+print "".join(mi_lista) # Es un método del tipo string, hay
+                        # que invocarlo desde una cadena cualquiera, que
+                        # será el separador
+                        # Devuelve  "asdostres"
+
+print ",".join(mi_lista)# Devuelve "as,dos,tres"
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Otros métodos de los objetos string}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+print "hola mundo".upper(); # HOLA MUNDO 
+print "HOLA MUNDO".lower(); # hola mundo 
+
+# Estos métodos devuelven una cadena,
+# sin modificar la cadena original
+a="prueba"
+print a.upper();            # PRUEBA
+print a;                    # prueba
+
+# find() indica la posición de una subcadena
+print "buscando una subcadena".find("una") # 9
+print "buscando una subcadena".find("nohay") # -1
+
+# strip() devuelve una copia de la cadena quitando
+# espacios a derecha e izda, retornos de carro, etc
+print "    hola  \n".strip()  # 'hola'
+
+# print "te digo que no".replace("digo","diego")
+       # imprime "te diego que no"
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+En las primeras versiones de python no había métodos para los objetos
+de tipo \emph{string}, se usaban funciones de un módulo \emph{string}.
+
+A partir de python 2.x esta forma se va considerando obsoleta, en
+python 3.x desaparece
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import string   # ¡Forma obsoleta!
+a="más vale pájaro en mano"
+print string.split(a)
+print string.upper(a)
+
+c=['rojo','amarillo','verde']
+print string.join(c)
+\end{verbatim}
+  \end{scriptsize}
+
+\begin{itemize}
+\item
+Métodos actuales para tratar cadenas:
+\emph{Built-in Types, String Methods}
+\item
+Funciones antiguas:
+\emph{String module}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Nombres de objeto}
+Con frecuencia se habla de \emph{variables}, porque es el
+término tradicional. Pero
+Python no tiene \emph{variables}, sino \emph{nombres}. Son referencias
+a objetos
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+x=['uno']
+y=x      # y apunta al mismo objeto
+print x  # ['uno']
+print y  # ['uno']
+
+x=['dos']  # x apunta a un nuevo objeto
+
+print x  # ['dos']  # El objeto nuevo
+print y  # ['uno']  # El objeto antiguo
+
+x=['uno']
+y=x      # y apunta al mismo objeto
+x.append('dos')   # modificamos el objeto
+print x  # ['uno','dos']  # el objeto modificado
+print y  # ['uno','dos']  # el mismo objeto, modificado
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\subsection{Diccionarios}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Diccionarios}  
+
+\begin{itemize}
+\item Es un conjunto \emph{desordenado} de elementos 
+\item Cada elemento del diccionario es un par clave-valor. 
+\item Se pueden obtener valores a partir de la clave, pero no al revés.
+\item Longitud variable
+\item Hace las veces de los \emph{registros} en otros lenguajes
+\item Atención: Se declaran con \verb|{}|, se refieren con \verb|[]|
+\end{itemize}
+\end{frame}
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+  \begin{itemize}
+  \item Asignar valor a una clave existente reemplaza el antiguo 
+  \item Una clave de tipo cadena es sensible a mayúsculas/minúsculas
+  \item Pueden añadirse entradas nuevas al diccionario
+  \item Los diccionarios se mantienen desordenados
+\item Los valores de un diccionario pueden ser de cualquier tipo
+\item Las claves pueden ser enteros, cadenas y algún otro tipo
+\item Pueden borrarse un elemento del diccionario con \verb|del|
+\item Pueden borrarse todos los elementos del diccionario con \verb|clear()|
+\end{itemize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+Otras operaciones con diccionarios:
+\begin{scriptsize}
+  \begin{itemize}
+  \item \verb|len(d)        | devuelve el número de elementos de \verb|d|
+  \item \verb|d.has_key(k)  | devuelve 1 si existe la clave \verb|k| en
+    \verb|d|, 0 en caso contrario
+  \item \verb|k in d        | equivale a: \verb|    d.has_key(k)|
+  \item \verb|d.items()     | devuelve la lista de elementos de \verb|d| 
+(pares clave:valor)
+  \item \verb|d.keys()      | devuelve la lista de claves de \verb|d|
+%  \item \verb|d1.update(d2) | equivale a: \verb|    for k in d2.keys(): d1[k] = d2[k]|
+%  \item \verb|d.get(k,v)    | devuelve el valor de clave \verb|k| si
+%    existe, \verb|v| en caso contrario
+  \end{itemize}
+\end{scriptsize}
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+pais={'de': 'Alemania', 'fr': 'Francia', 'es': 'España'}
+print pais
+print pais["fr"]
+
+extension={}
+extension['py']='python'
+extension['txt']='texto plano'
+extension['mp3']='MPEG layer 3'
+
+for x in pais.keys():
+   print x, pais[x]
+
+del pais['fr']   # Borramos francia
+print len(pais)  # Quedan 2 paises
+print 'es' in pais   # True
+pais['es']="Spain"  # modificamos un elemento
+pais.clear()  # Borramos todas las claves
+\end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+diccionario={"juan": ["empanada"] ,
+             "maria": ["refrescos","vino"]}
+
+diccionario["luis"]=["patatas fritas","platos plastico"]
+diccionario["luis"].append("vasos plastico")
+
+claves=diccionario.keys()
+claves.sort()
+for clave in claves:
+     print clave, diccionario[clave]
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado de la ejecución:
+  \begin{footnotesize}
+  \begin{verbatim}
+juan ['empanada']
+luis ['patatas fritas', 'platos plastico', 'vasos plastico']
+maria ['refrescos', 'vino']
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Acceso a las claves mediante el operador in}
+
+Una forma alternativa de obtener las claves de un diccionario:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+for clave in d:
+    print clave
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\begin{itemize}
+\item
+Esto es más eficiente que emplear el método
+ \verb|keys()|
+\item
+Es aplicable a listas y tuplas
+\item
+Aunque en ocasiones seguiremos necesitando el método 
+ \verb|keys()|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+claves=diccionario.keys()
+claves.sort()
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\subsection{Tuplas}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Tuplas}
+
+Tipo predefinido de Python para una lista inmutable.
+
+Se define de la misma manera, pero con los elementos entre paréntesis.
+
+Las tuplas no tienen métodos: no se pueden añadir elementos, ni
+cambiarlos, ni buscar con \verb|index()|.
+
+Sí puede comprobarse la existencia con el operador \verb|in|.
+
+
+\begin{scriptsize}
+\begin{verbatim}
+>>> t = ("a", "b", "blablabla", "z", "example") 
+>>> t[0]                                       
+'a'
+>>> 'a' in t
+True
+>>> t[0] =  "b"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+TypeError: object doesn't support item assignment
+\end{verbatim}
+\end{scriptsize}
+
+  
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+Utilidad de las tuplas:
+\begin{itemize}
+\item Son más rápidas que las listas
+\item Pueden ser una clave de un diccionario (no así las listas)
+\item Se usan en el formateo de cadenas
+\end{itemize} 
+
+\verb|tuple(li)| devuelve una tupla con los elementos de la lista \verb|li|
+
+\verb|list(t)| devuelve una lista con los elementos de la tupla \verb|t|
+
+\end{frame} 
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{Asignaciones múltiples y rangos}
+
+\begin{itemize}
+\item Pueden hacerse también tuplas de variables:
+\begin{scriptsize}
+\begin{verbatim}
+>>> v = ('a', 'b', 'e')
+>>> (x, y, z) = v 
+>>> x
+'a'
+\end{verbatim}
+\end{scriptsize}
+
+\item La función \verb|range()| permite generar listas al vuelo:
+\begin{scriptsize}
+\begin{verbatim}
+>>> range(7)
+[0, 1, 2, 3, 4, 5, 6]
+>>> (MONDAY, TUESDAY, WEDNESDAY, THURSDAY, 
+... FRIDAY, SATURDAY, SUNDAY) = range(7)
+>>> MONDAY
+0
+>>> SUNDAY
+6
+\end{verbatim}
+\end{scriptsize}
+\end{itemize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%\frametitle{Mapeo de listas}
+
+%\begin{itemize}
+%\item Se puede mapear una lista en otra, aplicando una función a cada
+%  elemento de la lista:
+%  \begin{scriptsize}
+%\begin{verbatim}
+%>>> li = [1, 9, 8, 4]
+%>>> [elem*2 for elem in li]      
+%[2, 18, 16, 8]
+%>>> li                           
+%[1, 9, 8, 4]
+%>>> li = [elem*2 for elem in li] 
+%>>> li
+%[2, 18, 16, 8]
+%\end{verbatim}
+%  \end{scriptsize}
+%\end{itemize}
+%  
+%\end{frame}
+%
+%
+%\begin{frame}[fragile]
+%\frametitle{Filtrado de listas}
+%\begin{itemize}
+%\item Sintaxis:
+%\begin{scriptsize}
+%\begin{verbatim}
+%[expresión-mapeo for elemento in lista-origen if condición-filtrado]
+%\end{verbatim}
+%\end{scriptsize}
+%\item Ejemplos:
+%\begin{scriptsize}
+%\begin{verbatim}
+%>>> li = ["a", "blablabla", "foo", "b", "c", "b", "d", "d"]
+%>>> [elem for elem in li if len(elem) > 1]       1
+%['blablabla', 'foo']
+%\end{verbatim}
+%\end{scriptsize}
+%
+%\end{itemize}
+% 
+%\end{frame}
+%
+%
+
+%--------------------------------------------------------------------
+
+\subsection{Cadenas Unicode}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Cadenas Unicode}
+Hasta los años 90, en prácticamente cualquier ámbito de la informática, un carácter equivalía
+a un byte. Pero
+codificando en UTF-8 esto ya no es cierto
+
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> pais={'es':'españa'}
+>>> print pais
+{'es': 'espa\xc3\xb1a'}
+>>> print pais['es']
+españa
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{itemize}
+\item
+\verb|\xc3\xb1| significa \emph{C3 en hexadecimal,  B1 en hexadecimal} (Letra eñe en UTF-8)
+\item
+Cuando imprimimos el diccionario, se muestra la representación interna de la eñe
+\item
+Cuando imprimimos la cadena, python muestra correctante el grafema correspondiente
+% En tipografía, un grafema es la unidad mínima de un sistema escrito. Los grafemas incluyen letras, caracteres chinos, caracteres japoneses, numerales, signos de puntuación y otros glifos.
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+Cuando imprimimos la cadena completa, python la muestra correctamente
+\item
+Cuando imprimimos cada elemento, no
+\end{itemize}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+cadena="¿Procesa bien el español?"
+print cadena
+indice = 0
+while indice < len(cadena):
+    letra = cadena[indice]
+    print letra,
+    indice=indice+1
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+¿Procesa bien el español?
+? ? P r o c e s a   b i e n   e l   e s p a ? ? o l ?
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Cadenas Unicode}
+\begin{itemize}
+\item
+En python 2.0 aparecen las cadenas unicode
+\item
+Una constante cadena unicode constante se crea anteponiendo \verb|u|
+  \begin{footnotesize}
+  \begin{verbatim}
+cadena_unicode=u"Con cadenas unicode se trabaja mejor en español"
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Conversión desde objeto cadena ordinaria hasta cadena unicode
+
+Empleamos la función \emph{unicode}
+  \begin{footnotesize}
+  \begin{verbatim}
+cadena_unicode=unicode(cadena,"utf-8")
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Conversión desde cadena unicode hasta cadena ordinaria
+
+Empleamos el método \emph{encode}
+  \begin{footnotesize}
+  \begin{verbatim}
+cadena=cadena_unicode.encode("utf-8")
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+En el ejemplo anterior, basta con usar una cadena unicode para
+generar una salida correcta
+
+\verb|cadena=u"¿Procesa bien el español?"|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+¿Procesa bien el español?
+¿ P r o c e s a   b i e n   e l   e s p a ñ o l ?
+  \end{verbatim}
+  \end{footnotesize}
+ 
+\end{frame}
+
+%http://docs.python.org/tutorial/introduction.html
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item
+Es recomendable que en todos nuestos scripts
+\begin{itemize}
+\item
+Aceptemos cadenas ordinarias
+\item
+Convirtamos las cadenas ordinarias en unicode, y las procesemos siempre en unicode 
+\item
+En la salida, volvamos las cadenas unicode a ordinarias
+\end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+
+  \begin{footnotesize}
+  \begin{center}
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+def main():
+    # cadena ordinaria
+    cadena="probando"
+    print type(cadena)    # <type 'str'>
+
+    # convertimos la cadena ordinaria en cadena unicode
+    cadena_unicode=unicode(cadena,"utf-8")
+    print type(cadena_unicode)  # <type 'unicode'>
+
+    # convertimos de vuelta la cadena unicode en cadena ordinaria
+    cadena=cadena_unicode.encode("utf-8")
+    print type(cadena)   # <type 'str'>
+
+if __name__ == "__main__":
+    main()
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+
+%--------------------------------------------------------------------
+
+\subsection{Sentencias de control}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{If}
+
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+x = 3
+if x :
+     print 'verdadero'
+else:
+     print 'falso'
+\end{verbatim}
+\end{scriptsize}
+Nótese como el carácter \verb|:| introduce cada bloque de sentencias.
+%se pueden poner parentesis en la condición, como en C, pero no necesario
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+x = int(raw_input("Please enter an integer: "))
+if x < 0:
+     x = 0
+     print 'Negative changed to zero'
+elif x == 0:
+     print 'Zero'
+elif x == 1:
+     print 'Single'
+else:
+     print 'More'
+\end{verbatim}
+\end{scriptsize}
+  
+
+No existe \verb|switch/case|
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{For}
+
+En los lenguajes \emph{convencionales}, la cláusula \emph{for}
+sirve para que un entero recorra una serie de valores.
+
+En python es diferente:
+recorre un objeto iterable, como una lista o una tupla. Por cada elemento del iterable,
+ejecuta el bloque de código 
+
+
+\begin{scriptsize}
+\begin{verbatim}
+lista = ["sota","caballo","rey"]
+for x in lista:
+    print x # Imprime el elemento y fin de línea
+\end{verbatim}
+\end{scriptsize}
+Resultado:
+
+\begin{scriptsize}
+\begin{verbatim}
+sota
+caballo
+rey
+\end{verbatim}
+\end{scriptsize}
+
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Si necesitamos un bucle \emph{convencional} podemos emplear
+la función \emph{range()}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+lista = range(3)
+print lista
+for x in lista:
+    print x, # La coma evita la impresión del
+             # fin de línea
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado:
+
+\begin{scriptsize}
+\begin{verbatim}
+[0, 1, 2]
+0 1 2
+\end{verbatim}
+\end{scriptsize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+A range() le podemos pasar
+
+\begin{itemize}
+\item
+Un elemento: el final del rango
+\item
+Dos elementos: principio y final
+\item
+Tres elementos: principio, final e incremento
+\end{itemize}
+Por omisión, el principio es 0 y el incremento es +1
+
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> range(3)
+[0, 1, 2]
+>>> range(2,5)
+[2, 3, 4]
+>>> range(10,0,-1)
+[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+No deberíamos usar range para los bucles a menos que sea imprescindible.
+No es idiomático en python, añade complejidad innecesaria.
+
+No hagas bucles \emph{al estilo Pascal}
+
+
+  \begin{footnotesize}
+  \begin{center}
+  \end{center}
+  \begin{verbatim}
+lista=["sota","caballo","rey"]
+# ¡¡NO HAGAS ESTO!!
+for i in range(len(lista)):
+    print lista[i]
+
+# Lo idiomático en python es
+for x in lista:
+    print x
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+ 
+\frametitle{While}
+\begin{scriptsize}
+\begin{verbatim}
+>>> a=0
+>>> while a<10:
+...     print a,
+...     a=a+1
+... 
+0 1 2 3 4 5 6 7 8 9
+\end{verbatim}
+\end{scriptsize}
+%La coma el final de un \verb|print| evita que se imprima un salto de página
+
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+  
+\verb|break| sale de un bucle.
+(Aunque según la programación estructurada, \verb|break| no
+debería usarse nunca. Empléalo solo si estás muy seguro de lo que
+haces)
+
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+a=10
+while a > 0:
+    print a,
+    a=a-1
+\end{verbatim}
+\end{scriptsize}
+
+equivale a 
+
+\begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+a=10
+while 1:
+    print a,
+    if a==1:
+        break
+    a=a-1
+\end{verbatim}
+\end{scriptsize}
+ 
+Sentencia nula: \verb|pass|
+
+Valor nulo: \verb|None| 
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\subsection{Funciones}
+%--------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funciones }  
+
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+def a_centigrado(x):
+    """Convierte grados farenheit en grados centígrados."""
+    return (x-32)*(5/9.0)
+
+
+def a_farenheit(x):
+    """Convierte grados centígrados en grados farenheit."""
+    return (x*1.8)+32
+\end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+Los nombres de objeto declarados fuera de una función son globales,
+y los declarados dentro, locales
+% pr73
+%    """Ejemplo para hablar del ámbito"""
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+a=3
+def f():
+    b=4
+    print a # 3
+    print b # 4
+    return 
+
+f()
+print a     # 3
+print b     # ¡Error! B es un objeto local
+\end{verbatim}
+  \end{scriptsize}
+
+
+\begin{itemize}
+\item
+Algunas metodologías establecen que los objetos globales deben usarse
+lo mínimo posible. Otras los prohiben por completo
+
+\item
+Los objetos globales pueden leerse dentro (y fuera) de la función.
+
+\item
+Los objetos locales, declarados dentro de una función,
+son invisibles fuera de ella
+\end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Supongamos que intentamos modificar el objeto global de esta forma
+%pr74
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+a=3
+def f():
+    a=0
+    print a # 0
+    return 
+f()
+print a     # 3 . No se ha modificado
+  \end{verbatim}
+  \end{footnotesize}
+No podemos modificar el objeto global sin más, lo que sucede es que
+python crea un nuevo objeto local, con el mismo nombre que el global.
+El objeto local hace que el objeto global sea invisible, 
+el local \emph{tapa} al global
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Las modificaciones similares a esta siempre generarán un error
+
+%pr80
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+c=3
+def f():
+    c=c-1   # ERROR: la variable global ya no es visible y la
+            # local aún no está definida
+    return
+    
+f()
+\end{verbatim}
+  \end{scriptsize}
+
+En cuanto el intérprete procesa
+el nombre del objeto a la izquierda de un signo igual, crea
+un objeto local que aún no está definido, pero que hace
+invisible al objeto global
+\end{frame}
+
+
+%----------------------
+
+
+
+\begin{frame}[fragile]
+
+Para poder modificar un objeto global, es necesario
+declararlo con la 
+ sentencia \verb|global|
+
+ %pr71
+  \begin{scriptsize}
+\begin{verbatim}
+c=3
+def f():
+    global c
+    c=0      # Esto modifica el objeto global
+    print c  # 0
+    return
+f()
+print c       #0
+
+\end{verbatim}
+  \end{scriptsize}
+
+La sentencia global evita que al declarar un objeto en una función,
+se cree un nuevo objeto con el mismo nombre pero de ámbito local.
+Por tanto permite modificar el objeto global
+
+\end{frame}
+
+
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En muchos lenguajes, para hacer que una variable sea global,
+la declararíamos \verb|global| en la
+la \emph{zona global} del código, haríamos un código similar
+a este, pero que en python es incorrecto
+%pr72
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+global c   #ERROR, esto no sirve de nada
+c=3
+def f():
+    c=0      # Esto es un objeto local
+    print c  # 0
+    return 
+f()
+print c       #3  el global no ha cambiado
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\begin{itemize}
+\item
+Observa que en python se usa la sentencia 
+\verb|global| en la función local que vaya a modificar
+el objeto
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Dicho de otro modo: la sentencia 
+\verb|global| no significa \emph{haz que este objeto sea global}, sino
+\emph{haz que este objeto global pueda ser modificado aquí}
+\item
+Seguramente resultaría más intutivo si la sentencia \verb|global|
+tuviera un nombre distinto. Tal vez 
+\verb|global-write|
+o
+\verb|GlobalModify|
+\end{itemize}
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Los objetos mutables (listas, diccionarios...) declarados dentro de una función 
+también son locales, en este aspecto se comportan igual que los objetos inmutables
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+l= ["uno","dos"]
+def f():
+    l=["cuatro"]  # nuevo objeto mutable, local
+
+print l #  ["uno","dos"]
+f()
+print l #  ["uno","dos"]
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Hay una diferencia entre los objetos mutables y los inmutables.
+
+Como hemos visto
+\begin{itemize}
+\item
+Los objetos inmutables globales se pueden leer localmente
+\item
+Para poder modificar un objeto inmutable global, es necesario
+usar la sentencia \verb|global|
+
+Por tanto, un objeto global sin la sentencia \verb|global|
+queda \emph{protegido contra escritura}
+\end{itemize}
+
+Los objetos mutables globales no se pueden \emph{proteger contra escritura}
+de esta manera
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Un objeto mutable sí puede ser modificado
+en una función local, a pesar de no estar declarado \verb|global|
+
+%pr77
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+l= ["uno","dos"]
+def f():
+    l.pop()   
+
+print l #  ["uno","dos"]
+f()
+print l #  ["uno"]  . El objeto mutable fue modificado por la función
+  \end{verbatim}
+  \end{footnotesize}
+
+El objeto mutable puede ser modificado a través de sus métodos.
+(No debo pensar que la ausencia de la sentencia \verb|global|
+hace que el objeto esté en modo \emph{solo lectura})
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+%78
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+l= ["uno","dos"]
+def f():
+    l=["uno"]
+print l #  ["uno","dos"]
+f()
+print l #  ["uno","dos"]  . 
+  \end{verbatim}
+  \end{footnotesize}
+
+En el caso de que la modificación se haga redefiniendo el objeto (no 
+mediante métodos), como ya sabemos, implica la declaración implícita
+de un objeto nuevo, local, que oculta al objeto global. Por tanto,
+el objeto global no es modificado
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Si al ejemplo anterior le añadimos \verb|global| de esta manera,
+como cabría esperar, permite modificar el objeto global
+
+%pr79
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+l= ["uno","dos"]
+def f():
+    global l
+    l=["uno"]
+print l #  ["uno","dos"]
+f()
+print l #  ["uno"]  . 
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Resumen:
+\begin{itemize}
+\item
+Los objetos declarados fuera de una función son globales
+\item
+Los objetos declarados dentro de una función son locales
+\item
+Los objetos globales siempre se pueden leer dentro de una función
+\item
+Para modificar un objeto global dentro de una función
+\begin{itemize}
+\item
+Si es inmutable, hay que usar \verb|global| dentro de la función
+
+\item
+Si es mutable
+
+\begin{itemize}
+\item
+Para modificarlo mediante una asignación, hay que usar \verb|global|
+\item
+Para modificarlo mediante sus métodos, no es necesario usar \verb|global|
+\end{itemize}
+\end{itemize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En las llamadas a funciones
+\begin{itemize}
+\item
+Los objetos inmutables se pasan por valor. La función recibe una
+copia del valor, por lo que una posible modificación de la copia no
+altera el original
+\item
+Los objetos mutables se pasan por referencia. La función recibe una
+referencia al objeto original, una modificación del objeto en la función
+modifica el objeto original
+\end{itemize}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+def f(x,y):
+    x=x-1
+    y.pop()   
+
+v=3
+l= ["uno","dos"]
+f(v,l)
+print v  # 3  . La función creó copia local, no tocó el global
+print l  # ['uno'] . La función recibió referencia al global
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\subsection{Ficheros}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Ficheros}
+\begin{itemize}
+  
+\item \verb|open(nombre_fichero,modo)| devuelve un objeto fichero.
+
+modo:
+\begin{itemize}
+  
+\item \verb|w|: Escritura. Destruye contenido anterior
+\item \verb|r|: Lectura. Modo por defecto
+\item \verb|r+|: Lectura y escritura
+\item \verb|a|: Append
+
+\end{itemize}
+
+\item \verb|write(cadena)| escribe la cadena en el fichero. Solo escribe cadenas,
+para otros tipos, es necesario pasar a texto o usar librería \emph{pickle} 
+\item \verb|read()| devuelve una cadena con todo el contenido del fichero
+\item \verb|readlines()| devuelve una lista donde cada elemento es una línea del fichero
+\item \verb|close()| cierra el fichero
+
+\end{itemize}
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+lista=['sota','caballo','rey']
+fichero=open('prueba.txt','w')    
+for x in lista:
+    fichero.write(x+"\n")         
+fichero.close()         
+    
+fichero=open('prueba.txt','r')
+mi_cadena=fichero.read()
+fichero.seek(0)                   # vuelvo al princio del fichero
+
+lista_de_cadenas=fichero.readlines()  # ahora cada elemnto incluye \n
+fichero.seek(0)
+
+for linea in fichero.readlines():
+    print linea,
+
+fichero.close()
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Los métodos \emph{read()} y \emph{readlines()} crean una copia
+completa del fichero en memoria.
+
+Para ficheros muy grandes es más eficiente trabajar línea
+a línea
+
+  \begin{scriptsize}
+  \begin{verbatim}
+fichero=open('prueba.txt','r')
+for linea in fichero:
+    print linea,
+fichero.close()
+  \end{verbatim}
+  \end{scriptsize}
+
+No se deben mezclar estas dos maneras de acceder a un fichero
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\subsection{Cadenas de documentación}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Cadenas de documentación}
+
+\begin{small}
+\begin{itemize}
+\item No son obligatorias pero sí muy recomendables (varias
+  herramientas hacen uso de ellas).
+\item La cadena de documentación de un objeto es su atributo
+  \verb|__doc__|
+\item En una sola línea para objetos sencillos, en varias para el
+  resto de los casos.
+\item Entre triples comillas-dobles (incluso si ocupan una línea).
+\item Si hay varias líneas:
+  \begin{itemize}
+  \item La primera línea debe ser una resumen breve del propósito del
+    objeto. Debe empezar con mayúscula y acabar con un punto
+  \item Una línea en blanco debe separar la primera línea del resto
+  \item Las siguientes líneas deberían empezar justo debajo de la
+    primera comilla doble de la primera línea
+\end{itemize}
+\end{itemize}
+\end{small}
+\end{frame}
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+De una sola línea:
+\begin{small}
+\begin{verbatim}
+def kos_root():
+    """Return the pathname of the KOS root directory."""
+    global _kos_root
+    ...
+\end{verbatim}
+\end{small}
+
+De varias:
+\begin{small}
+\begin{verbatim}
+def complex(real=0.0, imag=0.0):
+    """Form a complex number.
+
+    Keyword arguments:
+    real -- the real part (default 0.0)
+    imag -- the imaginary part (default 0.0)
+
+    """
+    if imag == 0.0 and real == 0.0: return complex_zero
+\end{verbatim}
+\end{small}
+  
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\begin{frame}
+\frametitle{Documentando el código (tipo Javadoc)}
+
+\begin{small}
+\begin{itemize}
+\item Permite documentar el código -generalmente las funciones- dentro del propio código
+\item Genera la documentación del código en formatos legibles y navegables
+(HTML, PDF...)
+\item Se basa en un lenguaje de marcado simple
+\item PERO... hay que mantener la documentación al día cuando se cambia
+el código
+\end{itemize}
+\end{small}
+\end{frame}
+
+\begin{frame}[fragile]
+Ejemplo
+
+\begin{small}
+\begin{verbatim}
+def interseccion(m, b):
+  """
+  Devuelve la interseccion de la curva M{y=m*x+b} con el eje X. 
+  Se trata del punto en el que la curva cruza el eje X (M{y=0}).
+
+  @type  m: número
+  @param m: La pendiente de la curva
+  @type  b: número
+  @param b: La intersección con el eje Y
+
+  @rtype:   número
+  @return:  la interseccíoin con el eje X de la curva M{y=m*x+b}.
+  """
+  return -b/m
+\end{verbatim}
+\end{small}
+  
+\end{frame}
+
+%--------------------------------------------------------------------
+\subsection{Excepciones}
+
+\begin{frame}[fragile]
+\frametitle{Excepciones}
+\begin{itemize}
+\item Un programa sintácticamente correcto puede dar errores de ejecución
+\end{itemize}
+
+  \begin{scriptsize}
+\begin{verbatim}
+
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+while 1:
+    x=int(raw_input("Introduce un nº"))
+    print x
+
+\end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item  Definimos una acción para determinada excepción
+\end{itemize}
+
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+while 1:
+    try:
+        x=int(raw_input("Introduce un nº:"))
+        print x
+    except ValueError:
+        print ("Número incorrecto")
+        # ESTE ERROR DEBERIA SALIR POR stderr
+
+\end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item Se puede indicar una acción que se ejecute sea cual sea la
+     excepción
+      pero es \emph{muy} desaconsejable (enmascara otros errores)
+\item  El programador puede levantar excepciones
+\end{itemize}
+
+  \begin{scriptsize}
+\begin{verbatim}
+
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+try:
+    x=int(raw_input("Introduce un nº:"))
+    print x
+except :     # para cualquier excepción
+    print ("Número incorrecto")
+    # ESTE ERROR DEBERIA SALIR POR stderr
+
+raise SystemExit   # Excepción para finalizar programa
+print "Esta línea nunca se ejecuta"
+\end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+%--------------------------------------------------------------------
+
+
+
+%\begin{frame}[fragile]
+%\frametitle{Objetos en Python}
+%
+%Todo son objetos, en sentido amplio:
+%\begin{itemize}
+%\item Cualquier objeto puede ser asignado a una variable o pasado como
+%  parámetro a una función
+%\item Algunos objetos pueden no tener ni atributos ni métodos
+%\item Algunos objetos pueden no permitir que se herede de ellos
+%\end{itemize}
+%
+%Ejemplos de objetos Python: Strings, listas, funciones, módulos\ldots
+%\end{frame}
+%
+%%--------------------------------------------------------------------
+%
+%\begin{frame}[fragile]
+%
+%
+%
+%Todos los objetos tienen:
+%\begin{itemize}
+%\item \emph{Identidad}: 
+%  \begin{scriptsize}
+%    \begin{itemize}
+%    \item Nunca cambia. 
+%    \item El operador \verb|is| compara la identidad de dos objetos.
+%    \item La función \verb|id()| devuelve una representación de la
+%      identidad (actualmente, su dirección de memoria).
+%  \end{itemize}
+%\end{scriptsize}
+%\item \emph{Tipo}:
+%  \begin{scriptsize}
+%    \begin{itemize}
+%    \item Nunca cambia.
+%    \item La función \verb|type()| devuelve el tipo de un objeto (que
+%      es otro objeto) 
+%    \end{itemize}
+%  \end{scriptsize}
+%\item \emph{Valor}:
+%  \begin{scriptsize}
+%    \begin{itemize}
+%    \item Objetos inmutables: su valor no puede cambiar
+%    \item Objetos mutables: su valor puede cambiar
+%    \end{itemize}
+%  \end{scriptsize}
+%\end{itemize}
+%\emph{Contenedores}: objetos que contienen referencias a otros objetos
+%(ej.: tuplas, listas, diccionarios).
+%
+%\end{frame}
+%
+
+
+%--------------------------------------------------------------------
+\section{Librerías}
+%--------------------------------------------------------------------
+%--------------------------------------------------------------------
+\subsection{Librería sys}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{libreria sys}
+
+\begin{itemize}
+\item Argumentos de linea de órdenes
+\end{itemize}
+
+\verb|sys.argv| devuelve una lista con los argumentos pasados al script
+python desde la shell
+
+
+  \begin{scriptsize}
+\begin{verbatim}
+koji@mazinger:~$ cat ejemplo.py 
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import  sys
+print sys.argv[:]
+
+koji@doublas:~$ ./ejemplo.py un_argumento otro_argumento
+['./ejemplo.py', 'un_argumento', 'otro_argumento']
+\end{verbatim}
+
+(El argumento cero es el nombre del programa)
+
+  \end{scriptsize}
+
+
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Escribir en stderr
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import sys
+sys.stderr.write('Error: \n')
+\end{verbatim}
+  \end{scriptsize}
+
+Leer desde stdin, escribir en stdout
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import sys
+for linea in sys.stdin.readlines():
+    sys.stdout.write(linea)
+
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+
+
+%--------------------------------------------------------------------
+\subsection{Librería subprocess}
+%--------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{subprocess}
+%Desde python 2.4 se recomienda usar subprocess
+\begin{itemize}
+\item
+\verb|subprocess.check_output()| permite ejecutar una orden de la shell en un subproceso externo
+\item
+Aunque puede ser muy útil, el script deja de ser portable entre
+sistemas operativos diferentes
+\item
+Su primer argumento es una lista con los argumentos de la orden a ejecutar
+\item
+Devuelve la salida estándar del subproceso
+\item
+En caso de error, eleva la excepción \verb|subprocess.CalledProcessError|
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import subprocess,sys
+mandato="ps -ef"
+mandato_troceado=mandato.split()
+try:
+    salida=subprocess.check_output(mandato_troceado)
+except subprocess.CalledProcessError:
+    sys.stderr.write("La orden ha producido un error\n")
+    raise SystemExit
+lineas=salida.split("\n")  # troceamos la salida línea a línea
+lineas.pop(0)      # quitamos la primera línea, la cabecera del ps
+for linea in lineas:
+    campos_linea=linea.split()
+    print "Usuario:"+ campos_linea[0],
+    print "Proceso:"+ campos_linea[7]
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Para redirigir la salida de error del subproceso a la salida estándar, pasamos
+el parámetro \verb|stderr=subprocess.STDOUT|
+\item
+El atributo \verb|returncode| de \verb|CalledProcessError| contiene
+el código del error
+\end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import subprocess,sys
+mandato="ls inexistente"
+mandato_troceado=mandato.split()
+try:
+    salida=subprocess.check_output(mandato_troceado, 
+                                   stderr=subprocess.STDOUT)
+except subprocess.CalledProcessError as e:
+    sys.stderr.write("La orden ha producido el error " +  
+                      str(e.returncode) + "\n")
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%--------------------------------------------------------------------
+\subsection{Librerías os, shutil}
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{os.path}
+
+\begin{itemize}
+\item
+Las funciones os.path.join() y os.path.split()
+unen y separan nombres de fichero con directorios
+
+\begin{itemize}
+
+\item
+Son compatibles con cualquier S.O.
+\item
+No importa si el path acaba en barra o no
+\end{itemize}
+\item
+\verb|os.path.exists()| devuelve un boolean indicando si un fichero existe
+\end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import os
+ejemplo=os.path.join("/etc/apt","sources.list")
+print ejemplo    # /etc/apt/sources.list
+print os.path.split(ejemplo)   # ('/etc/apt', 'sources.list')
+
+print os.path.exists(ejemplo)
+print os.path.exists("/usr/local/noexiste")
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Enlazar,  borrar}
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import os
+if not os.path.exists("/tmp/aa"):
+    os.mkdir("/tmp/aa")
+os.chdir("/tmp/aa")             # cd /tmp/aa
+os.link("/etc/hosts","hosts")   # crea enlace duro
+os.symlink("/etc/hosts","enlace_hosts") # crea enlace blando
+os.remove("enlace_duro_hosts")          # borra el fichero
+os.remove("enlace_hosts")               # borra el fichero
+os.rmdir("/tmp/aa")               # borra directorio (vacio)
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{copiar, copiar y borrar recursivamente}
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import shutil,os
+shutil.copytree("/home/koji/.gnome","/tmp/probando")  
+    # copia recursivamente. El destino no debe existir
+
+shutil.copy("/etc/hosts","/tmp/probando")             
+    # copia 1 fichero (como el cp de bash)
+
+shutil.move("/tmp/probando/hosts","/tmp/probando/mi_hosts")
+
+shutil.rmtree("/tmp/probando")                        
+    # borra arbol lleno
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+% shutil.copy se comporta como cp, si el segundo argumento es un directorio, mete dentro
+% si existe el segundo, machaca. Si no existe, pone ese nombre
+% copytree: el directorio destino no puede existir
+
+
+%%---------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{os.walk}
+\begin{itemize}
+\item
+Recorre recursivamente un directorio
+\item
+Por cada directorio devuelve una 3-tupla
+
+\begin{itemize}
+\item
+Directorio
+\item
+Subdirectorios
+\item
+Ficheros
+\end{itemize}
+\end{itemize}
+  
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import os
+directorio_inicial=os.getcwd() # current working directory
+os.chdir("/tmp/musica")        # cd
+
+for x in os.walk("."):
+    print x
+
+os.chdir(directorio_inicial)
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+  \begin{verbatim}
+/tmp/musica
+|-- listado.txt
+|-- jazz
+`-- pop
+    |-- sabina
+    |   |-- pirata_cojo.mp3
+    |   `-- princesa.mp3
+    `-- serrat
+        |-- curro_el_palmo.mp3
+        `-- penelope.mp3
+  \end{verbatim}
+  \end{scriptsize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+('.', ['jazz', 'pop'], ['listado.txt'])
+('./jazz', [], [])
+('./pop', ['serrat', 'sabina'], [])
+('./pop/serrat', [], ['curro_el_palmo.mp3', 'penelope.mp3'])
+('./pop/sabina', [], ['princesa.mp3', 'pirata_cojo.mp3'])
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variables de entorno}
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import os, sys
+mi_variable=os.getenv("MI_VARIABLE")
+if mi_variable==None:
+        msg="ERROR: variable de entorno MI_VARIABLE no definida"
+        sys.stderr.write(msg+'\n')
+        raise SystemExit
+  \end{verbatim}
+  \end{scriptsize}
+Atención: 
+Cuando la shell crea un proceso (p.e. el intérprete de python), puede
+no pasarle todas las variables de entorno. Por tanto, las
+variables visibles desde la shell serán distintas a las
+visibles desde python
+% hasta 2012, gentenv("HOSTNAME") funcionaba, en 2013 ya no
+\end{frame}
+
+
+%--------------------------------------------------------------------
+\subsection{Librerías pickle: Persistencia}
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Persistencia}
+Persistencia en Python: La librería \emph{Pickle}
+
+Serializa Objetos
+
+Permite:
+  \begin{itemize}
+\item Transmitir objetos, almacenarlos en Disco ó SGBD
+%\item Soporte Referencias recursivas
+\item Compartir objetos
+\item Clases definidas por el usuario y sus instancias
+  \end{itemize}
+\end{frame}
+
+%--------------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+\begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import pickle
+
+cp={28:'madrid',8:'barcelona',33:'asturias'}
+fich=open('prueba.pick','w')
+pickle.dump(cp,fich)
+fich.close()
+
+fich=open('prueba.pick','r')
+codigos_postales=pickle.load(fich)
+fich.close()
+
+for x in codigos_postales.keys():
+    print x,codigos_postales[x]
+
+\end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+
+%\begin{frame}[fragile]
+%Limitaciones de la Persistencia de Python:
+%  \begin{itemize}
+%  \item Lenta
+%  \item Secuencial
+%  \item Sin nombrado persistente
+%  \item Sin acceso concurrente a objetos
+%  \end{itemize}
+%\end{frame}
+
+
+%--------------------------------------------------------------------
+%\begin{frame}[fragile]
+%Persistencia en Python mediante ZODB
+
+%Aspecto Fundamental: Transacción
+
+%Semántica distinta a la habitual
+%  \begin{itemize}
+%  \item Sub-Transacción: "La de siempre"
+%  \item Transacción: Se actualiza en la BD todo
+%  lo que haya cambiado desde determinado instante.
+%Intervalo típico: Una sesión de trabajo
+%  \item Versión: Para periodo de tiempo muy amplio
+%  \end{itemize}
+%\end{frame}
+
+
+%\begin{frame}[fragile]
+%Transacciones y Sub-transacciones son No Bloqueantes.
+
+%Base de la Concurrencia:
+%  \begin{itemize}
+%  \item A cada hilo, copia del objeto
+%  \item Al cerrar transacción, se sincronizan las copias
+%  \item Si dos hilos cierran transacción muy próximos,
+
+% tal vez el segundo no pueda
+%  \end{itemize}
+%\end{frame}
+
+%\begin{frame}[fragile]
+%Persistencia
+%  \begin{itemize}
+%  \item Cada objeto tiene identificador único y persistente
+%  \item Todo objeto persistente debe heredar de determinada clase
+%  \item Todos los sub-objetos de un objeto persistente deben ser
+%persistentes o no cambiar
+%  \item La persistencia supone penalización en eficiencia
+%  \end{itemize}
+%\end{frame}
+
+
+
+\end{document}
+
+
+%--------------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%Otras carácterísticas de python:
+%  \begin{itemize}
+%  \item Caché, que evita preocuparse de si el objeto está en MP o
+%    almacenado
+%  \item Recolector de Basuras.
+%  \end{itemize}
+%\end{frame}
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "intro-python"
+%%% End: 

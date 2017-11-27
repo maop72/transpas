@@ -1,0 +1,1714 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Programación en Python II},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Programación en Python II]{Programación en Python II}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+\section{format}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{format}
+En python 2.6 y superiores, podemos usar el método
+\verb|format()| de las cadenas
+
+
+\begin{itemize}
+\item
+Dentro de una cadena, podemos indicar, entre llaves,
+qué campos se mostrarán y con qué formato.
+
+Format tiene un microlenguaje para esto
+\item
+Los argumentos de 
+\verb|format()| serán los campos
+\end{itemize}
+
+Ejemplo:
+Indicar qué campo mostrar, a partir del ordinal 
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+name="Juan"
+surname="García"
+print "Se llama {0} y se apellida {1}".format(name,surname) 
+
+persona=["Juan","García"]
+print "Se llama {0[0]} y se apellida {0[1]}".format(persona) 
+
+persona={"name":"Juan", "surname":"García"}
+print "Se llama {0[name]} y se apellida {0[surname]}".format(persona) 
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+Se llama Juan y se apellida García
+Se llama Juan y se apellida García
+Se llama Juan y se apellida García
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Después de indicar qué campo mostrar, separado por el 
+carácter dos puntos,  podemos especificar
+cuántos caracteres debe ocupar la salida, y si estará
+alineada a la derecha (signo de mayor), a la izquierda
+(signo de menor o ningún signo) o al centro (acento
+circunflejo)
+
+Ejemplo: mostrar una palabra, ocupando siempre 12
+caracteres
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
+print("{0:>12}{1:>12}".format("sota","caballo"))
+print("{0:<12}{1:<12}".format("sota","caballo"))
+print("{0:12}{1:12}".format("sota","caballo"))
+print("{0:^12}{1:^12}".format("sota","caballo"))
+  \end{verbatim}
+  \end{footnotesize}
+Resultado:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+        sota     caballo
+sota        caballo     
+sota        caballo     
+    sota      caballo 
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Si solo hay un campo, podemos omitir el 0 a la izquierda del carácter dos puntos
+
+\item
+Con el carácter \verb|d| podemos indicar que el campo
+contiene un número entero. En este caso, la alineación
+por omisión es a la derecha
+
+\item
+Con el carácter \verb|f| indicamos que el campo es un 
+número real
+
+Podemos especificar cuántos decimales representar. Por 
+ejemplo 4:
+\verb|         .4f| 
+\end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+print("{:<6d} metros".format(592))
+print("{:>6d} metros".format(592))
+print("{0:6d} metros".format(592))
+print("Pi vale {:.4f}".format(3.14159265358979))
+  \end{verbatim}
+  \end{footnotesize}
+Resultado:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+592    metros
+   592 metros
+   592 metros
+Pi vale 3.1416
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+
+\section{optparse}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{optparse}
+\verb|optparse| es una librería de python para procesar las
+opciones y argumentos con los que se llama a un script
+  \begin{footnotesize}
+  \begin{verbatim}
+        orden  opciones           argumentos
+      -------------------------------------------------
+         cp     -r  -v      directorio1    directorio2
+  \end{verbatim}
+  \end{footnotesize}
+En un buen interfaz
+\begin{itemize}
+\item
+Las opciones deben ser opcionales. (El programa debe hacer
+algo útil sin ninguna opción)
+\item
+Las opciones proporcionan flexibilidad, pero demasiadas
+introducen complejidad
+\item
+Los parámetros fundamentales e imprescindibles deben ser
+argumentos
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Creamos una instancia de la clase \verb|OptionParser|, pasando
+como argumento la cadena \verb|usage| (que se mostrará
+al usuario cuando use mal el script, o cuando lo llame
+con \verb|-h| o \verb|--help|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+usage = "Uso: %prog [opciones] origen destino"
+parser = OptionParser(usage)
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Para añadir opciones invocamos al método \verb|add_option|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose",
+                      help="Informe detallado")
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Invocamos a \verb|parse_args()|, que devuelve las opciones ya procesadas
+y los argumentos
+
+  \begin{footnotesize}
+  \begin{verbatim}
+(opciones, argumentos) = parser.parse_args()
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{tiny}
+  \begin{verbatim}
+
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import sys
+
+from optparse import OptionParser
+def main():
+    usage = "%prog [opciones] origen destino"
+    parser = OptionParser(usage)
+    parser.add_option("-e", "--energy", 
+                      action="store", dest="energy",
+                      help="Tipo de energia a usar en la copia ", 
+                      default='eolic')
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose",
+                      help="Informe detallado")
+    parser.add_option("-q", "--quiet",
+                      action="store_false", dest="verbose",
+                      help="Informe silencioso")
+    (opciones, argumentos) = parser.parse_args()
+    if len(argumentos) != 2:
+        parser.error("Número incorrecto de argumentos")
+    print "Tipo de energia:"+opciones.energy
+    print "Origen:",argumentos[0]
+    print "Destino:",argumentos[1]
+    if opciones.verbose:
+        print "mucho blablabla " 
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{tiny}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+%\frametitle{\verb|add_option|}
+\frametitle{add\_option}
+
+  \begin{tiny}
+  \begin{verbatim}
+    parser.add_option("-e", "--energy", 
+                      action="store", dest="energy",
+                      help="Tipo de energia a usar en la copia ", default='eolic')
+  \end{verbatim}
+  \end{tiny}
+
+\begin{itemize}
+\item
+Cada opción puede invocarse con una única letra (p.e. \verb|-v|) 
+o con una palabra (p.e. \verb|--verbose|)
+\item
+Con el atributo \emph{help} se construye  el mensaje que
+se mostrará al usuario cuando invoque el programa con  \verb|-h| o \verb|--help|
+\footnote{En el ubuntu actual salta un error si usamos caracteres españoles
+en el mensaje}
+\item
+La opción puede 
+
+\begin{itemize}
+\item
+Limitarse a activar o desactivar un flag. 
+
+\verb|action="store_true"     action="store_false"|
+\item
+Indicar un valor
+
+\verb|action="store"|
+
+\end{itemize}
+En ambos casos, la información se almacena en un atributo que se llama
+como indique el parámetro \verb|dest|
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{tiny}
+  \begin{verbatim}
+    parser.add_option("-d", "--discount",
+                      action="store", dest="discount", type="float",
+                      help="Coeficiente de descuento")
+  \end{verbatim}
+  \end{tiny}
+\begin{itemize}
+\item
+Por omisión el tipo de la opción es un string, pero también
+acepta \verb|string, int, long, choice, float| y \verb|complex|
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \begin{tiny}
+  \begin{verbatim}
+koji@mazinger:~/python$ ./cp_ecologico.py 
+Usage: cp_ecologico.py [opciones] origen destino
+
+cp_ecologico.py: error: Número incorrecto de argumentos
+
+koji@mazinger:~/python$ ./cp_ecologico.py -h
+Usage: cp_ecologico.py [opciones] origen destino
+
+Options:
+  -h, --help            show this help message and exit
+  -e ENERGY, --energy=ENERGY
+                        Tipo de energia a usar en la copia
+  -v, --verbose         Informe detallado
+  -q, --quiet           Informe silencioso
+  -d DISCOUNT, --discount=DISCOUNT
+                        Coeficiente de descuento
+
+koji@mazinger:~/python$ ./cp_ecologico.py -v  -d 0.15  mi_origen  mi_destino
+Tipo de energia:eolic
+Coeficiente de descuento:0.15
+Origen: mi_origen
+Destino: mi_destino
+mucho blablabla 
+  \end{verbatim}
+  \end{tiny}
+
+\end{frame}
+
+
+
+%Vuestro script mueve_subtitulos.py tiene que aceptar argumentos negativos. El problema es que si ponemos p.e. -5, se interpreta como "opción 5", no "menos 5"
+%
+%Os dije que lo pusiérais entre comillas, pero esto no funciona, sigue considerando un número negativo como una opción :-(
+%
+%La solución es incluir una llamada al método disable_interspersed_args(). De esta forma, en cuanto aparece un argumento que no puede ser una opción (y por tanto es un argumento posicional), todo lo que va después también se considera argumento y no opción.
+%
+%En nuestro caso, como el primer argumento es el nombre del fichero, esto no puede ser una opción, y lo que va después, tampoco.
+%
+%En resumen: que al definir el parser, después de los add_option(), añadáis
+%
+%parser.disable_interspersed_args()
+%
+%Con esto los negativos son negativos. No hace falta usar comillas.
+
+%La explicación detallada, aquí.
+%http://docs.python.org/library/optparse.html#optparse.OptionParser.disable_interspersed_args
+
+
+%%---------------------------------------------------
+\section{Módulos}
+%%---------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Módulos}
+Un módulo es un fichero que contiene definiciones y sentencias, que pueden ser usados
+desde otro fichero
+
+  \begin{footnotesize}
+\begin{center}
+mi\_modulo.py  
+\end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+a=3
+def f(x):
+    return x+1
+  \end{verbatim}
+  \end{footnotesize}
+
+  \begin{footnotesize}
+\begin{center}
+test.py
+\end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import mi_modulo
+
+print mi_modulo.a     # 3
+print mi_modulo.f(0)  # 1
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+También se pueden importar los objetos por separado, de forma
+que luego se puede usar sin indicar explícitamente el módulo
+
+  \begin{footnotesize}
+  \begin{center}
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+from mi_modulo import f
+from mi_modulo import a
+
+print f(0)  # 1
+print a     # 3
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Es posible importar todos los objetos de un módulo
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+from mi_modulo import *
+
+print f(0)  # 1
+print a     # 3
+  \end{verbatim}
+  \end{footnotesize}
+
+Pero esto es una mala práctica, porque cuando el número de módulos
+aumenta, es difícil saber en qué módulo está cada objeto
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Búsqueda de los módulos}
+El intérprete busca los módulos en el siguiente orden
+
+\begin{enumerate}
+\item
+En el directorio del script
+\item
+En cada directorio indicado en la variable de entorno PYTHONPATH
+\item
+En el directorio por omisión
+
+\begin{itemize}
+\item
+En Unix y Linux suele estar en
+\verb|/usr/lib|
+
+Por ejemplo
+
+\verb|/usr/lib/python2.7|
+
+\verb|/usr/lib/python3.4|
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ficheros .pyc}
+
+Cuando se importa un módulo, si el intérprete tiene permisos, guarda en el mismo
+directorio un fichero con extensión .pyc que contiene el script compilado
+en bytecodes
+
+\begin{itemize}
+\item
+Este fichero ahorra tiempo la segunda vez que se ejecuta el módulo
+\item
+No es dependiente de la arquitectura pero sí de la versión exacta del intérprete. Si no
+existe o no es adecuado, se genera uno nuevo automáticamente
+\item
+Permite borrar el fuente .py si no queremos distribuirlo
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Objetos en módulos}
+\begin{itemize}
+\item
+Usar objetos globales es peligroso, muchas metodologías lo prohíben
+\item
+Pero usar algún objeto global, en un módulo compartido por otros módulos,
+en algunas ocasiones
+puede ser una práctica aceptable y conveniente 
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{center}
+mis\_globales.py
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+a=3
+  \end{verbatim}
+  \end{footnotesize}
+
+
+  \begin{footnotesize}
+  \begin{center}
+modulo1.py
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+import mis_globales
+def f():
+    return mis_globales.a
+  \end{verbatim}
+  \end{footnotesize}
+
+  \begin{footnotesize}
+  \begin{center}
+test.py
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+import mis_globales, modulo1
+
+print modulo1.f() #3
+mis_globales.a=5
+print modulo1.f() #5
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Un fichero puede ser un script y un módulo simultáneamente, si añadimos una función
+main() y la sentencia
+
+  \begin{footnotesize}
+  \begin{verbatim}
+if __name__== "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+De esta manera,
+
+\begin{itemize}
+\item
+    Si el fichero se ejecuta como un script, el intérprete ejecutará la función main()
+\item
+    Si el fichero se usa como módulo, importando sus funciones desde otro script,
+la función main() no será ejecutada
+\end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{center}
+modulo1.py
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+def f(x):
+    return x+1
+
+def main():
+    print "probando f", f(2)
+
+if __name__== "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+  \begin{footnotesize}
+  \begin{center}
+test.py
+  \end{center}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import modulo1
+print modulo1.f(0) #1  No se ejecuta main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------
+\section{Expresiones Regulares}
+%%---------------------------------------------------
+
+
+%%---------------------------------------------------------------
+\subsection{Introducción}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Expresiones regulares. Introducción}
+\begin{itemize}
+\item
+Las \emph{expresione regulares} son expresiones que definen
+un conjunto de cadenas de texto
+
+\item
+Pertenecen a la disciplinas de 
+teoría de autómatas y lenguajes formales. Las bases
+las sienta Stephen Cole Kleene en la década de 1950. Se 
+desarrollan en los años 60 y se popularizan en los años 80
+
+\item
+Se denominan abreviadamente 
+\emph{re},
+\emph{regex} o
+\emph{regexp} 
+
+También \emph{patrón}
+
+\item
+Las regex son una herramienta muy potente para procesar
+texto automáticamente. Especialmente texto plano, no
+son muy apropiadas para HTML o XML
+% para eso mejor parsers específicos
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+Las regex pueden manejarse desde
+\begin{itemize}
+\item
+Herramientas clásicas como grep, sed, awk
+\item
+Editores de texto
+\item
+Librerías para lenguajes de programación clásicos como C o Pascal
+\item
+Librerías nativas en cualquier lenguaje moderno: perl, python,
+java, ruby, c\verb|#|, etc
+\end{itemize}
+\item
+Entre las distintinas versiones hay similitudes y diferencias
+
+\begin{itemize}
+\item
+Las regex \emph{tradicionales} (grep, sed, awk) se parecen bastante entre sí.
+\item
+Las regex \emph{modernas} se parecen entre sí. Son una derivación de las tradicionales.
+Su uso resulta más sencillo
+\end{itemize}
+
+\item
+Es una materia que puede llegar a resultar bastante compleja,
+conocerlas a fondo es difícil. Pero manejar sus fundamentos
+resulta de gran utilidad para prácticamente cualquier
+programador en cualquier entorno
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Algunas definiciones}
+Decimos que
+una regex y una cadena de texto \emph{encajan} o \emph{no encajan}.
+\footnote{O también \emph{se corresponde}, 
+\emph{se ajusta a}. En inglés, \emph{match}}
+
+Ejemplo. Patrón/regex 
+
+\begin{center}
+\verb|[Aa]na [Pp].rez|
+\end{center}
+
+\begin{itemize}
+\item
+La cadena
+\verb|Ana Pérez|
+encaja
+
+\item
+También encajan las cadenas 
+\verb|ana perez|,
+\verb|ana pérez|,
+\verb|ana porez|,
+\verb|Ana pÑrez|, etc
+\item
+La cadena \verb|ANA PEREZ| no encaja 
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Decimos que un carácter
+\footnote{la palabra \emph{carácter} es llana y lleva tilde, no es aguda.
+El plural es caracteres, también es llana}
+\begin{itemize}
+\item
+Se usa como \res{literal} si representa a ese carácter. 
+\item
+Se usa como \res{metacarácter} (o \emph{comodín}) si tiene un 
+significado especial, si 
+representa algo distinto al propio carácter
+\end{itemize}
+
+Ejemplo: el punto usado como literal, representa un punto. Usado como
+metacarácter, representa cualquier carácter
+
+\item
+Normalmente, cuando un carácter puede tomarse como metacarácter
+o como literal
+\begin{itemize}
+\item
+Por omisión se toma como metacarácter
+
+\item
+Para interpretarlo como literal, hay que \res{escaparlo}. Típicamente
+anteponiendo una barra invertida o incluyendolo entre comillas, rectas
+o dobles. Ejemplo: \verb|\.|
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\subsection{Metacaracteres}
+%%---------------------------------------------------------------
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Metacaracteres clásicos}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+^     Principio de cadena (principio de línea)
+$     Fin de cadena (fin de línea)
+.     Cualquier carácter 
+*     La regex precedente puede aparecer 0 o más veces 
+?     La regex precedente puede aparecer o no aparecer
+[]    Clase de caracteres: uno cualquiera de los caracteres entre 
+      corchetes
+[^]   Complementario de la clase de caracteres: cualquiera menos 
+      los incluidos entre corchetes
+[a-f] Caracteres de la 'a' hasta la 'f'
+{2,3} La regex precedente se puede repetir entre 2 y 3 veces
+{2,}  La regex precedente se repite 2 o más veces
+{,3}  La regex precedente se repite entre 0 y 3 veces
+{4}   La regex precedente se repite 4 veces
+()    Permite agrupar una regex
+\2    El segundo grupo de regex  
+r1|r2 Una regex u otra
+
+\<    Inicio de palabra
+\>    Fin de palabra  
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Ejemplos 
+  \begin{footnotesize}
+  \begin{verbatim}
+[a-z][a-z0-9_]*     letra minúscula seguida de cero o
+                    más letras minúsculas, números o barras bajas 
+Señora?             Señor o Señora
+Serg[eé][iy]? Ra(j|ch|h|kh)m[aá]n[ij]no(v|ff|w)
+                    Sergéi / Sergei / Sergey / Serge
+                    Rajmáninov / Rachmaninoff / Rahmanjnov ...
+  \end{verbatim}
+  \end{footnotesize}
+
+Dentro una clase de caracteres, cada carácter siempre se toma
+literalmente, no se escapa ningún posible metacarácter (excepto
+el cierre de corchetes)
+
+  \begin{footnotesize}
+  \begin{verbatim}
+[0-9.]        # Un dígito o un punto. (Aquí el punto representa 
+                un punto, no "cualquier carácter")
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\res{Atención:} algunos metacaracteres de bash 
+coinciden, otros
+tienen un significado distinto
+  \begin{footnotesize}
+  \begin{verbatim}
+?     En bash, cualquier carácter
+*     En bash, cualquier carácter 0 o más veces 
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+% http://en.wikipedia.org/wiki/Line_feed
+\begin{frame}[fragile]
+\frametitle{Fin de línea}
+El fin de línea se representa de diferentas maneras
+\begin{itemize}
+\item
+En MS-DOS/Windows y otros,
+el fin de línea se representa con \verb|CRLF|
+\item
+En Unix, se representa con \verb|LF|
+\end{itemize}
+
+Esto es una fuente tradicional de problemas
+\begin{itemize}
+\item
+En Windows, un fichero para Unix se verá como una única línea
+\item
+En Unix, un fichero para Windows tendrá un \verb|^M| al final
+de cada línea
+\end{itemize}
+
+Algunos editores son lo bastante \emph{listos} como para
+mostrar correctamente un fichero con un formato distinto
+\begin{itemize}
+\item
+Pero ocultar el problema a veces es contraproducente: puede
+suceder que la apariencia sea correcta, pero el compilador
+no lo acepte y muestre un error muy confuso
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{scriptsize}
+ \begin{tabular}{|c|c|c|c|c|c|}
+
+\hline
+\bf{Nombre ASCII} & \bf{Abreviatura} & \bf{Decimal} & \bf{Hexa} & \bf{\emph{Caret Notation}} & \bf{Notación C} \\
+
+\hline
+\hline
+Carriage Return &  CR & 13 & OD & \verb|^M| & \verb|\r| \\ 
+\hline
+Line Feed       &  LF & 10 & 0A & \verb|^J| & \verb|\n| \\ 
+\hline
+  \end{tabular}
+\end{scriptsize}
+
+\begin{itemize}
+\item
+\emph{Caret notation} es una método empleado en ASCII para representar
+caracteres no imprimibles. (Caret: acento circunflejo). Normalmente,
+se puede usar la tecla \verb|control| para generar estos
+caracteres
+\item
+\emph{Notación C}: Notación del lenguaje C, que después han
+seguido muchos otros como python
+\end{itemize}
+
+Obsérvese que nada de esto se refiere directamente
+a las expresiones regulares: Cuando en una cadena escribimos
+\verb|\n|, se entiende que es un avance de línea (excepto
+si lo escapamos con otra barra adicional, o con una
+cadena cruda de python)
+
+  \begin{tiny}
+  \begin{verbatim}
+\n suele representar LF, excepto en MacOS, donde suele representar CR. 
+En java o en .net sobre cualquier SO, siempre representa LF
+  \end{verbatim}
+  \end{tiny}
+
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Python emplea \emph{universal newlines}:
+
+En la E/S de ficheros, por omision:
+
+\begin{itemize}
+\item 
+Sea cual sea el criterio de la entrada, lo convierte a \verb|\n|
+\item
+A la salida, escribe el formato propio de la plataforma
+\end{itemize}
+
+Este comportamieto puede cambiarse si es necesario (consultar PEP 278 y PEP 3116)
+
+%http://www.python.org/dev/peps/pep-0278/
+%http://www.python.org/dev/peps/pep-3116/
+
+Para cadenas que no provengan de un fichero, se puede emplear
+el método \emph{splitlines()} de las cadenas, que:
+
+\begin{itemize}
+\item
+Trocea una cadena con el mismo enfoque
+(soporta todos los criterios), y elimina el fin de linea (sea el que sea)
+\item
+A menos que se invoque \emph{splitlines(true)}, entonces conserve el
+fin de linea, inalterado
+\end{itemize}
+
+
+%Return a list of the lines in the string, breaking at line boundaries. This method uses the universal newlines approach to splitting lines. Line breaks are not included in the resulting list unless keepends is given and true.
+
+%For example, 'ab c\n\nde fg\rkl\r\n'.splitlines() returns ['ab c', '', 'de fg', 'kl'], while the same call with splitlines(True) returns ['ab c\n', '\n', 'de fg\r', 'kl\r\n'].
+
+%Unlike split() when a delimiter string sep is given, this method returns an empty list for the empty string, and a terminal line break does not result in an extra line.
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Otra fuente típica de problemas:
+¿El fin de línea es un terminador o un separador?
+\begin{itemize}
+\item
+Algunas herramientas/aplicaciones/sistemas operativos entienden
+que es un separador, y por tanto la última línea no acaba
+en \verb|\n| sino en fin de fichero
+\item
+Otras consideran que es un terminador, por tanto la última
+línea sí acaba en \verb|\n| (P.e. Unix)
+\end{itemize}
+
+Todo esto son cuestiones que puede ser necesario considerar
+procesando texto. Pero si lo único que queremos es
+convertir ficheros entre Windows y Unix, no hace falta
+usar regex
+  \begin{footnotesize}
+  \begin{verbatim}
+sed -e 's/$/\r/' inputfile > outputfile     # Unix a Windows
+sed -e 's/\r$//' inputfile > outputfile     # Windows a Unix
+  \end{verbatim}
+  \end{footnotesize}
+
+El metacarácter \verb|$| de las regex no se corresponde exactamente
+con CR ni con LF. Su significado exacto depende de la plataforma.
+Normalmente encaja tanto con el fin de cadena como con
+la posición inmediatamente antes de LF/CR/CRLF
+
+%, sino con una posición \emph{imaginaria} inmediatamente
+%anterior a la \emph{nueva línea}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Metacaracteres modernos}
+El lenguaje perl es el \emph{padre} de las regex modernas. Incluye
+los metacaracteres clásicos y añade otros nuevos. Lenguajes como python copian 
+las regex de perl
+
+  \begin{footnotesize}
+  \begin{verbatim}
+Metac.                                           Clase equivalente
+------------------------------------------------------------------
+\d    Dígito                                                 [0-9]
+\s    Espacio en blanco, tab...                       [\ \t\r\n\f] (*)
+\w    Carácter de palabra (alfanumético o barra baja) [0-9a-zA-Z_]
+\D    Cualquiera menos \d                                   [^0-9]
+\S    Cualquiera menos \s                                    [^\s]
+\W    Cualquiera menos  \w;                                  [^\w]
+\b    Limite de palabra. (Secuencia de alfanuméricos o barra baja)
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{tiny}
+\begin{verbatim}
+                                                              (*)  \t: Tab
+                                                                   \f: Form Feed, salto de página
+\end{verbatim}
+\end{tiny}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Observaciones
+\begin{itemize}
+\item
+El único metacarácter que cambia entre regex clásicas
+y modernas es el límite de palabra, se usa
+\verb|\b| y no \verb|\< \>|
+
+\item
+Las locales no siembre están bien definidas, en tal caso
+para definir una palabra tal vez haya que incluir explicitamente
+las
+letras españolas (si procede)
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\subsection{Regexp en python}
+%%---------------------------------------------------------------
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Regexp en python}
+\begin{itemize}
+\item
+Para operaciones sencillas con cadenas, como búsquedas
+y sustituciones sin metacaracteres, es más eficiente emplear
+los métodos de las cadenas, como \verb|find| y \verb|replace|
+\item
+El módulo \verb|re| tiene funciones a la que se puede
+pasar directamente una cadena regexp
+
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> import re
+>>> m=re.search('[0-9]+' , 'abc98521zzz')
+>>> m.group(0)
+'98521'
+  \end{verbatim}
+  \end{footnotesize}
+
+Pero aquí usaremos objetos regex, más potentes
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Regexp en python}
+
+
+\begin{itemize}
+\item
+Para usar regexp, importamos el módulo \verb|re|
+
+\verb|import re|
+\item
+Una regex es un objeto que construimos con la función
+\verb|compile| 
+
+\verb|regex=re.compile("a+")|
+
+\item
+
+Para buscar el patrón en una cadena tenemos los métodos
+
+\begin{itemize}
+\item
+\verb|match()|, que comprueba si el principio de la cadena encaja en la regex
+\item
+\verb|search()|, que comprueba si alguna parte de la cadena encaja en la regex
+\end{itemize}
+
+Ambos métodos devuelven
+
+\begin{itemize}
+\item
+Un objeto \verb|SRE_Match| si han tenido éxito
+\item
+\verb|None| si han fracasado
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+regex=re.compile("aa+")
+
+m=regex.match("taartamudo")
+print m    # None
+
+m=regex.search("taartamudo")
+print m    # Cierto
+
+m=regex.match("aaahora")
+print m    # Cierto
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Casi siempre hay más de una regex posible. Ejemplo: Capturar una dirección
+IP
+
+Estas sentencias son equivalentes
+
+  \begin{footnotesize}
+  \begin{verbatim}
+direccion_ip=re.compile(r"""\d\d?\d?\.\d\d?\d?\.\d\d?\d?\.\d\d?\d?""")
+direccion_ip=re.compile(r"""(\d\d?\d?\.){3}\d\d?\d?""")
+direccion_ip=re.compile(r"""\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}""")
+direccion_ip=re.compile(r"""(\d{1,3}\.){3}\d{1,3}""")
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{itemize}
+\item
+Es necesario \emph{escapar} el punto
+\item
+Obsérvese que esta regex no se corresponde exactamente con una dirección
+IP. Por ejemplo admitiría \verb|315.15.256.715|
+
+\item
+Suele ser conveniente definir la regex con \emph{cadenas crudas} de python (\verb|r"""cadena"""|)
+
+Esto evita tener que escapar las barras invertidas para que se tomen
+como literales. 
+
+También permite, por ejemplo, que la secuencia \verb|\n| se tome como
+como una barra invertida y una ene. (Y no como un salto de línea carro)
+
+\end{itemize}
+
+\end{frame}
+
+% se captura la primera secuencia que cumpla la regex, en python
+% no es posible capturar el resto directamente, hay que programarlo
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Comentarios en las regex}
+El flag \verb|re.VERBOSE| es muy útil. Al activarlo se ignoran
+\begin{itemize}
+\item
+Los espacios (no \emph{escapados}) 
+\item
+Las almohadillas y todo el texto posterior, hasta fin de línea
+\end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+ip = re.compile(r"""
+         (\d{1,3}\.){3}  # de 1 a 3 digitos y punto, repetido 3 veces
+         \d{1,3}         # de 1 a 3 digitos 
+         """, re.VERBOSE)
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Otros flags}
+\begin{itemize}
+\item
+\verb|re.VERBOSE|
+
+\verb|re.X|
+
+Permite comentarios dentro de la regex
+
+
+\item
+\verb|re.IGNORECASE|
+
+\verb|re.I|
+
+No distingue entre mayúsculas y minúsculas
+\item
+\verb|re.LOCALE|
+
+\verb|re.L|
+
+Hace que  \verb|\w, \W, \b, \B, \s| y \verb|\S|
+tengan en cuenta las \emph{locales}
+\end{itemize}
+
+Para combinar más de un flag, se usa la barra vertical
+(\verb@'|'@), que es el operador
+\emph{or} a nivel de bit.
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Grupos}
+Un objeto \verb|SRE_Match| devuelve en el atributo \verb|group| las
+partes de la cadena que han encajado en la regex
+
+\verb|group[0]| es el texto que ha encajado en la regex completa
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+ip = re.compile(r"""
+                (\d{1,3}\.){3}  # de 1 a 3 digitos y punto, repetido 3 veces
+                \d{1,3}         # de 1 a 3 digitos
+                """, re.VERBOSE)
+texto=r"""Mi correo es j.perez@alumnos.urjc.es 
+          y mi dirección IP, 192.168.1.27"""
+
+for linea in texto.split('\n'):
+    m=ip.search(linea)
+    if m:
+        print m.group(0)
+  \end{verbatim}
+  \end{scriptsize}
+Ejecución:
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~$ ./ejemplo_regex.py 
+192.168.1.27
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Los paréntesis
+\begin{itemize}
+\item
+Como hemos visto, definen el ámbito y precedencia de los demás operadores
+\item
+Además, definen grupos. El resultado de cada búsqueda devuelve en
+\verb|group[n]| el grupo n-ésimo
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+%pr40_regex.py
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+correo_alumno = re.compile(r"""
+(
+\b                  # Límite de palabra
+[\w.]+              # 1 o más caracteres de palabra o punto
+\b                  # límite de palabra
+)                   # Hasta aquí el grupo 1
+@
+(alumnos\.urjc\.es) # Grupo 2
+""", re.VERBOSE)
+
+texto=r"""Llegó un correo de j.perez@alumnos.urjc.es preguntando
+          si hay clase mañana"""
+
+for linea in texto.split('\n'):
+    m=correo_alumno.search(linea)
+    if m:
+        print "Alumno: "+m.group(1)    # j.perez
+        print "Dominio: "+m.group(2)   # alumnos.urjc.es
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Dentro de una regex, podemos hacer referencia a un grupo
+
+% pr49_regex.py
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+
+regex=re.compile(r"""(\b\w+\b)  # Una palabra 
+                 \s+            # Espacios
+                 \1             # Grupo 1: la misma palabra
+                 """, re.VERBOSE)
+
+texto=r"""Buscando palabras repetidas repetidas"""
+
+for linea in texto.split('\n'):
+    m=regex.search(linea)
+    if m:
+        print m.group(1)  # Devuelve "repetidas"
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Ejemplo de definición explícita de palabra española
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+
+regex=re.compile(r"""
+              (\b                 # Límite de palabra
+              [\wáéíóúÁÉÍÓÚñÑüÜ]+ # Palabra, incluyendo letras españolas
+              \b)    
+              \s*                 # Espacios, opcionalmente
+              $                   # Fin de línea
+              """, re.VERBOSE)
+
+texto=r"""Buscando la última palabra de la línea  """
+
+for linea in texto.split('\n'):
+    m=regex.search(linea)
+    if m:
+        print m.group(1)  # Devuelve "línea"
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sustituciones}
+Además de \verb|search| y \verb|match|, 
+los objetos regex 
+tienen el método 
+\verb|sub(reemplazo,cadena)| que
+\begin{itemize}
+\item
+Busca el patrón en la cadena
+\item
+Si lo encuentra, reempleza el texto que ha encajado
+por \verb|reemplazo|
+
+Dentro de \verb|reemplazo| se pueden usar referencias
+a grupos 
+\item
+Devuelve el texto resultante
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+ 
+  \begin{scriptsize}
+%pr42_regex.py
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+# reemplazamos los correos  login@urjc.es por 
+# [Correo de login en la URJC ]
+
+correo_urjc = re.compile(r"""
+(
+\b               # Límite de palabra
+[\w.]+           # 1 o más caracteres de palabra o punto
+\b               # límite de palabra
+)
+@urjc\.es
+""", re.VERBOSE)
+
+texto="Si es necesario, escribe a j.perez@urjc.es"
+for linea in texto.split('\n'):
+    print correo_urjc.sub(r"""[Correo de \1 en la URJC]""",linea)
+  \end{verbatim}
+  \end{scriptsize}
+Resultado de la ejecución
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~/python$ ./test.py 
+Si es necesario, escribe a [Correo de j.perez en la URJC]
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Regex multilínea}
+Hasta ahora hemos procesado cada línea
+de forma independiente de las demás, lo cual es bastante
+frecuente
+
+En este caso
+\begin{itemize}
+\item
+El metacarácter \verb|'^'| representa el principio de cadena,
+lo que equivale al principio de línea
+\item
+El metacarácter \verb|'$'| representa el fin de cadena,
+lo que equivale al fin de línea
+\item
+El metacarácter \verb|'.'| no encaja en el fin de línea
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Pero en otras ocasiones querremos aplicar la regex a 
+más de una línea. Esto generalmente requiere de algunos
+\emph{flags} adicionales
+\begin{itemize}
+\item
+\verb|re.DOTALL|
+
+\verb|re.S|
+
+Hace que el metacarácter \verb|'.'|  encaje en el fin de línea
+
+\item
+\verb|re.MULTILINE|
+
+\verb|re.M|
+
+Hace que el metacarácter \verb|'^'| represente el principio de línea 
+
+El metacarácter \verb|'$'| representa el fin de línea
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+%pr54_regex_multiline.py
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import re
+regex=re.compile(r"""
+                 ^                  # Principio de línea
+                 (\b
+                 [\wáéíóúÁÉÍÓÚñÑ]+  # Palabra
+                 \b)                # 
+                 .*                 # Resto de la línea
+                 ^                  # Comienzo de línea
+                 \1                 # La misma palabra
+                 """, re.VERBOSE|re.MULTILINE|re.DOTALL)
+
+texto=r"""En este ejemplo estamos
+buscando dos líneas que comiencen igual
+buscando líneas con primera palabra 
+coincidente
+"""
+m=regex.search(texto)
+if m:
+    print m.group(1)  # Devuelve "buscando"
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Split con regex}
+Se puede trocear una cadena indicando con una regex cuál es 
+el separador
+
+Ejemplo: queremos una lista con todos los unos consecutivos,
+separados por ceros
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> import re
+>>> miregex=re.compile(r'0+')
+>>> miregex.split('10011100011110001')
+['1', '111', '1111', '1']
+  \end{verbatim}
+  \end{footnotesize}
+Atención: el separador, por definición, está entre dos 
+elementos. No antes del primero ni después del último.
+
+En el siguiente ejemplo los ceros no se comportan como
+separadores, por lo que el resultado no es exactamente
+el deseado (aunque se acerca mucho)
+
+  \begin{footnotesize}
+  \begin{verbatim}
+>>> miregex.split('00100111000111100010')
+['', '1', '111', '1111', '1', '']
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Referencias}
+\begin{itemize}
+\item
+The Python Standard Library 
+\item
+\emph{Mastering Regular Expressions}. Jeffrey E. F. Friedl. 
+
+Ed. O'Reilly, 2006
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{}
+%\begin{itemize}
+%\item
+%Las regex de python SI incluyen grupos nominales (grupos a
+%los que se pone un nombre para usar luego) 
+%% en .net, sí
+%\item
+%Pero podemos conseguir algo similar asignando la cadena de
+%la regex a una variable ordinaria 
+%\end{itemize}
+%
+%
+%  \begin{footnotesize}
+%  \begin{verbatim}
+%
+%palabra_castellana="[\wáéíóúÁÉÍÓÚñÑ]+"
+%regex=re.compile(r"""
+%                 (\b                # Límite de palabra
+%                 """ + palabra_castellana + r"""
+%                 \b)    
+%                 \s*                # Espacios, opcionalmente
+%                 $                  # Fin de línea
+%                 """, re.VERBOSE)
+%  \end{verbatim}
+%  \end{footnotesize}
+%
+%
+%\end{frame}
+
+\end{document}

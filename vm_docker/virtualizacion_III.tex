@@ -1,0 +1,1695 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Virtualización III},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+%\newboolean{detallado}
+%\setboolean{detallado}{false}
+%\newcommand{\opcional}[1]{\ifthenelse{\boolean{detallado}}{#1}{}}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Virtualización III]{Virtualización III}
+
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+\begin{frame}
+  \frametitle{Contenidos}
+
+%\begin{tiny}
+  \tableofcontents
+%\end{tiny}
+
+\end{frame}
+
+
+\section{Docker: prerrequisitos}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Plataformas para ejecuta docker}
+Docker tiene arquitectura cliente servidor
+\begin{itemize}
+\item
+El cliente acepta la entrada del usuario, le muestra la salida,
+maneja los ficheros con los que preparar las imágenes
+
+\item
+El servidor ejecuta el contenedor
+\end{itemize}
+
+
+El servidor solo está disponible para Linux 64 bits
+
+Hay versiones para MacOS y Microsoft Windows, donde el cliente
+se ejecuta en nativo contra un servidor dentro de una máquina virtual
+
+\begin{itemize}
+\item
+Esta virtualización es transparente para el usuario
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Docker dentro de una máquina virtual}
+
+Si vamos a ejecutar docker dentro de una máquina virtual,
+
+\begin{itemize}
+\item
+guest y host deben tener arquitectura 64 bits
+\item
+Es necesario que el host tenga soporte para Intel VT-x
+
+\begin{itemize}
+\item
+Los equipos antiguos no lo permiten (VT-x es del año 2006, pero no se generaliza
+en los equipos de gama básica/media hasta varios años después)
+\item
+Muchos equipos actuales tienen  esta opción deshabilitada por omisión en la BIOS/UEFI
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Algunos conceptos}
+Imágenes:
+\begin{itemize}
+\item
+La imagen de un contenedor (o simplemente \emph{imagen})
+es un fichero en el sistema de ficheros del host
+
+\item
+Un contenedor se ejecuta a partir de una imagen
+\end{itemize}
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+Manejaremos diversos identificadores, que no debemos confundir
+
+
+\begin{itemize}
+\item
+Nombre de la imagen. 
+Ejemplos:  
+
+\emph{debian} 
+
+\emph{test/c01} 
+
+\item
+Identificador de la imagen. Ejemplo:
+
+cc8393a39248
+
+\item
+Nombre de contenedor. Si no lo indicamos explícitamente,
+docker usará nombres aleatorios como \emph{focused\_yonath} 
+o
+\emph{wonderfuld\_goldberg}
+
+\item
+Identificador de contenedor
+
+Ejemplo:
+18009dd9f349
+
+\item
+Nombre de host
+
+Nombre de máquina que se percibirá dentro del contenedor. (variable
+de entorno \verb|$HOST|, nombre en el 
+\emph{prompt},
+fichero
+\verb|/etc/hostname|, etc)
+
+Atención: Este \emph{host} de Docker se corresponde con lo que en VirtualBox 
+sería el \emph{guest}
+
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{Nombres de imagen}
+
+
+El nombre de la imagen
+
+
+\begin{itemize}
+\item
+Un nombre sin prefijo, por ejemplo
+\emph{debian} 
+indica una imagen oficial
+aprobada por docker
+
+\item
+Un nombre con prefijo, por ejemplo
+\emph{test/c01}
+es una imagen no oficial. El prefijo puede ser una etiqueta que hayamos
+definido o un nombre de usuario en un registro de imágenes
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+
+\section{Instalación de Docker}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Instalación de docker}
+\begin{itemize}
+\item
+Podemos instalar el paquete incluido en ubuntu, aunque la versión instalada
+podrá ser bastante antigua (actualmente docker evoluciona rápido)
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+apt-get update; apt-get upgrade -y ; apt-get install docker.io
+  \end{verbatim}
+  \end{scriptsize}
+
+
+
+
+\item
+Mejor usamos el script disponible en
+\verb|https://get.docker.com|
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+wget https://get.docker.com -O get-docker.sh  #letra "O" mayúscula
+bash get-docker.sh
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Ejecución de imágenes}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lanzar una imagen}
+
+Para ejecutar docker, tenemos dos opciones
+\begin{itemize}
+\item
+Añadir nuestro usuario al grupo docker
+
+  \begin{scriptsize}
+  \begin{verbatim}
+addgrp docker
+adduser $USER docker
+# (abrir una nueva sesión)
+  \end{verbatim}
+  \end{scriptsize}
+
+\item
+Ejecutar docker con sudo
+\end{itemize}
+
+Para comprobar que la instalación ha sido correcta, lanzamos una
+imagen sencilla
+
+  \begin{scriptsize}
+  \begin{verbatim}
+docker run debian echo "hola,mundo"
+  \end{verbatim}
+  \end{scriptsize}
+
+Esto busca en el \emph{registry} oficial de docker una imagen
+llamada \emph{debian}, ejecuta en ella la orden indicada, muestra
+su salida por stdout y concluye
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Otro holamundo}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+5b0f327be733: Pull complete 
+Digest: sha256:1f19634d26995c320618d94e6f29c09c6589d5df3c063287a00e6de8458f8242
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Repositorio de imágenes}
+Además de guardarse localmente, las imágenes están disponibles
+en los \emph{registry}
+\begin{itemize}
+\item
+%(using docker)
+Registro (Registry)
+
+Servicio responsable de almacenar y distribuir imágenes. El registro
+por omisión es \verb|https://hub.docker.com|
+
+Aunque hay otros similares, públicos. Y quien lo desee puede establecer su
+propio registro
+
+\item
+Repositorio (Repository)
+
+Una colección de imágenes relacionadas, normalmente ofrecen diferentes versiones
+de la misma aplicación o servicio
+
+\item
+Etiqueta (Tag)
+
+Identificador alfanumérico asociado a una única imagen
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Docker run}
+
+Esta instrucción lanza un contenedor a partir de una imagen
+
+\verb|docker run <opciones> <imagen>|
+
+
+\begin{itemize}
+\item
+La imagen se puede identificar mediante su nombre o mediante su id
+
+\item
+Las opciones \verb|-i| y \verb|-t| normalmente se usan juntas, para indicar
+que queremos una sesión interactiva en un terminal
+
+\item
+\verb|--name <nombre_contenedor>|
+
+
+\item
+\verb|-h <nombre_host>|
+
+
+\verb|--hostname=<nombre_host>|
+
+%nos permite indicar el nombre de host dentro del contenedor. De lo contrario se
+%usará el identificador de contenedor, una secuencia como p.e.  4641824a3ff6
+
+%\footnotesize{Los nombres entre paréntesis triangulares representan un valor indicado por el usuario}
+\end{itemize}
+
+Ejemplo
+
+  \begin{scriptsize}
+  \begin{verbatim}
+docker run -it --name c01 -h c01 test/im01
+  \end{verbatim}
+  \end{scriptsize}
+
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Consulta de imágenes y contenedores}
+\begin{itemize}
+\item
+\verb|docker ps|
+
+Muestra los contenedores
+
+\item
+\verb|docker images|
+
+Muestra las imágenes
+
+\item
+\verb|docker inspect <imagen>|
+
+Muestra un json con descripción detallada del contenedor
+
+\item
+\verb|docker diff <imagen>|
+
+Muestra los cambios en el sistema de ficheros del contenedor
+
+\item
+\verb|docker logs <imagen>|
+
+Muestra las instrucciones ejecutadas en el contenedor
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Exited containers}
+Cuando un contenedor finaliza su ejecución, queda en estado 
+\emph{exited}, al que informalmente se suele llama
+\emph{parado}
+
+\begin{itemize}
+\item
+\verb|docker ps -a|
+
+Muestra los contenedores, incluyendo los parados
+
+%\item
+%\verb|docker start <contenedor>|
+%
+%Reinicia un contenedor parado
+
+\item
+\verb|docker rm <contenedor>|
+
+Borra un contenedor
+
+
+\item
+\verb|docker rmi <imagen>|
+
+Borra una imagen
+
+
+\end{itemize}
+
+Si el contenedor se lanza con la opción
+\verb|-rm|, se borrará automáticamente al concluir
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Borrado de imágenes y contenedores}
+\begin{itemize}
+\item
+Borrar todas las imágenes (que no estén siendo usadas)
+
+\verb|docker rmi $(docker images -a -q)|
+
+
+\item
+Borrar todos los contenedores detenidos
+
+\verb|docker rm $(docker ps -a -f status=exited -q)|
+
+\item
+Borrar todos los contenedores creados (y nunca ejecutados)
+
+\verb|docker rm $(docker ps -a -f status=created -q)|
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\section{Creación de imágenes}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Creación de imágenes}
+%https://docs.docker.com/engine/reference/builder/
+
+La orden  \verb|docker build| nos permite construir imágenes.
+
+Para construir una imagen, normalmente usaremos tres cosas:
+
+\begin{itemize}
+\item
+Un directorio contexto, que será un directorio vacio en el host, donde iremos añadiendo
+los ficheros necesario para construir la imagen
+
+%(Podría ser cualquier directorio incluso no vacío, pero sería poco práctico porque el cliente docker
+%tiene que pasar el directorio completo al servidor docker)
+
+
+
+\item
+Un fichero 
+\verb|Dockerfile|
+dentro del directorio contexto, con las instrucciones para crear la imagen
+
+%Podría usarse otro nombre en otro directorio, usando la orden  \verb|docker build -f fichero_instruciones|
+
+
+\item
+Un fichero
+\verb|entrypoint.sh|, 
+que será un script de shell que 
+
+\begin{itemize}
+\item
+Crearemos en el directorio contexto
+
+\item
+Llevaremos a la imagen 
+
+\item
+Se ejecutará cada vez que se lance un contenedor con esa imagen
+\end{itemize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Si la imagen es muy sencilla, puede que no necesite 
+\verb|entrypoint.sh|
+
+Ejemplo:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+FROM ubuntu:16.04
+RUN apt-get update && apt-get upgrade -y
+ENTRYPOINT /bin/bash
+  \end{verbatim}
+  \end{scriptsize}
+
+\item
+También es posible crear una imagen sin usar un fichero Dockerfile
+
+Para ello basta con
+
+    \begin{enumerate}
+    \item
+Entrar en el contenedor
+
+    \item
+Configurarlos: instalar paquetes, añadir ficheros, modificar ficheros...
+
+    \item
+
+\verb|docker commit <CONTENEDOR> <IMAGEN>|
+
+\verb|<CONTENEDOR>|: Nombre o id del contenedor que será punto de partida da la imagen
+
+\verb|<IMAGEN>|: Nombre que tendrá la imagen
+    \end{enumerate}
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ejemplo: banner}
+Vamos a crear una imagen llamada
+\emph{test/banner}
+basada en la orden
+\emph{banner}
+que al ejecutarse mostrará los siguiente:
+
+  \begin{tiny}
+  \begin{verbatim}
+koji@mazinger:~/lagrs/banner$ docker run -h c01 --name c01 test/banner
+
+ #####      #    ######  #    #  #    #  ######  #    #     #    #####    ####
+ #    #     #    #       ##   #  #    #  #       ##   #     #    #    #  #    #
+ #####      #    #####   # #  #  #    #  #####   # #  #     #    #    #  #    #
+ #    #     #    #       #  # #  #    #  #       #  # #     #    #    #  #    #
+ #    #     #    #       #   ##   #  #   #       #   ##     #    #    #  #    #
+ #####      #    ######  #    #    ##    ######  #    #     #    #####    ####
+
+
+   ##
+  #  #
+ #    #
+ ######
+ #    #
+ #    #
+
+          ###      #
+  ####   #   #    ##
+ #    # # #   #  # #
+ #      #  #  #    #
+ #      #   # #    #
+ #    #  #   #     #
+  ####    ###    #####
+  \end{verbatim}
+  \end{tiny}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Creamos un 
+\emph{directorio contexto} 
+en el host, y en él escribimos un fichero
+\verb|entrypoint.sh|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+banner bienvenido
+banner a
+banner $HOSTNAME
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Cuando sea posible, es muy conveniente probar este script
+antes de construir la imagen, los errores aquí
+son uno de los problemas más habituales preparando contenedores
+
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En el 
+directorio contexto 
+también creamos un directorio
+\verb|Dockerfile|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+FROM ubuntu:16.04
+RUN apt-get update && apt-get upgrade -y && apt-get install -y sysvbanner
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{itemize}
+\item
+La instrucción FROM indica la imagen de partida
+
+\item
+La instrucción RUN indica las modificaciones a realizar en la imagen
+
+Puede haber más de un RUN, pero eso crea imágenes intermedias, por lo
+que lo habitual es encadenar varias órdenes de shell con \verb|&&|
+
+\item
+La opción 
+\verb|-y|
+en
+
+\verb|apt-get upgrade|
+
+\verb|apt-get install| 
+
+es imprescindible (contesta a todas las preguntas con \emph{yes})
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+La instrucción COPY copia un fichero desde el directorio contexto
+(que está en el host) hasta el sistema de ficheros del futuro contenedor
+que se ejecute a partir de la imagen
+
+\item
+La instrucción ENTRYPOINT especifica el fichero que se ejecutará al iniciar
+cada contenedor
+
+Es habitual llamarlo 
+\verb|entrypoint.sh|
+y colocarlo en el directorio raiz del contenedor
+
+\item
+En el Dockerfile se pueden crear comentarios con el caracter \verb|#|
+
+\item
+El contenido del Dockerfile  es
+\emph{case insensitive},
+aunque el convenio es usar mayúsculas para las instrucciones
+
+\item
+
+Si no existe un fichero
+\verb|Dockerfile|,
+docker busca un fichero
+\verb|dockerfile| 
+% con -f podemos cambiar el nombre del fichero
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+Una vez preparados los ficheros, construimos la imagen
+
+
+%\verb|docker build -t <nombre_imagen>  <directorio_contexto>|
+
+
+\begin{itemize}
+\item
+Desde el directorio padre del directorio contexto ejecutamos
+
+\verb|docker build -t test/banner directorio_contexto|
+\end{itemize}
+
+Recuerda que los nombres de las imágenes que crearemos siempre 
+llevarán prefijo (puesto que no son imágenes oficiales)
+
+Almacenamiento de la configuración:
+
+\begin{itemize}
+\item
+La configuración de docker se guarda en /var/lib/docker
+
+\item
+Las imágenes, depende del driver que docker use para el almacenamiento.
+Por omisión se usa aufs, que guarda  las imágenes en
+\verb|/var/lib/docker/aufs|
+\end{itemize}
+
+%https://stackoverflow.com/questions/19234831/where-are-docker-images-stored-on-the-host-machine
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gestión de datos en docker}
+
+El sistema de ficheros interior al contenedor es volátil
+
+\begin{itemize}
+\item
+Todo lo escrito
+durante la ejecución del contenedor se pierde al borrar el contenedor
+\item
+Es complicado acceder a esos datos sin usar el mismo contenedor
+
+\end{itemize}
+Podríamos guardar datos en una nueva capa creando una nueva imagen,
+pero sería poco práctico, no es recomendable
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+Un contenedor no debería tener estado. O en su defecto, el mínimo
+estado posible
+
+\frametitle{}
+Docker ofrece 3 mecanismos para la persistencia de datos
+\begin{itemize}
+\item
+Bind mounts
+\item
+Volumes
+\item
+tmpfs
+\end{itemize}
+
+Por supuesto, dentro del contenedor se puede usar cualquier
+otro protocolo o servicio no específico de Docker:
+NFS, sshfs, SMB, rsync, almacenamiento en la nube,
+bases de datos relacionales, 
+bases de datos no relacionales...
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bind mounts}
+Un \emph{bind mount} es un directorio del host que se comparte con uno (o varios) contenedores
+
+\begin{itemize}
+\item
+Muy eficientes
+
+\item
+Muy prácticos para compartir datos con el host
+
+\item
+Dependen del sistema de ficheros del host y de su estructura,
+con lo que tienen problemas de portabilidad
+
+\item
+Evidentes problemas potenciales de seguridad, al tener el contenedor
+acceso directo al sistema de ficheros del host
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+Para hacer un bind mount, basta añadir los siguientes parámetros
+a la orden \verb|docker run|
+
+
+\begin{itemize}
+\item
+Sintaxis tradicional
+
+\verb|--v <DIR_ORIGEN>:<DIR_DESTINO>|
+
+\item
+Sintaxis moderna, disponible a partir de Docker 17.06
+
+\verb|--mount type=bind,source=<DIR_ORIGEN>,target=<DIR_DESTINO>|
+\end{itemize}
+
+\begin{itemize}
+\item
+\verb|DIR_ORIGEN| es el directorio en el host
+
+\item
+\verb|DIR_DESTINO| es el directorio en el contenedor
+
+\begin{itemize}
+\item
+En el montaje de ficheros tradicional en Unix, es necesario que exista
+el punto de montaje. Aquí, no
+\end{itemize}
+
+\item
+Ambos directorios deben estar especificados con path absoluto
+
+\item
+No puede haber espacios antes ni después de la coma
+\end{itemize}
+
+
+Ejemplo:
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+docker run -it -h c02  --name c02 --rm \
+   -v $HOME:/home/$USER  \
+   jperez/imagen01
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Volumen}
+
+Es un disco virtual creado y gestionado por docker.
+
+Se puede almacenar
+\begin{itemize}
+\item
+
+Como subdirectorio del host
+(en linux, por omisión en
+\verb|/var/lib/docker/volumes|)
+
+Aunque no se recomienda que el host acceda directamente
+al volumen
+
+\item
+En host remotos o en la nube, Docker ofrece para ello
+diferentes drivers
+\end{itemize}
+
+
+Características:
+
+\begin{itemize}
+\item
+Son más fáciles de transportar y respaldar que los bind mounts
+\item
+Tienen mejores prestaciones para ser compartidos entre varios
+contenedores
+\item
+Se pueden cifrar
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{tmpfs}
+
+Un montaje de tipo \emph{tmpfs} se usa para datos temporales
+
+\begin{itemize}
+\item
+Es un sistema de ficheros especialmente eficiente porque se almacena en RAM
+
+\item
+Si creamos una imagen a partir del contenedor, el contenido de los montajes
+tmpfs no se almacena
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso de sshfs}
+Como hemos visto, los bind mounts permiten montar dentro de un
+contenedor directorios ubicados en el host docker
+
+\begin{itemize}
+\item
+Para montar directorios en cualquier otro lugar de internet, podemos usar
+por ejemplo sshfs
+
+\item
+Para ello es necesario añadir a la orden 
+\verb|docker run| los siguientes parámetros
+
+\begin{itemize}
+\item
+En docker 17.10
+
+\verb|--privileged|
+
+\item
+En versiones más modernas de  docker 
+
+\verb|--cap-add SYS_ADMIN --device /dev/fuse|
+\end{itemize}
+
+Para averiguar tu versión de docker:
+\verb|docker --version|
+
+
+
+\begin{itemize}
+\item
+En un entorno de producción habría que usar estas opciones con precaución,
+puesto que incremeta mucho los privilegios del contenedor dentro del host
+\end{itemize}
+
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{docker hub}
+Para subir nuestras imágenes al registro docker hub
+\begin{enumerate}
+\item
+Creamos una cuenta en
+\verb|hub.docker.com|
+
+\item
+Creamos nuestras imágenes usando como prefijo nuestro login en dockerhub
+
+
+\verb|docker build -t mi_usuario/mi_imagen|
+
+\item
+Abrimos una sesión en docker hub desde la shell con la orden
+
+\verb|docker login|
+
+
+\item
+Subimos la imagen
+
+\verb|docker push mi_usuario/mi_imagen|
+
+\end{enumerate}
+
+\end{frame}
+
+\subsection{Networking}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Configuración de red}
+Al instalar docker se crean 3 redes 
+\begin{itemize}
+\item
+bridge
+
+Segmento privado dentro del host,
+\verb|172.17.0.0/16|,
+ al que se
+conectan por omisión todos los contenedores
+
+\item
+null
+
+Red nula, aisla los contenedores de la red
+
+\item
+host
+
+El contenedor comparte la red con el host, mismos interfaces,
+direcciones y puertos
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+787cf305d42c        bridge              bridge              local
+256d470b6133        host                host                local
+086e801223bb        none                null                local
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Para conectar un contenedor a una red, basta lanzarlo con
+\verb|--network=<nombre_red>|
+
+Ejemplo
+
+  \begin{footnotesize}
+  \begin{verbatim}
+docker run -it -h c03 --name c03 --rm  --network=host test/im03
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Para crear una nueva red (un nuevo segmento)
+
+  \begin{footnotesize}
+  \begin{verbatim}
+docker network create --subnet 192.168.12.1/24  mired
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Configuración en español}
+Las imágenes base de las distribuciones son esqueletos mínimos,
+normalmente tendremos que personalizarlas 
+
+
+Por ejemplo, para configurar el idioma. En nuestro caso, español.
+Instalaremos en la imagen el paquete 
+\verb|locales|,
+invocaremos a localedef con los parámetros adecuados y definiremos
+la variable de entorno LANG
+
+  \begin{scriptsize}
+  \begin{verbatim}
+FROM ubuntu:16.04
+RUN apt-get update && apt-get upgrade -y && \
+  apt-get install -y  locales  && \
+  localedef -i es_ES -c -f UTF-8  \
+  -A /usr/share/locale/locale.alias es_ES.UTF-8
+ENV LANG es_ES.UTF-8
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{itemize}
+\item
+La instrucción ENV del Dockerfile define variables de entorno dentro de la imagen
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Lo habitual es usar una única instrucción RUN en cada Dockerfile,
+para evitar las imágenes intermedias.
+
+Pero también podemos usar varias instrucciones, para que resulte
+más legible.
+
+Ejemplo:
+  \begin{scriptsize}
+  \begin{verbatim}
+FROM ubuntu:16.04
+RUN apt-get update && apt-get upgrade -y 
+RUN apt-get install -y  locales  
+RUN localedef -i es_ES -c -f UTF-8  \
+    -A /usr/share/locale/locale.alias es_ES.UTF-8
+ENV LANG es_ES.UTF-8
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Observa que 
+\begin{itemize}
+\item
+El slash invertido al final de línea (\verb|\|) une dos líneas físicas
+en una misma línea lógica
+
+\item
+El doble ampersand (\verb|&&|) separa sentencias dentro de la misma
+instrucción RUN
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{Servidor docker remoto}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Servidor docker remoto}
+\begin{itemize}
+\item
+En la configuración más sencilla, el servidor de docker está en la misma
+máquina que el cliente, el ejecutable incluye ambas funciones
+
+\item
+Pero también puede ubicarse en una máquina remota. Esto es útil, por ejemplo
+
+\begin{itemize}
+\item
+Cuando el cliente no es linux 64 bits
+
+\item
+Cuando el cliente no tiene privilegios de root en la máquina local 
+(nuestro caso en el laboratorio)
+
+\item
+Para arquitecturas distribuidas, equilibrio de carga, en la nube, etc
+
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+Configuración del servidor
+
+
+(Es tarea del administrador de red, en el laboratorio normalmente no tendrás que preocuparte de esto)
+\begin{itemize}
+\item
+1.1 Instalación de docker-machine
+\item
+1.2 Configuración del servidor
+\item
+1.3 Comprobación
+\item
+1.4 Obtención de variables de entorno
+\end{itemize}
+
+
+Configuración del cliente
+
+\begin{itemize}
+\item
+2.1 Obtención de credenciales 
+\item
+2.2 Ubicación de credenciales 
+\item
+2.3 Asignación de variables de entorno 
+\item
+2.4 Comprobación final
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\subsection{Configuración del servidor}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1.1 Instalación de docker-machine}
+
+El servidor se configura con
+\verb|docker-machine|, una herramienta para crear, gestionar y desplegar
+servidores
+
+Instalación de docker-machine en el cliente del administrador de red
+
+  \begin{tiny}
+  \begin{verbatim}
+curl -L \
+https://github.com/docker/machine/releases/download/v0.12.2/docker-machine-`uname -s`-`uname -m` \
+>/tmp/docker-machine ;
+chmod +x /tmp/docker-machine  ;
+sudo cp /tmp/docker-machine /usr/local/bin/docker-machine ;
+  \end{verbatim}
+  \end{tiny}
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1.2 Configuración del servidor}
+
+El administrador de red ejecuta este script en su cliente
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+IP=  xxx.xxx.xxx.xxx 
+USUARIO=admin
+PRIVATE_KEY=/home/admin/.ssh/id_ed25519
+HOST_NAME= xxxx
+
+docker-machine create --driver generic \
+    --generic-ssh-user $USUARIO \
+    --generic-ip-address=$IP  \
+    --generic-ssh-key $PRIVATE_KEY \
+      $HOST_NAME
+  \end{verbatim}
+  \end{scriptsize}
+
+El servidor puede ser una máquina linux 64 bits cualquiera, no necesita ningún software instalado
+(ni siquiera docker, docker-machine se encarga de instalarlo)
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+IP
+
+Dirección de la máquina donde estará el servidor de contenedores
+
+\item
+USUARIO
+
+Usuario en el servidor para administrar Docker. Necesita privilegios
+para ejecutar sudo,  sin necesidad de teclear ninguna contraseña
+\begin{itemize}
+\item
+Para ello, añadir a la última línea del fichero  \verb|/etc/sudoers| del servidor
+
+\verb|nombre_usuario ALL=NOPASSWD: ALL|
+
+
+
+\end{itemize}
+
+\item
+PRIVATE\_KEY
+
+Clave privada ssh del usuario administrador en el servidor
+
+
+\item
+HOST\_NAME
+
+
+Nombre del servidor
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1.3 Comprobación}
+
+El administrador comprueba que el servidor se está ejecutando
+  \begin{scriptsize}
+  \begin{verbatim}
+admin@hostadmin:~$ docker-machine ls
+NAME   ACTIVE   DRIVER    STATE     URL                        SWARM   DOCKER    ERRORS
+xxx    -        generic   Running   tcp://xxx.xxx.xx.xx:2376           v1.12.6   
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1.4 Obtención de Variables de entorno}
+El administrador obtiene las variables de entorno con las que los clientes
+se conectarán al servidor, así como la ubicación de las credenciales
+
+  \begin{scriptsize}
+  \begin{verbatim}
+admin@hostadmin:~$ docker-machine env xxxx
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://xxx.xxx.xx.xx:2376"
+export DOCKER_CERT_PATH="/home/admin/.docker/machine/machines/xxxx"
+export DOCKER_MACHINE_NAME="xxxx"
+# Run this command to configure your shell: 
+# eval $(docker-machine env xxxx)
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+\subsection{Configuración del cliente}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2.1 Obtención de credenciales }
+
+
+El administrador de red facilita a los usuarios las credenciales
+para usar el servidor
+
+
+
+\begin{itemize}
+\item
+Las credenciales son los siguiente ficheros:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+ca.pem	cert.pem  config.json  id_rsa  id_rsa.pub  
+key.pem  server-key.pem  server.pem
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2.2 Ubicación de credenciales }
+
+
+
+Los usuarios dejan las credenciales en el lugar convenido, por omisión será
+
+  \begin{scriptsize}
+  \begin{verbatim}
+~/.docker/machine/machines/xxxx
+  \end{verbatim}
+  \end{scriptsize}
+
+(Donde xxxx es el nombre del servidor)
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2.3 Asignación de variables de entorno }
+
+
+Los usuarios asignan las variables de entorno que les ha facilitado
+el administrador. Un lugar conveniente es el fichero \verb|~/.bashrc|
+
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://xxx.xxx.xx.xx:2376"
+export DOCKER_CERT_PATH="$HOME/.docker/machine/machines/xxxx"
+export DOCKER_MACHINE_NAME="xxxx"
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2.4 Comprobación final}
+
+Comprobación de las variables de entorno
+
+  \begin{scriptsize}
+  \begin{verbatim}
+mgarcia@alpha:~$ env |grep DOCKER
+DOCKER_HOST=tcp://xxx.xxx.xxx.x:2376
+DOCKER_MACHINE_NAME=xxxx 
+DOCKER_TLS_VERIFY=1
+DOCKER_CERT_PATH=/home/alumnos/mgarcia/.docker/machine/machines/xxxx
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Ejecución de un contenedor
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+magarcia@alpha:~$ docker run ubuntu echo holamundo
+holamundo
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Servidor de SSH en el contenedor}
+Para un contenedor en producción, no es recomendable habilitar 
+el demonio de ssh
+% https://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/
+\begin{itemize}
+\item
+Implica tener un segundo proceso, que no es natural en Docker
+
+\item
+No es buena idea dejar contraseñas dentro de un contenedor
+¿cómo actualizarlas?
+
+\item
+El código dentro del contenedor es responsabilidad del equipo de desarrollo.
+Pero el acceso y las políticas, compete a explotación
+\end{itemize}
+
+
+En esta asignara sí lo haremos, porque el objetivo es enseñar
+cómo funciona el acceso por ssh, que es lo habitual en máquinas
+físicas y máquinas virtuales tradicionales
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+¿Es necesario acceder por ssh?
+\begin{itemize}
+\item
+Para actualizar el sistema
+
+No. El contenedor entonces tendría estado (las actualizaciones).
+Lo recomendable es crear un nuevo contenedor con la actualización. 
+\item
+Para ver logs
+
+No. El contenedor tendría estado. Lo recomendable es llevar los logs
+a un volumen
+
+\item
+Para iniciar y detener demonios
+
+No. Se pueden enviar señales
+
+
+\item
+Para editar la configuración
+
+No. Lo recomendable es crear un nuevo contenedor
+
+\item
+Para depurar el servicio
+
+No. Se puede abrir una shell desde el servidor de contenedores
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Si realmente queremos instalar el servidor en un contenedor:
+
+Dockerfile 
+  \begin{tiny}
+  \begin{verbatim}
+FROM ubuntu:16.04
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+# Permitir que los usuarios hagan login mediante el demonio sshd
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+# Con sshd, ENV no funciona. Para fijar una variable de entorno:
+# RUN echo "export MI_VARIABLE=mivalor" >> /etc/profile
+
+COPY entrypoint.sh /
+
+EXPOSE 22
+ENTRYPOINT ["/entrypoint.sh"]
+  \end{verbatim}
+  \end{tiny}
+
+entrypoint.sh
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+/usr/sbin/sshd 
+/bin/bash
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{itemize}
+\item
+La instrucción EXPOSE indica en qué puerto (TCP) atiende peticiones el contenedor
+\item
+Realmente esta instrucción no hace nada, es solo un \emph{mensaje} del autor 
+del contenedor para quien vaya a usar el contenedor
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sesiones gráficas}
+En un contenedor podemos lanzar aplicaciones gráficas
+\begin{itemize}
+\item
+Si el cliente y el servidor de Docker están en la misma máquina y ambas son
+Unix, podemos usar \emph{X11 Forwarding}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+docker run -ti --rm \
+       -e DISPLAY=$DISPLAY \
+       -v /tmp/.X11-unix:/tmp/.X11-unix \
+       mi_imagen
+  \end{verbatim}
+  \end{scriptsize}
+\item
+Una solución más general es VNC
+
+Aquí se describe:
+
+\url{http://gsyc.urjc.es/~mortuno/vnc.pdf}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\end{document}

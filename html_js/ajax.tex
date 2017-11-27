@@ -1,0 +1,268 @@
+\documentclass[ucs]{beamer}
+\usetheme{GSyC}
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+\usepackage{enumerate}
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Ajax},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Ajax]{Ajax}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+
+
+\section{Ajax}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ajax}
+
+Es un conjunto de técnicas para enviar información asíncrona entre
+servidor web y cliente
+
+\begin{itemize}
+\item
+Aunque hay antecedentes desde 1996, el Ajax actual lo crea google en 2004, para gmail
+y google maps
+\item
+Evita que el usuario necesite pulsar \emph{enviar}. La aplicación
+web recibe información continuamente, resultando una experiencia de usuario similar
+a la de una aplicación de escritorio
+\item
+
+Originalmente significaba Asynchronous JavaScript and XML, pero cuando
+empieza a usarse sin JavaScript y sin XML, el acrónimo AJAX se abandona
+para usar la palabra Ajax
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funcionamiento de Ajax}
+\begin{enumerate}
+%   richardson pg 316
+\item
+El usuario solicita una URL desde su navegador
+
+\item
+El servidor web devuelve la página, que contiene un script
+
+\item
+El navegador presenta la página y ejecuta el script
+
+\item
+El script hace peticiones HTTP asíncronas a una URI del servidor, sin que
+el usuario intervenga. El servidor suele ser RESTful
+
+\item
+El script interpreta las respuestas HTTP y modifica el HTML, sin que
+el usuario intervenga
+\end{enumerate}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ajax con jQuery}
+jQuery facilita mucho el uso de Ajax
+\begin{itemize}
+\item
+El método \verb|load()| recibe como argumento una URI, la invoca,
+y reemplaza el contenido indicado por el selector por la respuesta
+\end{itemize}
+
+El siguiente ejemplo llama a 
+\url{http://fixer.io}, un servicio que ofrece tipos de cambio
+de divisas
+
+
+
+    \begin{itemize}
+    \item
+Este sitio ofrece una respuesta en JSONP, lo contrario incumpliría la 
+\emph{same-origin policy}
+
+    \item
+jQuery se ocupa del manejo de JSONP, resulta transparente para el programador
+
+    \item
+Para los servicios sin soporte de JSONP, necesitaríamos un proxy en el
+mismo sitio web que sirve el HTML
+
+    \end{itemize}
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<body>
+  <p id="p01">(Precio)</p>
+  <p id="p02">(Precio)</p>
+  <script>
+    $(document).ready(function() {
+      $('#p01').load('https://api.fixer.io/latest');
+      });
+    $(document).ready(function() {
+      fecha='2016-12-31'
+      param= 'base=USD&symbols=EUR,GBP'
+      $('#p02').load('https://api.fixer.io/'+fecha, param);
+      });
+  </script>
+</body>
+  \end{verbatim}
+  \end{scriptsize}
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/ajax.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Cambio de divisas}
+\begin{itemize}
+\item
+Cada divisa tiene un código ISO 4217, que es un identificador de 3 letras mayúsculas.
+Por ejemplo USD (United States Dollar) para el dólar, EUR para el euro, GBP para la libra esterlina,
+etc
+
+\item
+El precio de una divisa frente a otra se indica mediante la concatenación de sus dos códigos ISO 4217.
+La primera se denomina \emph{divisa base}
+y la segunda,
+\emph{divisa cotizada}
+
+\item
+Ejemplo EURUSD = 1.13
+
+Aquí la divisa base es el euro, y la cotizada, el dólar. 
+
+Este valor (1.13) indica cuántas
+unidades de la divisa cotizada hacen falta para
+comprar una unidad de la divisa base 
+
+\item
+Dicho de otro modo, la primera moneda es la que queremos
+y la segunda, la que tenemos, la que usamos para pagar.
+
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{setInterval}
+
+Para que la consulta Ajax se repita periódicamente, podemos
+usar la función 
+\verb|setInterval()|
+
+Recibe
+\begin{itemize}
+\item
+Como primer argumento, una función
+
+\item
+Como segundo argumento, un intervalo de tiempo en milisegundos
+
+\end{itemize}
+
+Como resultado, evalúa la función periódicamente, con el intervalo
+especificado.
+El siguente ejemplo se ejecutaría cada 60 segundos
+
+  \begin{scriptsize}
+  \begin{verbatim}
+setInterval(function() { 
+               $("#p01").load(mi_peticion);
+            }, 
+            60000
+);
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+\end{document}

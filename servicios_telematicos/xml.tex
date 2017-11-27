@@ -1,0 +1,1061 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={XML},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[XML]{XML }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2016]{Marzo de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+
+\section{XML}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lenguajes de marcado}
+Un \emph{lenguaje de marcado} es un sistema que permite incluir metainformación en un documento, esto
+es, información sobre la información
+
+\begin{itemize}
+\item
+La metainformación tiene que
+distinguirse sintácticamente del texto.
+
+
+\item
+Es la evolución del \emph{lapiz azul} con el que tradicionalmente se editaban
+documentos cuando la tecnología era analógica
+\begin{itemize}
+\item
+Ejemplo de lenguaje de marcado muy elemental: redacto un documento en un procesador de textos, 
+lo imprimo y alguien lo revisa, incluyendo anotaciones a mano
+
+Las anotaciones (metainformación) se distingue fácilmente del texto original
+
+Para hacer algo semejante de forma digital, es necesaria una sintaxis que separe el texto
+de la metainformación
+\end{itemize}
+
+
+\item
+Ejemplos de lenguajes de marcado: troff, LaTeX, JsonML, SGML, XML
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+XML \emph{Extensible Markup Language}
+%Resumen de XML: http://www.diveintopython3.net/xml.html
+
+Es una forma de describir datos jerárquicamente.
+Estándar para transferir información entre distintos sistemas sin tener
+que adaptarlos a cada plataforma concreta, y de forma que sea fácil
+de leer por un humano y fácil de procesar por un ordenador
+
+\item
+Creado en 1996 por el W3C (\emph{World Wide Web Consortium})
+
+Dos versiones: XML 1.0 y XML 1.1
+%1.0 (Fifth Edition) (November 26, 2008; )
+% 1.1 (Second Edition) (August 16, 2006; )
+\item
+Algunos autores lo consideran un lenguaje de marcado, otros, un metalenguaje
+de marcado
+\item
+Proviene de
+SGML, \emph{Standard Generalized Markup Language}, norma ISO 8879:1986
+
+
+SGML es un metalenguaje, un lenguaje para definir lenguajes de marcado,
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+XML tiene una sintaxis similar a la de HTML porque ambos provienen de SGML
+\item
+XML y HTML no son lenguajes alternativos
+
+\begin{itemize}
+\item
+XML está diseñado para describir y comunicar datos datos de máquina a máquina
+\item
+HTML está diseñado para presentar en pantalla datos con formato. De máquina a persona 
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Estructura de un documento XML}
+\begin{itemize}
+
+\item
+%<?xml version="1.1"?>
+En la primera línea es recomendable incluir un \emph{prólogo} aka \emph{declaración}, indicando
+la versión de xml y, opcionalmente, la codificación empleada
+  \begin{footnotesize}
+  \begin{verbatim}
+<?xml version="1.1" encoding="UTF-8"?>
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+A continuación puede aparecer un
+DTD, \emph{Document Type Definition}. Aunque es casi obsoleto
+
+  \begin{footnotesize}
+  \begin{verbatim}
+CTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+A continuación debe aparecer el cuerpo, formado por un
+\emph{elemento raiz}. Siembre habrá
+uno y solo uno, que podrá tener elementos anidados
+
+
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+
+\item
+XML puede usar cualquier caracter unicode, por omisión codificado en UTF-8
+% se pueden usar otras codificaciones, pero es obligatorio que cualquier
+% herramienta admita al menos utf-8 y utf-16
+
+\item
+XML es \emph{case sensitive}
+
+\item
+Se pueden poner comentarios en cualquier lugar del documento
+  \begin{footnotesize}
+  \begin{verbatim}
+<!-- Esto es un comentario -->
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Elementos XML}
+\begin{itemize}
+\item
+Un documento XML está formado por uno o varios elementos
+
+\item
+Cada elemento está delimitado por una etiqueta inicial
+y una etiqueta final (start tag, end tag)
+\item
+Una etiqueta inicial está formada por el signo de menor, el nombre y el signo de mayor
+\item
+Una etiqueta final está formada por el signo de menor, una barra (slash), el nombre y el signo de mayor
+\item
+No puede haber espacios ni a la izquierda ni dentro del nombre. Solo se admiten después del nombre
+\item
+El nombre puede usar cualquier carácter unicode
+\item
+El nombre puede incluir el guión, la barra baja y números, excepto en la primera posición
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Ejemplo correcto:
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo></holamundo>
+  \end{verbatim}
+  \end{footnotesize}
+
+Ejemplos incorrectos
+  \begin{footnotesize}
+  \begin{verbatim}
+< holamundo></ holamundo>
+
+<hola mundo></hola mundo>
+
+<1mundo></1mundo>
+  \end{verbatim}
+  \end{footnotesize}
+
+Ejemplos correctos
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo ></holamundo >
+
+<holamundo2></holamundo2>
+
+<holamundo_2></holamundo_2>
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Es frecuente que un elemento contenga una lista de elementos, con la misma
+etiqueta
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<grupo>
+    <alumno>
+        Juan González
+    </alumno>
+    <alumno>
+        María Fernández
+    </alumno>
+</alumno>
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Numerar los elementos normalmente no tendrá sentido. Aunque sintácticamente
+puede ser válido, estamos forzando la creación de elementos distintos
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<grupo>
+    <!-- ¡¡MAL EJEMPLO!! -->
+    <alumno1>
+        Juan González
+    </alumno1>
+    <alumno2>
+        María Fernández
+    </alumno2>
+</alumno>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anidamiento de los elementos}
+\begin{itemize}
+\item
+Los elementos se pueden anidar hasta cualquier nivel.
+\item
+El elemento raiz de un documento XML es el elemento de mayor nivel
+jerárquico. Tiene que haber exactamente uno
+\item
+El elemento raiz puede tener
+uno o más elementos anidados (nunca solapados), que se pueden
+anidar hasta cualquier nivel
+\item
+Los elementos están ordenados, se garantiza que el orden se mantiene
+\item
+Dentro de los elementos hay \emph{character data}, normalmente
+llamado simplemente \emph{text}, texto.
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo>
+    <hola_europa>
+        <hola_españa>
+            Texto de ejemplo del elemento hola_españa
+        </hola_españa>
+        <hola_portugal>
+        </hola_portugal>
+    </hola_europa>
+    <hola_asia>
+        Texto de ejemplo del elemento hola_asia
+    </hola_asia>
+</holamundo>
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Etiquetas autocerradas}
+Cuando un elemento no tiene texto, hay dos alternativas posibles
+\begin{itemize}
+\item
+Usar una etiqueta de cierre y otra de apertura
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo></holamundo>
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Usar una etiqueta \emph{auto cerrada}
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo/>
+  \end{verbatim}
+  \end{footnotesize}
+Signo de menor, nombre, barra, signo de mayor
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atributos}
+Un elemento puede tener \emph{atributos}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<log date="2016-02-07 17:01:05+00:00" lang="es">
+No hay actividad
+</log>
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{itemize}
+\item
+Los atributos
+están dentro de la etiqueta inicial,  separados por espacios
+\item
+Un atributo
+es un par formado por un nombre y un valor
+
+\item
+El nombre del atributo no se puede repetir dentro del mismo elemento. Sí puede aparece
+el mismo nombre de atributo en un elemento distinto
+\item
+A continuación del nombre va el signo igual
+y el valor, entre comillas simples o dobles
+\item
+El valor es texto
+\item
+Los atributos no están ordenados, no hay garantía de que se mantenga
+el orden
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Una misma información puede presentarse o bien como texto o bien como
+atributo, las siguientes cuatro formas son correctas y equivalentes
+\begin{itemize}
+\item
+  \begin{tiny}
+  \begin{verbatim}
+<log>
+    <date>
+        2015-07-10 21:01:05+00:00
+    </date>
+    <lang>
+        es
+    </lang>
+    <text>
+        Pass
+    </text>
+</log>
+  \end{verbatim}
+  \end{tiny}
+\item
+  \begin{tiny}
+  \begin{verbatim}
+<log date="2015-07-10 21:01:05+00:00" lang="es" text="Pass">
+</log>
+  \end{verbatim}
+  \end{tiny}
+
+\item
+  \begin{tiny}
+  \begin{verbatim}
+<log date="2015-07-10 21:01:05+00:00" lang="es">
+    Pass
+</log>
+  \end{verbatim}
+  \end{tiny}
+
+
+\item
+  \begin{tiny}
+  \begin{verbatim}
+<log date="2015-07-10 21:01:05+00:00" lang="es" text="Pass"/>
+  \end{verbatim}
+  \end{tiny}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Usar un enfoque y otro es decisión del diseñador, no hay reglas fijas
+pero sí algunas recomendacions
+%fawcett, beginning xml 5ed, pg 37
+\begin{itemize}
+\item
+Es preferible usar atributos para información breve, de una sola pieza
+\item
+Es preferible usar texto dentre de un nuevo elemento para valores 
+de cierta complejidad. Por ejemplo un mensaje de cierta longitud,
+una dirección, una descripción, etc
+\item
+En caso de duda, se recomienda el atributo
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Cuando una información conste de varias unidades que pueden repetirse,
+es obligado usar elementos, porque los atributos no pueden repetirse
+
+\begin{itemize}
+\item
+Ejemplo correcto:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<cliente>
+    <telefono>
+        91 00 0000
+    </telefono>
+    <telefono>
+        91 11 1111
+    </telefono>
+</cliente>
+  \end{verbatim}
+  \end{footnotesize}
+\item
+¡¡INCORRECTO!!: 
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<cliente
+    telefono="91 00 0000"
+    telefono="91 11 1111"
+/>
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Esto sí sería correcto
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<cliente
+    telefono1="91 00 0000"
+    telefono2="91 11 1111"
+/>
+  \end{verbatim}
+  \end{footnotesize}
+Pero tiene inconvenientes
+\begin{itemize}
+\item
+Es más complicado
+\item
+No sirve para 3 teléfonos
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Naturalmente, también es correcto que un nombre de atributo se repita en un elemento distinto
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<cliente
+    telefono="91 00 0000"
+/>
+
+<cliente
+    telefono="91 11 1111"
+/>
+
+<proveedor
+    telefono="91 22 2222"
+/>
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gramáticas}
+Un documento XML puede incluir una referencia a una gramática.
+
+La gramática indica qué etiquetas, qué atributos y qué texto se permiten
+en un documento XML.
+\begin{itemize}
+\item
+Originalmente la gramática se indicaba mediante
+DTD, \emph{Document Type Definition}
+
+La referencia al DTD se coloca entre el prólogo y el elemento raiz
+\item
+En la actualidad es más habitual emplear XSD, \emph{(XML Schema Definition)}
+
+La referencia al XSD se indica como atributo del elemento raíz
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Referencia a un DTD}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- the XHTML document body starts here-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+ ...
+</html>
+  \end{verbatim}
+  \end{footnotesize}
+
+  \begin{scriptsize}
+  \begin{flushright}
+Fuente: wikipedia
+  \end{flushright}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ejemplo de gramática XSD}
+
+%https://en.wikipedia.org/wiki/XML_Schema_(W3C)
+  \begin{tiny}
+  \begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Address">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Recipient" type="xs:string" />
+        <xs:element name="House" type="xs:string" />
+        <xs:element name="Street" type="xs:string" />
+        <xs:element name="Town" type="xs:string" />
+        <xs:element name="County" type="xs:string" minOccurs="0" />
+        <xs:element name="PostCode" type="xs:string" />
+        <xs:element name="Country" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="DE" />
+              <xs:enumeration value="ES" />
+              <xs:enumeration value="UK" />
+              <xs:enumeration value="US" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+  \end{verbatim}
+  \end{tiny}
+
+  \begin{scriptsize}
+  \begin{flushright}
+  \end{flushright}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Documento XML referenciando al XSD anterior}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="SimpleAddress.xsd">
+  <Recipient>Mr. Walter C. Brown</Recipient>
+  <House>49</House>
+  <Street>Featherstone Street</Street>
+  <Town>LONDON</Town>
+  <PostCode>EC1Y 8SY</PostCode>
+  <Country>UK</Country>
+</Address>
+  \end{verbatim}
+  \end{footnotesize}
+
+  \begin{scriptsize}
+  \begin{flushright}
+Fuente:wikipedia
+  \end{flushright}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+\section{ElementTree: procesamiento de XML desde python}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ElementTree: procesamiento de XML desde python}
+En python hay varias librerías para procesar xml
+\begin{itemize}
+\item
+Tal vez la más habitual y casi \emph{estándar} es ElementTree
+\item
+También se puede usar cElementTree, cuya API es idéntica, pero es más
+eficiente por estar implementada en C
+\item
+Otra librería interesante, más avanzada, es lxml. Tiene un API similar a
+ElementTree, con más funcionalidad
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ejemplo:biblioteca.xml}
+
+  \begin{tiny}
+  \begin{verbatim}
+<?xml version="1.1"?>
+<biblioteca>
+    <libro isdn="978-1-118-16213-2"  edicion="5" fecha="july 2012" editorial="Wiley" >
+        <autor>
+            Joe Fawcett
+        </autor>
+        <autor>
+            Danny Ayers
+        </autor>
+        <autor>
+            Liam R. E. Quin
+        </autor>
+        <titulo>
+            Beginning XML
+        </titulo>
+    </libro>
+    <libro isdn="978-1-484202-03-6"   edicion="1" fecha="march 2015" editorial="Apress" >
+        <autor>
+            Ben Smith
+        </autor>
+        <titulo>
+            Beginning JSON
+        </titulo>
+    </libro>
+</biblioteca>
+  \end{verbatim}
+  \end{tiny}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import xml.etree.cElementTree as ET
+nombre_fichero="biblioteca.xml"
+
+def imprime_elemento(elemento):
+    print "etiqueta:",elemento.tag
+    print "atributos:",elemento.attrib
+    print "texto:", elemento.text
+    print "elementos incluidos en ",elemento.tag
+    for subelemento in elemento:
+        imprime_elemento(subelemento)
+
+def main():
+    arbol=ET.ElementTree(file=nombre_fichero)
+    root=arbol.getroot()
+    imprime_elemento(root)
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{tiny}
+  \begin{verbatim}
+etiqueta: biblioteca
+atributos: {}
+texto: 
+    
+elementos incluidos en  biblioteca
+etiqueta: libro
+atributos: {'fecha': 'july 2012', 'edicion': '5', 'editorial': 'Wiley', 'isdn': '978-1-118-16213-2'}
+texto: 
+        
+elementos incluidos en  libro
+etiqueta: autor
+atributos: {}
+texto: 
+            Joe Fawcett
+        
+elementos incluidos en  autor
+etiqueta: autor
+atributos: {}
+texto: 
+            Danny Ayers
+        
+elementos incluidos en  autor
+etiqueta: autor
+atributos: {}
+texto: 
+            Liam R. E. Quin
+        
+elementos incluidos en  autor
+etiqueta: titulo
+atributos: {}
+texto: 
+            Beginning XML
+        
+[...]
+  \end{verbatim}
+  \end{tiny}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Este programa produce un resultado idéntico
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import xml.etree.cElementTree as ET
+
+nombre_fichero="biblioteca.xml"
+def main():
+    root=ET.ElementTree(file=nombre_fichero).getroot()
+    for elemento in root.iter():
+       print "etiqueta:",elemento.tag
+       print "atributos:",elemento.attrib
+       print "texto:", elemento.text
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Para leer desde la entrada estándar
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+import sys
+    [...]
+    root=ET.ElementTree(file=sys.stdin).getroot()
+    [...]
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+A la función iter() se le puede añadir un parámetro como filtro, para que
+solo devuelva los elementos con cierta etiqueta
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import xml.etree.cElementTree as ET
+nombre_fichero="biblioteca.xml"
+
+def main():
+    root=ET.ElementTree(file=nombre_fichero).getroot()
+    for elemento in root.iter("libro"):
+       print "etiqueta:",elemento.tag
+       print "atributos:",elemento.attrib
+       print "texto:", elemento.text
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Modificación del documento}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import xml.etree.cElementTree as ET
+nombre_fichero="biblioteca.xml"
+
+def main():
+    root=ET.ElementTree(file=nombre_fichero).getroot()
+    for elemento in root.iter("titulo"):
+       print "etiqueta:",elemento.tag
+       print "atributos:",elemento.attrib
+       elemento.text=elemento.text.upper()
+       print "texto:", elemento.text
+    nuevo_arbol=ET.ElementTree(root)
+    x=ET.tostring(root, encoding="utf-8", method="xml")
+    print x
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Creación de nuevos documentos}
+\begin{itemize}
+\item
+Para crear un elemento raiz, invocamos el método \verb|Element|, pasando
+como argumento su etiqueta
+  \begin{footnotesize}
+  \begin{verbatim}
+    root = ET.Element(u"holamundo")
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\item
+Para crear un elemento, invocamos el método \verb|SubElement|, pasando como
+primer argumento el elemento raiz, y como segundo elemento la etiqueta
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    elemento=ET.SubElement(root, u"hola_europa")
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import xml.etree.cElementTree as ET
+def main():
+    root = ET.Element(u"holamundo")
+    root.attrib={u"fecha":u"febrero 2016"}
+    root.text=u"¡Hola, mundo!"
+
+    elemento=ET.SubElement(root, u"hola_europa")
+    atributos={u"fecha":u"marzo 2016"}
+    elemento.attrib=atributos
+    elemento.text=u"¡Hola, Europa!"
+
+    elemento=ET.SubElement(root, u"hola_asia")
+    elemento.text=u"¡Hola, asia!"
+    atributos={u"fecha":u"marzo 2016"}
+    elemento.attrib=atributos
+
+    print ET.tostring(root, encoding="utf-8",  method="xml")
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo fecha="febrero 2016">
+    ¡Hola, mundo!
+    <hola_europa fecha="marzo 2016">
+        ¡Hola, Europa!
+    </hola_europa>
+    <hola_asia fecha="marzo 2016">
+        ¡Hola, asia!
+    </hola_asia>
+</holamundo>
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+\end{document}
+
+
+
+

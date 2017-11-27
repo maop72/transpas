@@ -1,0 +1,2344 @@
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={HTML},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[HTML]{HTML }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Octubre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+\section{Introducción a HTML}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Introducción a HTML (1)}
+\begin{itemize}
+\item
+HTML \emph{Hypertext Markup Language} es un lenguaje de marcado, inicialmente se usa para que navegadores web
+compongan páginas con diverso contenido: texto, enlaces, imágenes,
+audio, vídeo, etc. Páginas \emph{estáticas}: se editaban generalmente a mano
+
+\item
+El éxito de internet y HTML como interfaz de usuario hace que 
+a finales de los años 1990 aparezcan tecnologías que permiten 
+páginas web dinámicas: CGI, PHP, ASP...
+
+\item
+En 1995, JavaScript permite programar scripts en el navegador web, típicamente
+para componer código HTML
+
+\item
+Muy importante: no confundir HTML con HTTP
+
+
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Introducción a HTML (2)}
+\begin{itemize}
+\item
+%año 2005
+A mediados de los años 2000 se desarrollan una nueva generación de herramientas 
+para aplicaciones web que facilitan el desarrollo: Ruby on Rails, Django... 
+
+\item
+En esta misma época, año 2005, la aparición de AJAX permite que las aplicaciones
+web comiencen a semejarse a las aplicaciones de escritorio
+
+\item
+A principios de la década de 2010, la madurez de las tecnologías web hace
+que empiecen a usarse también fuera del escritorio. \emph{JavaScript everywhere}.
+Nodejs.
+HTML como plataforma para interfaz gráfico en el escritorio 
+
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{Lenguajes de marcado}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lenguajes de marcado}
+HTML es un \emph{lenguaje de marcado}: un sistema que permite incluir metainformación en un documento, esto
+es, información sobre la información
+
+\begin{itemize}
+\item
+La metainformación tiene que
+distinguirse sintácticamente del texto.
+
+
+\item
+Es la evolución del \emph{lapiz azul} con el que tradicionalmente se editaban
+documentos cuando la tecnología era analógica
+\begin{itemize}
+\item
+Ejemplo de lenguaje de marcado muy elemental: redacto un documento en un procesador de textos, 
+lo imprimo y alguien lo revisa, incluyendo anotaciones a mano.
+Las anotaciones (metainformación) se distingue fácilmente del texto original
+
+Para hacer algo semejante de forma digital, es necesaria una sintaxis que separe el texto
+de la metainformación
+\end{itemize}
+
+
+\item
+Ejemplos de lenguajes de marcado: troff, LaTeX, JsonML, SGML, HTML, XML
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{XML}
+\begin{itemize}
+\item
+XML \emph{Extensible Markup Language}
+%Resumen de XML: http://www.diveintopython3.net/xml.html
+
+Es una forma de describir datos jerárquicamente.
+Estándar para transferir información entre distintos sistemas sin tener
+que adaptarlos a cada plataforma concreta, y de forma que sea fácil
+de leer por un humano y fácil de procesar por un ordenador
+
+\item
+Creado en 1996 por el W3C (\emph{World Wide Web Consortium})
+
+Dos versiones: XML 1.0 y XML 1.1
+%1.0 (Fifth Edition) (November 26, 2008; )
+% 1.1 (Second Edition) (August 16, 2006; )
+\item
+Algunos autores lo consideran un lenguaje de marcado, otros, un metalenguaje
+de marcado
+\item
+Proviene de
+SGML, \emph{Standard Generalized Markup Language}, norma ISO 8879:1986
+
+
+SGML es un metalenguaje, un lenguaje para definir lenguajes de marcado,
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+XML tiene una sintaxis muy similar a la de HTML porque ambos provienen de SGML
+\item
+XML y HTML no son lenguajes alternativos
+
+\begin{itemize}
+\item
+XML está diseñado para describir y comunicar datos datos de máquina a máquina
+\item
+HTML está diseñado para presentar en pantalla datos con formato. De máquina a persona 
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En HTML, como en cualquier lenguaje de marcado, es esencial separar 
+los aspectos semánticos del texto
+del formato de la representación gráfica
+
+
+\begin{itemize}
+\item
+Con la aparición de las plataformas móviles (smartphones y tablets), esto se
+vuelve aún más importante
+\item
+Las primeras versiones de HTML no eran muy rigurosas en esto,
+pero se ha ido corrigiendo gradualmente en cada nueva especificación
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{Versiones de HTML}
+\begin{frame}[fragile]
+\frametitle{Internet moderno: HTML}
+\begin{itemize}
+\item
+HTML es la base de la World Wide Web, y por tanto, de la internet moderna
+
+\item
+Para los usuarios, WWW e internet son sinónimos. Pero nosotros debemos distinguirlo
+
+\end{itemize}
+
+Internet antes del web:
+
+    \begin{itemize}
+    \item
+Los predecesores de internet aparecen en los años 1960
+    \item
+TCP/IP se desarrolla durante la década de 1970
+    \begin{itemize}
+    \item
+1 de enero de 1983:  \emph{flag day} en que la red ARPANET
+migra desde NCP hasta TCP/IP
+    \end{itemize}
+    \item
+En la internet primitiva se usaban servicios como el correo electrónico, ftp, telnet, usenet, gopher, irc y algunos otros
+
+    \end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de HTML (1)}
+\begin{itemize}
+\item
+Años 1989-1991. Tim Berners-Lee, un físico del CERN (\emph{European Organization for Nuclear Research, 
+Conseil Européen pour la Recherche Nucléaire}) crea un sistema
+de hipertexto para internet al que llama WWW,
+\emph{World Wide Web}.
+
+
+
+    \begin{itemize}
+    \item
+Para ello desarrolla el lenguaje HTML
+junto con el protocolo HTTP 
+    \item
+Lo que en origen era un servicio más para un ámbito muy específico, 
+tiene un exito arrollador que cambia no solo internet y la informática,
+sino las comunicaciones humanas
+    \item
+El resto de servicios de internet siguen diferenciándose del WWW, pero casi
+todos ellos acaban teniendo un interfaz de usuario web, lo que hace que
+el usuario lo perciba como la misma cosa
+    \end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de HTML (2)}
+\begin{itemize}
+
+\item
+Año 1995. HTML 2.0. Publicado por el IETF (Internet Engineering Task Force). Añade formularios, tablas,
+y soporte para internacionalización, entre otros
+
+\item
+Año 1997. HTML 3.2. 
+\emph{Guerra de los navegadores}. Microsoft Internet Explorer y Netscape Navigator
+intentaban prevalecer en el mercado, añadiendo características propias.
+HTML 3.2 busca que ambos navegadores vuelvan a ser compatibles.
+
+Añade características  muy desacertadas: como la etiqueta 
+\emph{font}
+y el atributo
+\emph{color} 
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de HTML (3)}
+\begin{itemize}
+\item
+Versión 4.0.
+Año 1997 
+
+Normaliza el uso de marcos \emph{frames}, disponible desde Netscape Navigator 2 (año 1995)
+
+Los marcos eran documentos HTML dentro de documentos HTML. Concepto problemático, han ido
+desapareciendo
+
+Tres variantes de HTML 4.0
+    \begin{itemize}
+    \item
+\emph{Strict}, donde se prohiben elementos obsoletos
+    \item
+\emph{Transitional}, que admite elementos obsoletos
+    \item
+\emph{Frameset}, solo marcos
+    \end{itemize}
+
+\item
+Versión 4.1.
+Año 2000 
+
+La versión más usada, hasta la aparición de HTML 5
+
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de HTML (4)}
+\begin{itemize}
+
+\item
+Año 2004. El W3C decide abandonar HTML y migrar a XHTML 
+
+    \begin{itemize}
+    \item
+XHTML: Extensible Hypertext Markup Language. Lenguaje muy similar
+a HTML, pero que sigue estrictamente la sintaxis de XML
+    \end{itemize}
+
+
+El desarrollo de HTML lo retoma el WHATWG
+(Web Hypertext Application Technology Working Group: Google Apple, Mozilla, Opera)
+
+\item
+Año 2008. Primer borrador de HTML 5 publicado por WHATWG
+
+\item
+Año 2009. El W3C abandona XHTML y vuelve a HTML5
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de HTML (5)}
+\begin{itemize}
+\item
+Año 2014. HTML 5.0
+
+    \begin{itemize}
+    \item
+Define de forma precisa qué hacer con páginas incorrectas
+    \item
+Muchas mejoras en interoperabilidad
+    \item
+Mucho mejor soporte para dispositivos móviles
+    \item
+Audio y video
+    \item
+Gráficos vectoriales
+    \item
+Muchas APIs nuevas, como la Geolocalización
+
+    \end{itemize}
+\item
+Año 2016. HTML 5.1
+\end{itemize}
+
+En la actualidad cualquier desarrollo debería centrarse en HTML 5
+
+    \begin{itemize}
+    \item
+La compatibilidad con HTML 4 es bastante buena
+    \item
+Existen técnicas y herramientas que permiten que páginas HTML 5 se
+muestren correctamente en navegadores antiguos
+    \end{itemize}
+Toda la información de estas transparencias es válida en HTML 4 y HTML 5, salvo
+indicación contraria
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Adobe Flash}
+Otra de las grandes ventajas de HTML 5 es que permite prescindir de Flash
+\begin{itemize}
+\item
+Adobe Flash es una plataforma software desarrollada por Adobe Systems
+para mostrar animaciones, gráficos vectoriales, vídeos, audio, contenido
+interactivo...
+
+\item
+Muy popular entre los años 2000 y 2010
+
+\item
+Muy problemático. 
+Ya en el año 2000 se publican artículos como
+\emph{Flash: 99\% Bad}, (J.Nielsen)
+
+
+No estándar. Dependencia del fabricante.
+Anima a desarrollar contenido centrado en la apariencia gráfica
+externa, no en la usabilidad y la semántica 
+
+\item
+No soportado por Apple
+\end{itemize}
+Anunciada su desaparición oficial para el año 2020
+\end{frame}
+
+
+
+\section{Sintaxis de HTML}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sintaxis de HTML}
+Un documento HTML está formado por
+
+    \begin{itemize}
+    \item
+Declaración de tipo
+    \item
+Un elemento \emph{html}, que contiene
+
+    \begin{itemize}
+    \item
+Un elemento \emph{head}, que contiene
+
+    \begin{itemize}
+    \item
+Título
+    \item
+Codificación de caracteres
+    \end{itemize}
+    \item
+Un elemento \emph{body}
+    \end{itemize}
+    \end{itemize}
+
+
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hola mundo en HTML</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    Hola, mundo.
+  </body>
+</html>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Algunas etiquetas de estos elementos se pueden omitir en ciertas circunstancias y el 
+documento sigue siendo válido, quedan
+sobreentendidas (head, body, html). Pero siempre es preferible ponerlo todo
+
+\item
+Otros elementos como el título y la codificación de caracteres son obligatorios.
+Si se omiten, herramientas como \verb|https://validator.w3.org| nos indicarán
+que el documento es erróneo
+
+    \begin{itemize}
+    \item
+A pesar de eso, los navegadores podrán mostrar el documento de forma satisfactoria,
+con lo que es muy habitual que nadie se preocupe de corregir estos errores
+    \item
+El problema se agrava cuando distintos navegadores tratan los errores de forma distinta
+    \end{itemize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{DOCTYPE}
+La declaración 
+\verb|<!DOCTYPE html>|
+es obligatoria al comienzo de un documento HTML 5
+% debe haber 1 y solo 1
+
+\begin{itemize}
+\item
+En rigor no es parte de HTML (no es un elemento HTML) sino una instrucción
+que le dice al navegador que lo que viene a continuación es un documento HTML, versión 5
+\end{itemize}
+
+En HTML 4.x y anteriores, esto era más complicado
+
+Ejemplos:
+    \begin{itemize}
+    \item
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+  \end{verbatim}
+  \end{footnotesize}
+    \item
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  \end{verbatim}
+  \end{footnotesize}
+    \item
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+  \end{verbatim}
+  \end{footnotesize}
+    \end{itemize}
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Case insensitive}
+HTML es insensible a mayúsculas (\emph{case insensitive}), aunque lo habitual es usar siempre las
+minúsculas.
+
+Hay una excepción:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<!DOCTYPE html>
+<!doctype html>
+  \end{verbatim}
+  \end{footnotesize}
+
+Ambas formas son idénticas y correctas, pero lo habitual es usar la primera, posiblemente 
+por influencia de XHTML (que es sensible a mayúsculas, y donde la única
+forma válida es la primera)
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Elementos HTML}
+Un documento HTML está compuesto por elementos (\emph{elements})
+
+Un elemento puede ir
+    \begin{itemize}
+\item
+A continuación de otro elemento
+\item
+Dentro de otro elemento. Esto es muy habitual, los documentos típicos tienen muchos niveles anidados
+    \end{itemize}
+
+La mayoría de los elementos están formados por:
+    \begin{itemize}
+\item
+ Etiqueta de apertura
+(\emph{start tag})
+\item
+Contenido
+\item
+ Etiqueta de cierre 
+(\emph{end tag})
+    \end{itemize}
+
+Ejemplo:
+
+\verb|<h1>Este elemento es un título de nivel 1</h1>|
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Una etiqueta de apertura sencilla está formada por:
+\begin{itemize}
+\item
+Signo de menor
+\item
+Nombre de la etiqueta
+\item
+Signo de mayor
+\end{itemize}
+
+
+Ejemplo:
+
+\verb|<h1>|
+
+Una etiqueta de cierre está formada por:
+
+\begin{itemize}
+\item
+Signo de menor
+\item
+Barra (\emph{slash})
+\item
+Nombre de la etiqueta
+\item
+Signo de mayor
+\end{itemize}
+
+
+Ejemplo:
+
+\verb|</h1>|
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Lo habitual y recomendable es no poner ningún espacio ni después del
+\verb|<|
+ni antes del
+\verb|>|
+
+
+    \begin{itemize}
+    \item
+Un espacio después del \verb|<| es un error
+
+Ejemplo :
+
+\verb|< h1>|
+Esto es un ERROR
+    \item
+Un espacio antes del \verb|>| es legal, pero no es recomendable
+
+Ejemplo :
+
+\verb|<h1 >|
+
+    \end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+En la mayoría de elementos la etiqueta de cierre es obligatoria 
+
+Ejemplo:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<pre>Texto preformateado, con fuente de ancho fijo. Se mantienen 
+los saltos de línea y los espacios    consecutivos</pre>
+  \end{verbatim}
+  \end{footnotesize}
+\item
+En algunos elementos se puede omitir la etiqueta de cierre. Aunque no es recomendable. Ejemplo :
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<p>Esto es un párrafo correcto</p>
+<p>Esto también es un párrafo correcto
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\item
+En algunos elementos, los de tipo \emph{void}, no puede haber ni contenido ni etiqueta de cierre. Solo pueden tener, opcionalmente, atributos.
+Ejemplo :
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<br></br>
+  \end{verbatim}
+  \end{footnotesize}
+Esto es un ERROR
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+
+Elementos de tipo void muy habituales son: \emph{br, hr, meta, link, img, input}
+
+\begin{itemize}
+\item
+En HTML 4.01 también son de tipo void:  \emph{area, base, col, param}
+\item
+HTML 5 añade: \emph{ keygen,  source }
+\end{itemize}
+
+
+% br  breaking line.  hr: horizontal rule
+% link: no es un enlace de hipertesto (eso es a,anchor) sino un enlace en el head a una plantilla css
+% area: mapas clicables. base: especifica la base para los enlaces relativos
+% col: define las columnas de un grupo de columnas. input: para hacer formularios
+% param: para pasar parámetros a objetos incustrador. P.e. el autoplay de un reproductor de audio
+% keygen se usar para cifrar el contenido de los formularios. i
+% source se usa para indicar dos orígenes
+% del mismo documento multimedia, y que el navegador elija. p.e. ogg/mp3
+
+
+
+% command estaba en html5 inicialmente, pero es obsoleto
+%http://www.456bereastreet.com/archive/201005/void_empty_elements_and_self-closing_start_tags_in_html/
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{¿Etiqueta h1 o elemento h1?}
+
+Como hemos visto, HTML está formado por elementos, que siempre tienen etiqueta
+de apertura y que pueden tener contenido y etiqueta de cierre
+
+Consideremos por ejemplo
+\verb|<h1>Introducción</h1>|
+
+\begin{itemize}
+\item
+En rigor deberíamos decir \emph{el elemento h1}, no \emph{la etiqueta h1}
+\item
+Pero en muchos contextos es habitual y por tanto aceptable hablar de \emph{la etiqueta h1},
+se entiende que es una sinécdoque, nos estamos refiriendo a
+\emph{el elemento que empieza por la etiqueta h1}
+% sinécdoque, una metonimia (usar una cosa por otra) donde se toma la parte por el todo o el todo por la parte)
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Etiquetas autocerradas}
+En XML, cuando un elemento no tiene texto, hay dos alternativas posibles
+\begin{itemize}
+\item
+Usar una etiqueta de cierre y otra de apertura
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo></holamundo>
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Usar una etiqueta \emph{autocerrada}
+  \begin{footnotesize}
+  \begin{verbatim}
+<holamundo/>
+  \end{verbatim}
+  \end{footnotesize}Signo de menor, nombre, barra, signo de mayor
+\end{itemize}
+
+
+Por influencia de XML, algunos desarrolladores o herramientas de HTML usan las etiquetas
+autocerradas
+
+    \begin{itemize}
+    \item
+En los elementos void son válidas. Pero no aportan nada, no tienen significado especial
+    \item
+En otros elementos son incorrectas. Aunque el navegador suele ignorarlos y mostrar la página igualmente
+    \end{itemize}
+
+Conclusión: no debemos usar etiquetas autocerradas
+% https://stackoverflow.com/questions/3558119/are-non-void-self-closing-tags-valid-in-html5
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile,]
+\frametitle{Comentarios}
+
+Los comentarios son iguales que en XML. Se pueden poner en cualquier lugar del documento
+  \begin{footnotesize}
+  \begin{verbatim}
+<!-- Esto es un comentario -->
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atributos}
+Dentro de la etiqueta de apertura puede haber uno o más
+\emph{atributos},
+que son modificadores del elemento
+
+Ejemplo:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<html lang="es-ES">
+Esto es texto en español de España
+</html>\end{verbatim}
+  \end{footnotesize}
+
+
+    \begin{itemize}
+    \item
+El atributo
+\emph{lang} indica el idioma del texto, especificado en ISO 639-1
+    \item
+Su sintaxis es similar pero no idéntica a la variable LANG de Unix, donde se indicaría \verb|es_ES.UTF-8|
+
+    \end{itemize}
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item
+Un atributo es un par formado por un nombre y un valor. Su sintaxis es
+    \begin{itemize}
+    \item
+Nombre del atributo
+    \item
+Signo igual
+    \item
+Valor del atributo 
+
+
+    \begin{itemize}
+    \item
+Siempre es de tipo texto
+    \item
+
+Es recomendable meterlo siempre entre comilla dobles, aunque si el atributo no contiene espacios, se pueden omitir
+    \end{itemize}
+    \end{itemize}
+
+
+
+
+\item
+Si hay varios atributos, se separan por espacios
+
+\verb|<img src="urjc.gif" alt="Logo de la URJC">|
+
+\item
+El nombre del atributo no se puede repetir dentro del mismo elemento. Sí puede aparece
+el mismo nombre de atributo en un elemento distinto
+\item
+Los atributos no están ordenados, no hay garantía de que se mantenga
+el orden
+\end{itemize}
+
+
+
+
+\end{frame}
+
+
+\section{Cabecera del documento}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Elemento head}
+
+El elemento head es la cabecera del documento.
+
+Es un contenedor para metadatos del documento HTML. Esta información nunca se muestra directamente.
+Sus elementos son
+  \begin{verbatim}
+<title>, <base>, <style>, <link>, <meta>, <script>
+  \end{verbatim}
+
+%Metadatos principales: título, codificación de caracteres, hojas de estilo CSS y  código JavaScript
+
+
+\begin{itemize}
+\item
+El elemento \verb|<title>| define el título del documento. Es de inclusión obligatoria
+\item
+El elemento \verb|<base>| define la base de las direcciones relativas
+\item
+Los elemento 
+\verb|<style>| 
+y
+\verb|<link>| 
+especifican las hojas de estilo CSS
+\item
+El elemento \verb|<meta>| se usa para añadir diversa metainformación
+\item
+El elemento \verb|<script>| contiene código JavaScript, o un enlace a una página con el código
+
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{CSS}
+
+
+CSS
+(\emph{Cascading Style Sheets} 
+es un lenguaje de diseño gráfico para crear hojas de estilo,
+%Las hojas de estilo CSS (\emph{Cascading Style Sheets}
+que son son una sucesión de reglas que especifican
+el formato gráfico de un documento
+
+Las hojas CSS pueden ubicarse
+
+    \begin{itemize}
+    \item
+En el propio documento HTML, dentro del elemento 
+\verb|<style>|
+    \item
+En un documento distinto, especificando con el elemento
+\verb|<link>|
+
+Ejemplo:
+\verb|<link href="css/bootstrap.min.css" rel="stylesheet">|
+
+    \begin{itemize}
+\item
+Es de tipo
+\emph{void}
+
+    \item
+Puede aparecer varias veces, pero solo en la sección
+\emph{head}
+nunca en
+\emph{body}
+
+
+    \item
+No confundir con los enlaces a otros documentos HTML dentro del cuerpo del documento, que se 
+indican con \verb|<a>|
+    \end{itemize}
+
+    \end{itemize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Elemento meta}
+
+Contiene diversos atributos con metainformación
+
+    \begin{itemize}
+    \item
+El único obligatorio es charset
+    \end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Tutorial sobre tecnologías web">
+  <meta name="keywords" content="HTML,CSS,Bootstrap, JavaScript">
+  <meta name="author" content="Juan García">
+</head>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Codificación de caracteres}
+En HTML antiguo lo habitual era emplear la codificación ISO-8859, también llamada latin1. O más bien
+windows-1252, que es muy similar
+\begin{itemize}
+\item
+En la actualidad la recomendación es usar UTF-8
+    \item
+UTF-8 es una forma de codificar unicode, la más habitual pero no la única
+\end{itemize}
+
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+
+La sintaxis de HTML 4 era muy farragosa
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-5">
+...
+</head>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+...
+</head>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+En HTML 5 :
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<meta charset="UTF-8">
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Problema:
+Hay varios lugares donde indicar la codificación
+
+
+\begin{itemize}
+\item
+Desde HTTP
+(tal y como lo haya configurado el administrador del servidor web)
+
+\item
+Dentro del HTML
+(tal y como lo configure el autor de la página)
+\end{itemize}
+
+Ambas informaciones pueden ser discrepantes.
+El convenio es dar precedencia a HTTP.
+Problema: un servidor que tenga páginas HTML 4 y HTML 5 mezcladas
+
+
+    \begin{itemize}
+    \item
+Se puede configurar el servidor para usar una codificación distinta para
+cada fichero o directorio, pero el autor y el administrador suelen
+ser personas distintas, no siempre bien coordinadas
+    \end{itemize}
+
+
+
+\end{frame}
+
+
+
+\section{Cuerpo del documento}
+%%---------------------------------------------------------------
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Cuerpo del documento}
+El elemento body contiene el cuerpo del documento, su contenido principal
+
+
+\begin{itemize}
+\item
+El contenido del cuerpo incluye
+parrafos de texto, hiperenlaces (también llamados hipervínculos y enlaces), imagénes, tablas, listas, etc
+
+\item
+Solo puede haber un elemento body
+
+\item
+En HTML 4 tenía atributos como 
+\emph{background},
+\emph{bgcolor},
+\emph{link}
+o
+\emph{text} para modificar los colores, pero no se admiten en HTML 5
+text
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{p}
+
+Párrafo: secuencia de oraciones con unidad temática. Acaba en punto y aparte
+
+El elemento
+\verb|<p>| crea un párrafo
+
+
+
+Entre un párrafo y otro hay
+
+    \begin{itemize}
+    \item
+Un salto de línea
+    \item
+Una separación adicional
+    \end{itemize}
+
+
+La etiqueta de cierre \verb|</p>| es opcional, si no aparece, 
+se considera implícita antes de la apertura
+del siguiente elemento.
+Pero es preferible cerrar explícitamente con la etiqueta de cierre
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{br}
+La etiqueta \verb|<br>| define el elemento \emph{breacking line}
+
+\begin{itemize}
+\item
+En un documento HTML, los saltos de línea se ignoran
+\item
+Si queremos forzar un salto de línea (sin definir un párrafo), usamos \verb|<br>|
+\item
+En cuanto al formato, es similar a un nuevo párrafo, pero solo con el salto de línea,  sin la separación adicional
+\item
+Es de tipo \emph{void} (no puede tener ni contenido ni etiqueta de cierre)
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{em}
+La etiqueta \verb|<em>| define el elemento \emph{emphasized}
+
+\begin{itemize}
+\item
+Típicamente el navegador mostrará el texto en cursiva
+\end{itemize}
+
+
+No confundir con la unidad
+\emph{em},
+que en español traduciríamos como
+\emph{eme},
+esto es, la letra eme
+
+    \begin{itemize}
+    \item
+ Es una unidad clásica de tipografía, para referirse al ancho de la M mayúscula. \verb|1em, 1.2em|, etc
+    \item
+En la actualidad, las M mayúsculas suelen ser un poco más
+estrachas que un em.  Así que em en la práctica significa \emph{letra de tamaño normal}
+    \end{itemize}
+
+
+
+\end{frame}
+
+%<strong>	Defines important text
+%code>	Defines a piece of computer code
+%samp>	Defines sample output from a computer program
+%kbd>	Defines keyboard input
+%var>	Defines a variable
+
+
+
+
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{pre}
+La etiqueta \verb|<pre>| define el elemento \emph{texto preformateado}
+\begin{itemize}
+\item
+El navegador muestra el texto respetando los espacios entre palabras y los saltos
+de línea
+
+\item
+Normalmente se usa una fuente de ancho fijo, típicamente
+courier
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{h1-h6}
+Las etiquetas 
+\verb|<h1>|, 
+\verb|<h2>|, 
+...
+\verb|<h6>|, 
+definen elementos 
+\emph{heading}
+(encabezado)
+\begin{itemize}
+\item
+Están organizados jerárquicamente, siendo h1 el más importante y h6 el menos
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{a}
+La etiqueta \verb|<a>| define el elemento \emph{anchor} (ancla), que sirve
+para hacer anclas y también para hacer hiperenlaces
+
+Su nombre es poco afortunado, no describe lo que hace
+
+    \begin{itemize}
+    \item
+La invención del hipertexto se atribuye a 
+D.Engelbart y 
+T.Nelson, por separado, en 1962/1963
+
+    \item
+En el hipertexto original solo había \emph{anchors}: enlaces al documentos dentro
+de la misma sede
+
+    \item
+Tim Berners-Lee inventa los enlaces a documentos en otros sitios (la WWW). Pero en el lenguaje
+HTML mantiene el nombre \emph{anchor}, y por tanto, usa la etiqueta
+\verb|<a>| 
+
+    \item
+En la actualidad, un \emph{anchor} es un enlace desde una parte de un documento a otra
+parte del mismo documento. Pero el elemento
+\verb|<a>| 
+se usa para hiperenlaces
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Normalmente el elemento 
+\verb|<a>| 
+se usar para hacer hiperenlaces, con el atributo
+\emph{href (hypertext reference)}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="https://www.urjc.es">Página de la URJC</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+
+También se pueden enlazar un correo electrónico
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<a href="mailto:jperez@miempresa.com?Subject=Contacto%20web">
+    Envíame un correo</a>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+(Aunque hoy esto no es recomendable porque la dirección de correo queda expuesta a los spammers)
+
+\item
+O enlazar un script
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<a href="javascript:alert('¡Hola, mundo!');">Holamundo en JavaScript</a>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Los enlaces pueden ser 
+
+
+\begin{itemize}
+\item
+Absolutos a una dirección
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="http://linkedsite/url.html">Documento</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Absolutos dentro del mismo sitio 
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="/url.html">Documento en mismo sitio web</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Relativos 
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="url.html">Documento en mismo sitio web y "dir"</a>
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{anchors}
+Un anchor es una referencia a un punto concreto dentro de un documento
+\begin{itemize}
+\item
+Un anchor tiene un nombre, con las mismas reglas de cualquier otro atributo
+
+\item
+Para usar un anchor, a su nombre se le antepone la almohadilla
+
+\item
+Ejemplo de dirección con anchor:
+  \begin{scriptsize}
+  \begin{verbatim}
+https://gsyc.urjc.es/~mortuno/index_lagrs/index_lagrs.html#transpas
+  \end{verbatim}
+  \end{scriptsize}
+
+\item
+Ejemplo de hiperenlace con anchor absoluto
+  \begin{scriptsize}
+  \begin{verbatim}
+<a href="https://www.urjc.es/universidad/organizacion#rector>rector</a>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\item
+Ejemplo de hiperenlace con anchor relativo
+  \begin{scriptsize}
+  \begin{verbatim}
+<a href="#inicio>inicio</a>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anchor al estilo HTML 4}
+En HTML 4, un anchor se creaba definiendo un elemento 
+\verb|<a>|
+
+\begin{itemize}
+\item
+Sin atributo href
+
+\item
+Con atributo name
+\end{itemize}
+
+Ejemplo
+
+  \begin{footnotesize}
+  \begin{verbatim}
+   <a name="punto07">Esto es el punto 7</a>
+ 
+   [.....]
+
+   <a href="#punto07">Volver al punto 7</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+En HTML 5, esto sigue funcionando en los navegadores, pero
+es obsoleto, no deberíamos usarlo
+% en el w3c validator da un warning
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anchor al estilo HTML 5}
+En HTML 5, un anchor se crea añadiendo el atributo
+\emph{id}
+a cualquier elemento contenedor
+\emph{p, h1, div, pre...}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    <h1 id="punto07">Punto 7</h1>
+
+    [.....]
+
+    <a href="#punto07">Volver al punto 7</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+    \begin{itemize}
+    \item
+Naturalmente, estos anchors pueden emplearse tanto de forma
+relativa como de forma absoluta
+
+    \item
+Esta forma de crear anchors también solía funcionar en los navegadores HTML 4, 
+aunque no era la más común 
+    \end{itemize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atributo target}
+Añadiendo a un enlance el atributo \verb|target="_blank"|, este
+se abrirá en una nueva pestaña del navegador
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="http://urjc.es" target="_blank">Abrir en nueva pestaña</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{itemize}
+\item
+En HTML 4 el atributo target tenía otros posibles valores relacionados
+con el uso de marcos 
+(
+\emph{\_self, \_parent, \_top, framename}
+),
+pero en HTML 5 desaparecen los marcos
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{div}
+
+La etiqueta \verb|<div>| define una división o sección dentro del documento
+\begin{itemize}
+\item
+Su uso habitual es el de contenedor genérico: delimita un bloque de texto, al que luego
+se le dará formato mediante reglas CSS
+\end{itemize}
+
+Ejemplo
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<div class="respuesta">Todas son falsas</div>
+  \end{verbatim}
+  \end{footnotesize}
+
+En HTML 5, además de este elemento se definen otros con el mismo propósito, pero con una semántica
+más específica
+
+    \begin{itemize}
+    \item
+  \begin{footnotesize}
+  \begin{verbatim}
+<section>, <nav>, <article>, <aside>, <hgroup>, 
+<header>, <footer>, <time>, <mark>
+  \end{verbatim}
+  \end{footnotesize}
+    \end{itemize}
+
+%http://diveintohtml5.info/semantics.html
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{span}
+La etiqueta 
+\verb|<span>|  (espacio, longitud, lapso)
+define una división o sección dentro del documento
+\begin{itemize}
+\item
+Muy similar a div, pero no crea un bloque nuevo y por tanto,
+no crea una nueva línea
+
+\item
+Se usa típicamente para dar formato a un grupo de palabras
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{table, th, tr, td}
+Las etiquetas 
+\verb|<table>| (tabla),
+\verb|<th>| (table header),
+\verb|<tr>| (table row),
+\verb|<td>| (table data)
+permiten crear tablas
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<table>
+  <tr>
+    <th>Cabecera, primera columna</th>
+    <th>Cabecera, segunda columna</th>
+  </tr>
+  <tr>
+    <td>Primera fila, primera columna</td>
+    <td>Primera fila, segunda columna</td>
+  </tr>
+  <tr>
+    <td>Segunda fila, primera columna</td>
+    <td>Segunda fila, segunda columna</td>
+  </tr>
+</table
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ol,li}
+Las etiquetas 
+\verb|<ol>| (ordered list),
+\verb|<li>| (list item),
+permiten crear listas numeradas 
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<ol>
+  <li>Sota</li>
+  <li>Caballo</li>
+  <li>Rey</li>
+</ol>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+    \begin{itemize}
+    \item
+Las listas numeradas usan, por omisión, números naturales para cada item
+
+    \item
+
+Añadiendo
+el atributo \emph{type} al elemento \emph{ol} se puede cambiar el tipo de marcador
+
+Los valores posibles son \verb|1, A, a, I, i| para emplear números, letras mayúsculas,
+minúsculas, números romanos en mayúsculas y en minúsculas, respectivamente
+    \end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ul,li}
+Las etiquetas 
+\verb|<ul>| (unordered list),
+\verb|<li>| (list item),
+permiten crear listas sin numerar
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<ul>
+  <li>Sota</li>
+  <li>Caballo</li>
+  <li>Rey</li>
+</ul
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{dl,dt,dd}
+Las etiquetas 
+\verb|<dl>| (description list),
+\verb|<dt>| (description term),
+\verb|<dd>| (description),
+permiten crear listas de descripciones o definiciones de términos
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<dl>
+   <dt>
+      Nombre
+   </dt>
+   <dd>
+      Juan García
+   </dd>
+   <dt>
+      Centro de origen
+   </dt>
+   <dd>
+      ESTIT-URJC
+   </dd>
+</dl>
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{img}
+La etiqueta 
+\verb|<img>| 
+permite insertar imágenes
+
+Ejemplos
+  \begin{footnotesize}
+  \begin{verbatim}
+<img src="urjc.png" alt="Logo de la URJC">
+<img src="urjc.png" alt="Logo de la URJC" width="300" height="240">
+  \end{verbatim}
+  \end{footnotesize}
+
+Este elemento tiene dos atributos obligatorios
+\begin{itemize}
+\item
+\emph{src}, que
+especifica el origen del fichero
+\item
+\emph{alt}, que
+indica una descripción en texto del contenido de la imagen, para
+los navegadores sin gráficos
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Es muy habitual incluir una imagen dentro de un elemento 
+\verb|<a>|, de esa forma la imagen se convierte en un hipervínculo
+
+  \begin{footnotesize}
+  \begin{verbatim}
+<a href="https://www.urjc.es">
+   <img src="images/urjc.png" width="120" alt="logo de la URJC">
+</a>
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+
+
+\subsection{Formularios}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{form}
+
+Un formulario HTML es un elemento que permite aceptar entrada de información por parte
+del usuario.
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+    (Elementos del formulario)
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Los elementos posibles son varios  
+    \begin{itemize}
+    \item
+El principal es el elemento
+\verb|<input>|
+que puede de ser de diferentes tipos (
+\verb|text, password, radio, checkbox|) entre otros
+
+    \item
+Otros elementos son
+
+\verb|<fieldset>|,
+\verb|<select>|,
+\verb|<textarea>| y
+\verb|<button>|
+
+    \item
+HTML5 añade los elementos
+\verb|<datalist>| y
+\verb|<output>|
+
+    \end{itemize}
+
+Ejemplos de formularios:
+
+\url{http://ortuno.es/form}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{input: text, password, submit}
+\verb|input| es un elemento HTML de tipo void
+\begin{itemize}
+\item
+El atributo name indica el nombre de campo
+
+\item
+Con el atributo value se pueden asignar valores por omisión
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form action="/action_page.html">
+  Nombre de usuario:<br>
+  <input type="text" name="usuario" ><br>
+  Contraseña:<br>
+  <input type="password" name="contrasenya" ><br><br>
+  País:<br>
+  <input type="text" name="pais" value="España" ><br><br>
+
+  <input type="submit">
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{input: radio}
+
+\verb|<input type="radio">|
+define un \emph{radio button}, que permite
+elegir una (y solo una) opción entre varias
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+  <input type="radio" name="os" value="Linux" checked>Linux<br>
+  <input type="radio" name="os" value="MacOS" >MacOS<br>
+  <input type="radio" name="os" value="Windows">Windows<br>
+  <input type="radio" name="os" value="other">Otro<br>
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{input: checkbox}
+
+
+Checkbox es un tipo de input que permite elegir 0 o más opciones de
+una lista
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+  <input type="checkbox" name="terminos" value="si">
+        He leido los términos y condiciones<br>
+  <input type="checkbox" name="publicidad" value="si">
+        Deseo recibir comunicaciones comerciales<br>
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{input: tipos de HTML5}
+HTML 5 añade nuevos tipos de input
+\begin{itemize}
+\item
+color (no soportado por todos los navegadores)
+\item
+date (no soportado por todos los navegadores)
+\item
+datetime-local (no soportado por todos los navegadores)
+\item
+email
+\item
+month
+\item
+number
+\item
+range
+\item
+search
+\item
+tel
+\item
+time
+\item
+url
+\item
+week
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{fieldset}
+Un conjunto de entradas se pueden agrupar en un
+\verb|<fieldset>|,
+con un título indicado en un elemento
+\verb|<legend>|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+  <fieldset>
+    <legend>
+      Datos personales
+    </legend>
+
+    Elija un color:
+    <input type="color" name="favcolor">
+    <br> Fecha de nacimiento:
+    <input type="date" name="nacimiento">
+    <br> Fecha y hora de nacimiento:
+    <input type="datetime-local" name="nacimiento-hora">
+    <br> E-mail:
+    <input type="email" name="email">
+    <br> Indica un número del 1 al 10:
+    <input type="number" name="numero" min="1" max="10">
+    <br>
+    <input type="submit">
+  </fieldset>
+</form>
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{select}
+El elemento
+\verb|<select>|
+permite elegir una opción entre varias
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+   Indique el departamento:
+   <select name="departamento">
+      <option value="Comercial">Comercial</option>
+      <option value="Técnico">Técnico</option>
+      <option value="Webmaster">Webmaster</option>
+   </select>
+   <input type="submit">
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{textarea}
+
+Con el elemento
+\verb|<textarea>|
+el usuario puede introducir varias líneas de texto
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<form>
+   <textarea name="mensaje" rows="10" cols="30">
+   Escriba aquí su mensaje.
+   </textarea>
+</form>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{label}
+
+Para que el usuario sepa qué es cada
+elemento de un formulario, se puede usar:
+    \begin{itemize}
+    \item
+Texto HTML ordinario
+    \item
+Un elemento
+\verb|<label>|
+
+Ventajas:
+
+    \begin{itemize}
+    \item
+Haciendo clic sobre esta etiqueta, se activa el elemento
+    \item
+Facilita su interpretación en entornos distintos a navegadores tradicionales, p.e. lectores de HTML
+    \item
+Facilita el estilo consistente
+    \end{itemize}
+    \end{itemize}
+
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Para usar
+\verb|<label>|
+hay que
+    \begin{itemize}
+    \item
+Añadir un atributo
+\verb|<id>|
+al
+elemento
+
+    \item
+Poner en el label un atributo
+\verb|for|
+cuyo valor sea el del id
+
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+  <form>
+    <label for="ciudad">Ciudad de procedencia:</label>
+    <input type="text" name="ciudad" id="ciudad">
+    <input type="submit">
+  </form>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+    \begin{itemize}
+    \item
+\verb|name|
+lo use el
+servidor 
+    \item
+\verb|id|
+lo usa el navegador
+    \end{itemize}
+Son independientes, pueden coincidir o no
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+En el caso del 
+\verb|<input type="radio">|
+y el 
+\verb|<input type="checkbox">|
+
+    \begin{itemize}
+    \item
+Normalmente es innecesario usar 
+\verb|<label>|,
+el texto dentro del elemento suele ser
+bastante descriptivo
+
+    \item
+Si queremos incluir un 
+\verb|<label>|,
+ se usa como en cualquie otro elemento,
+un 
+\verb|<label>|
+por cada input
+
+    \begin{itemize}
+    \item
+ Aunque es recomendable que en el HTML escribamos el 
+\verb|<label>|
+después del 
+\verb|<input>|,
+para que el navegador muestre la etiqueta a la derecha del 
+\verb|<input>|,
+no a la izquierda
+    \end{itemize}
+    \end{itemize}
+
+\end{frame}
+
+
+
+
+\subsection{Elementos obsoletos}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Elementos y Atributos obsoletos en HTML5}
+En HTML 4 había muchos elementos y atributos relacionados con el formato.
+Algunos de los más habituales:
+\begin{itemize}
+\item
+align (left, right, center)
+
+\item
+color
+
+\item
+font
+
+\item
+u  (underline)
+\end{itemize}
+
+Todos ellos han desaparecido en HTML 5, en su lugar debe usarse CSS
+
+\end{frame}
+
+
+
+\subsection{Entities}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Entities}
+%https://www.w3schools.com/html/html_entities.asp
+Las 
+\emph{entities} se usan para
+\begin{itemize}
+\item
+Representar caracteres que coinciden con metacaracteres de HTML.
+Es la única forma de indicar caracteres como
+\verb|<|
+
+\item
+Representar caracteres que el desarrollador no tenga en su teclado.
+Su uso es opcional, con UTF-8 siempre se puede escribir cualquier caracter
+(mediante teclados virtuales o copiando y pegando desde otro sitio)
+\end{itemize}
+
+Cada entity tiene un nombre y un número, se puede usar cualquier de
+las dos formas
+
+    \begin{itemize}
+    \item
+\emph{Ampersand}, 
+nombre, punto y coma
+
+\verb|&lt;|
+    \item
+\emph{Ampersand}, 
+almohadilla, número, punto y coma
+
+\verb|&#60;|
+
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Algunas entities habituales
+\begin{itemize}
+\item
+\verb|<|
+  \begin{footnotesize}
+  \begin{verbatim}
+&lt;      &#60;
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+\verb|>|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+&gt;      &#62;
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+€
+
+  \begin{footnotesize}
+  \begin{verbatim}
+&euro;    &#8364;
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\item
+Ñ
+
+  \begin{footnotesize}
+  \begin{verbatim}
+&Ntilde;  &#209;
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\item
+ñ
+
+  \begin{footnotesize}
+  \begin{verbatim}
+&ntilde;  &#241;
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Otra entity frecuente es
+\verb|&nbsp;|
+\emph{non-breaking space}
+
+Es un espacio que:
+\begin{itemize}
+\item
+Siempre se representa
+\item
+Nunca se usa para partir una linea.
+Ejemplo: para escribir
+2 € 
+con garantías de que ambos símbolos estarán en la mísma línea:
+
+\verb|2&nbsp;&euro;|
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+\begin{frame}
+\frametitle{Material complementario}
+
+\begin{itemize}
+\item HyperText Markup Language (Wikibook): \\
+  \url{http://en.wikibooks.org/wiki/HTML_Programming}
+\item HTML5: A tutorial for beginners: \\
+  \url{http://www.html-5-tutorial.com/}
+\item Dive into HTML5: \\
+  \url{http://diveintohtml5.info}
+\item HTML5 (Wikipedia): \\
+  \url{http://en.wikipedia.org/wiki/HTML5}
+\item Web Fundametals (Code Academy): \\
+  \url{http://www.codecademy.com/tracks/web}
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\end{document}
+%%---------------------------------------------------------------

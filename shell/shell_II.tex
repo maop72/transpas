@@ -1,0 +1,1431 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={La shell (II)},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Par colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[La Shell (II)]{La Shell (II)}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Departamento de Sistemas Telemáticos y Computación (GSyC)}
+\institute{gsyc-profes (arroba) gsyc.es}
+\date[2013]{Octubre de 2013}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 3.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+\begin{frame}
+  \frametitle{Contenidos}
+  \tableofcontents
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Usos no estándar de la barra}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Usos no estándar de la barra}
+Un principio básico para hacer buenos programas es 
+
+\emph{se laxo con lo que aceptas y estricto con lo que generas}
+\begin{itemize}
+\item
+\verb|/d1//d2///d3/d4|  
+
+En rigor es un nombre incorrecto. Aunque normalmente se admite, porque 
+la shell y las librerías lo 
+ \emph{limpian} y generan
+
+\verb|/d1/d2/d3/d4|
+
+No hay garantía de que funcione siempre, es mucho mejor evitarlo
+\item
+
+\verb|/d1/|
+
+Algunas órdenes y algunos documentos muestran una barra al final de 
+un directorio para indicar que se trata de un directorio y no un
+fichero ordinario (de la misma manera que puede usarse un color distinto)
+
+Algunas órdenes pueden esperar que un nombre acabado en barra sea un directorio
+ 
+Pero no es un nombre estándar, es preferible evitarlo
+% ls -F
+
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+
+
+\item
+
+Para la orden cp de Mac OS
+
+\verb|cp -r d/ . |
+
+significa
+
+\verb|cp -r d/* .  |
+
+(pero solo para cp -r y solo para Mac OS)
+% pj el touch, no
+\end{itemize}
+\end{frame}
+
+%cp -r d1/ .
+%-> copia el contenido del directorio d1 al directorio actual
+% SOLO cp, SOLO MAC OS
+
+%cp -r d1 .
+%-> copia el directorio d1 al directorio actual
+
+
+%%---------------------------------------------------------------
+\section{Ordenes internas}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Ordenes internas}
+La mayoría de las órdenes son externas
+
+
+
+Pero todas las shell
+interpretan ciertas órdenes por sí mismas: Las
+órdenes internas (\emph{builtin commands}) 
+\begin{itemize}
+\item
+Por
+razones de eficiencia: \verb|echo, kill, pwd, test...|
+
+Son internas aunque también tienen versión externa
+\item
+Necesariamente internas: \verb|cd, export, alias, unset, exit...|
+
+Realizan funciones que tienen que hacerse
+forzosamente en el proceso de la shell, harían algo completamente diferente si
+se implementan como ejecutables externos 
+\end{itemize}
+
+\begin{verbatim}
+koji@mazinger:~$ type echo
+echo es una función integrada en la shell
+\end{verbatim}
+
+\end{frame}
+
+% algunas ordenes están "hashed". La orden hash dice cuáles. significa que
+% la primera vez que se encuentran, se guardan en una tabla hash y posteriormente
+% no se buscan en ningún otro sitio
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{alias}
+Reemplaza una cadena por otra
+\begin{itemize}	
+\item \texttt{alias c='clear'}
+
+Expande c, se convierte en \emph{clear}
+\item \texttt{alias }
+
+Muestra todos los alias
+\item \texttt{unalias c }
+
+Deshace el alias
+\end{itemize}
+alias suele definirse en \verb|.bashrc|
+
+Hay ataques/bromas basados en alias
+\end{frame}
+
+
+%%---------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{Funcionamiento de la shell}
+\begin{enumerate}
+\item 
+La shell lee texto de cierto fichero (stdin). Frecuentemente el texto lo
+está escribiendo el usuario, así que aporta algunas facilidades (borrar, autocompletar, history)
+\item 
+Analiza el texto (expande metacaracteres, variables, alias) 
+\item 
+Busca la primera palabra, para ver si se trata de un ejecutable
+
+\begin{itemize}
+\item 
+Primero la busca entre las órdenes internas
+\item
+Si no es interna, busca el ejecutable en 
+ciertos directorios (los indicados en el PATH) 
+\end{itemize}
+
+\item
+Aplica las redirecciones que correspondan
+\item
+Ejecuta, pasando el resto de palabras como argumento
+\item 
+Duerme
+\begin{itemize}
+\item 
+A menos que lancemos el ejecutable en \emph{background}\\
+\texttt{acroread file.1 \&}
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{History}
+Facilita la entrada de líneas
+
+\begin{itemize}
+\item
+(cursor arriba y abajo)
+
+Muestra, una a una, las órdenes introducidas
+\item
+\verb|!<cadena>|
+
+Repite la última orden que empiece por \verb|<cadena>|
+\item
+\verb|history|
+
+Muestra el historial de órdenes introducidas
+\item
+\verb|!<n>|
+
+Repite la órden \verb|<n>|
+
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{Permisos especiales}
+
+\subsection{SUID}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{SUID}
+Sea un fichero perteneciente a un usuario
+  \begin{footnotesize}
+  \begin{verbatim}
+-rwxr-xr-x 1 koji koji 50 2009-03-24 12:06 holamundo
+  \end{verbatim}
+  \end{footnotesize}
+Si lo ejecuta un usuario distinto
+  \begin{footnotesize}
+  \begin{verbatim}
+invitado@mazinger:~$ ./holamundo
+  \end{verbatim}
+  \end{footnotesize}
+El proceso pertenece al usuario que lo ejecuta, no al dueño del fichero
+
+  \begin{scriptsize}
+  \begin{verbatim}
+koji@mazinger:~$ ps -ef |grep holamundo
+invitado  2307  2260 22 12:16 pts/0    00:00:00 holamundo
+koji      2309  2291  0 12:16 pts/1    00:00:00 grep holamundo
+  \end{verbatim}
+  \end{scriptsize}
+
+Este comportamiento es el normal y es lo deseable habitualmente
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Pero en ocasiones deseamos que el proceso se ejecute con los
+permisos del dueño
+del ejecutable, no del usuario que lo invoca
+\begin{itemize}
+\item
+Esto se consigue activando el bit SUID  (\emph{set user id})
+
+\verb|chmod u+s fichero|
+
+\verb|chmod u-s fichero|
+
+En un listado detallado aparece una \verb|s| en lugar de la \verb|x| del
+dueño (o una \verb|S| si no había \verb|x|)
+\item
+El bit SUID permite que ciertos usuarios modifiquen un fichero, pero
+no de cualquier manera sino a través de cierto ejecutable
+
+  \begin{footnotesize}
+  \begin{verbatim}
+-rwsr-xr-x 1 root root 29104 2008-12-08 10:14 /usr/bin/passwd
+-rw-r--r-- 1 root root  1495 2009-03-23 19:56 /etc/passwd
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+El bit SUID también puede ser un problema de seguridad
+
+\item
+En el caso de los scripts, lo que se ejecuta no es
+el fichero con el script, sino el intérprete
+
+Un intérprete con bit SUID es muy peligroso, normalmente
+la activación del SUID en un script no tiene efecto
+
+\item
+Para buscar ficheros con SUID activo:
+
+\verb|find / -perm +4000|
+
+\item
+El bit SGID es análogo, cambia el GID
+
+\verb|chmod g+s fichero|
+
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\subsection{Sticky bit}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sticky bit}
+%sticky bit
+\begin{itemize}	
+\item
+En ficheros ya no se usa
+\item
+En un directorio, hace que sus ficheros solo puedan ser borrados o 
+renombrados por el dueño del fichero, del directorio o el \emph{root}
+%\item Solo el \emph{root} puede activarlo (aunque parezca lo contrario)
+\end{itemize}
+
+Se representa con una \verb|t|, en el listado y en chmod
+
+\begin{footnotesize}
+\verb|chmod [+-]t directorio|
+
+\verb|drwxrwxrwt 15 root root 4096 2007-02-21 13:36 /tmp/|
+\end{footnotesize}
+
+
+Si el directorio no tuviera permiso de ejecución, aparecería \verb|T|
+
+\begin{footnotesize}
+\verb|drwxrwx-wT|
+\end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{Umask}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Umask}
+Orden interna que muestra y cambia la variable umask 
+
+(\emph{user file creation mode mask})
+\begin{itemize}	
+\item \texttt{umask }
+
+Devuelve el valor umask                
+\item \texttt{umask nuevo-valor }
+
+Cambia el valor umask   
+\end{itemize}
+
+
+
+
+¿Qué permisos tiene por omisión un fichero recién creado?
+\begin{itemize}
+\item
+Ficheros:\verb|      666 and not umask|
+\item
+Directorios:\verb|    777 and not umask|
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Ejemplo. Creación de un fichero
+
+Calculamos el valor de umask negado
+\begin{verbatim}
+umask       022            000    010    010
+not umask   755            111    101    101
+
+
+\end{verbatim}
+
+Hacemos \emph{and lógico} entre 666 y el valor de umask negado
+
+\begin{verbatim}
+            666            110    110    110
+                  and
+not umask   755            111    101    101
+--------------------------------------------
+            644            110    100    100 
+                           rw-    r--    r--
+\end{verbatim}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{source}
+%%---------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{source}
+
+Ejecuta un fichero en el entorno de la shell actual, que no muere.
+Las variables usadas en el
+fichero importado serán por tanto variables del proceso actual
+
+El mandato \emph{punto} (.) es equivalente, (aunque puede resultar menos legible)
+
+\begin{itemize}	
+\item
+\begin{verbatim}
+. ~/.bashrc       # Ejecuta el código de .bashrc 
+                  # en el entorno actual
+ 
+\end{verbatim}
+\item 
+\begin{verbatim}
+source ~/.bashrc # Forma equivalente 
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Invocación de la shell}
+%%---------------------------------------------------------------
+
+% http://tldp.org/LDP/abs/html/intandnonint.html
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Invocación de la shell}
+\begin{itemize}
+\item
+Es frecuente desear que todas nuestras sesiones ejecuten o configuren algo,
+sin necesidad de teclearlo a mano cada vez. Para hacer esto necesitamos saber
+cómo funciona la \emph{invocación de la shell}
+\item
+Cada vez que se invoca una shell, esta ejecuta (con source) cierto
+fichero 
+\item
+Típicamente esto se emplea para definir y exportar variables de entorno, modificar
+el prompt, declarar alias...
+\item
+Cada tipo de shell ejecuta un fichero diferente
+\begin{itemize}
+\item
+Una shell puede ser de login o no de login
+\item
+Una shell puede ser interactiva o no interactiva
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{Tipos de shell}
+%\begin{enumerate}
+%\item
+%Encendemos el ordenador. Un proceso cuyo dueño es el root (getty, xdm, 
+%gdm, kdm, ...) espera a que un usuario se identifique con su \emph{login}
+%y contraseña
+%% este proceso no es una shell, la shell no sabe nada de logins,
+%% una shell ya se crea con el id del usuario
+%\item
+%Si la autenticación tiene éxito, se crea un shell con el id de este usuario,
+%con \verb|stdin| redirigido desde la consola de este usuario y con
+%\verb|stdout| y \verb|stderr| rediridos a la consola de este usuario
+%
+%Esta  \textcolor{red}{es un shell de login}
+%
+%\begin{tiny}
+%(También se puede forzar a que una shell se consider de login con
+%la opción \verb|--login| o pasando \verb|-| como primer caracter
+%de su argumento cero)
+%\end{tiny}
+%
+%\item
+%
+%Posteriormente, a partir de esta shell el usuario generará nuevos procesos,
+%incluyendo nuevas shell. Estas,  normalmente,
+%\textcolor{red}{no son shell de login}
+%
+%% en Mac OS sí lo son: no te vuelve a pedir el login porque ya
+%% te has autenticado, pero considera que cada ventanita es una 
+%% sesión nueva. Mac OS pagó por el derecho a llamarse unix,
+%% pero no sigue muchos de los convenios de un unix tradicional,
+%% así que considera cada terminal como una sesión nueva
+%
+%\end{enumerate}
+
+%\end{frame}
+
+
+% en un entorno gráfico, la shell de login no la veo, está oculta.
+% Pero se ha ejecutado en algún momento, porque el bash_profile
+% tiene que ejecutarse al comienzo de sesión, y eso solo puede
+% hacerlo una shell
+
+% FALSO: en octubre de 2011 pruebo en ubuntu en fluxbox y en gnome,
+% y no se ejecuta el bash_profile en shells "normales"
+% (con ssh, sí)
+
+% toda shell o bien es de login, o bien alguno de sus antepasados
+% lo es.
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+\begin{itemize}
+\item
+Una 
+\textcolor{red}{shell de login}
+es aquella en la que el usuario ha introducido login y contraseña
+\item
+En general, una 
+\textcolor{red}{shell interactiva}
+es aquella que tiene 
+\verb|stdin| redirigida desde la consola de un usuario,
+y \verb|stdout| y \verb|stderr| redirigidos a la consola de un usuario
+% An interactive shell is one started without non-option arguments, unless `-s' is specified, without specifiying the `-c' option, and whose input and output are both connected to terminals (as determined by isatty(3)), or one started with the `-i' option. 
+% http://www.faqs.org/docs/bashman/bashref_65.html#SEC72
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ Bash interactivo y de login }
+
+
+
+Ejemplos: 
+\begin{itemize}
+\item
+Una sesión en una máquina sin gráficos (p.e. un Unix antiguo, un router...)
+\item
+Una sesión sin gráficos en una máquina con gráficos, que se inicia pulsando  Ctrl+Alt+F1
+\item
+Entrar por ssh en una máquina
+\end{itemize}
+
+
+En este caso, la shell
+\begin{itemize}
+\item
+Lee y ejecuta \verb|/etc/profile|
+\item
+Después, ejecuta el primero que encuentre de
+\begin{verbatim}
+  ~/.bash_profile 
+  ~/.bash_login
+  ~/.profile
+\end{verbatim}
+No se ejecuta \verb|.bashrc|, a menos que \verb|.bash_profile| lo llame.
+%%\item \texttt{alias mils='ls -la'}
+
+Al terminar ejecuta
+\begin{verbatim}
+  ~/.bash_logout
+\end{verbatim}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bash interactivo, no de login }
+
+Ej: Un terminal en Gnome o en Fluxbox 
+
+Se ejecuta
+\begin{itemize}
+\item
+\begin{verbatim}
+~/.bashrc
+\end{verbatim}
+\end{itemize}
+
+No se ejecuta \verb|~/.bash_profile|
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bash no interactivo, no de login}
+
+Ej: Un script
+% pj un script,  aunque parece no funcionar con comilla invertida
+\begin{itemize}
+\item Se ejecuta el fichero \verb|$BASH_ENV|
+\end{itemize}
+
+%\textcolor{red}{Atención},hablamos del inicio del shell, no de unix
+
+\end{frame}
+
+% con umask 077 por omisión cierro todo para el resto
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+Antes del \verb|.bashrc| de cada usuario, se ejecuta \verb|/etc/bash.bashrc|,
+común para todos los usuarios
+
+\item
+Cuando se crea un usuario con \verb|adduser|, se copia en
+su \emph{home} todos los fichero que haya en \verb|/etc/skel| (aquí
+se guardan los ficheros de configuración por omisión para cada usuario)
+
+\item
+Hablamos siempre del inicio de la shell.
+No debemos confundir todo esto con los niveles de ejecución, 
+que se refienen al inicio de la máquina
+(directorios \verb|/etc/rc2.d|, \verb|/etc/rcS.d|, etc)
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Actualmente la diferencia entre shell de login y shell no de login
+es algo artificial
+\footnote{En un linux con gráficos, una sesión ordinaria no ejecuta
+ninguna shell de login, mientras que en MacOS todas las shell 
+que ejecuta el usuario
+son de login}
+\item
+Hoy no suele resultar conveniente tener un fichero para
+las de login (\verb|~/.bash_profile|) y otro distinto
+para las que son no de login (\verb|~/.bashrc|)
+\item
+Por tanto, lo normal es configurar todo lo necesario en \verb|~/.bashrc|
+y tener en \verb|~/.bash_profile| únicamente una llamada a \verb|~/.bashrc|, de la siguiente manera:
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+if [ -f ~/.bashrc ]; then   # si existe .bashrc
+    . ~/.bashrc             # ejecuta .bashrc
+fi
+  \end{verbatim}
+  \end{footnotesize}
+O lo que es lo lo mismo
+  \begin{footnotesize}
+  \begin{verbatim}
+if test  -f ~/.bashrc ; then   # si existe .bashrc
+    source ~/.bashrc             # ejecuta .bashrc
+fi
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{Tareas}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Control de tareas (jobs)}
+
+
+\begin{itemize}
+\item
+Para lanzar varios procesos que se ejecuten en paralelo lo más
+cómodo suele ser abrir varias shells (una nueva terminal o una
+nueva pestaña en el terminal o un multiplexor de terminales
+como screen)
+
+\item
+Pero también es posible desde una única shell manejar varios
+procesos simultáneamente: mediante el control de tareas (jobs)
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Un proceso puede ejecutarse en primer o en segundo plano
+\begin{itemize}
+\item
+En primer plano (\emph{foreground}) recibe
+órdenes desde el teclado, como Ctrl Z  (detener
+temporalmente) o Ctrl C (finalizar)
+
+Cada shell solo puede tener un proceso en primer plano
+\item
+En segundo plano no tiene vinculada su entrada
+estándar desde el teclado, no recibe las señales Ctrl Z o Ctrl D.
+Es necesario emplear \emph{kill}
+
+Puede haber varios procesos en segundo plano
+\end{itemize}
+
+De la misma manera, un proceso detenido puede estar tanto en primer
+como en segundo plano
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+La orden \emph{jobs} indica, en cada línea, número de tarea, estado y nombre
+\end{itemize}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+koji@mazinger:~$ jobs
+[1]   Ejecutando              xcalc &
+[2]-  Ejecutando              evince &
+[3]+  Detenido                gedit
+  \end{verbatim}
+  \end{footnotesize}
+
+\begin{itemize}
+\item
+El signo \verb|+| indica tarea por omisión, aquella que
+se sobreentiende si no se indica número de tarea.
+Si la tarea por omisión muere, la siguiente será la marcada
+con el signo \verb|-|
+% cuando muera el último, el penultimo pasa a ser último
+\item
+
+\verb|kill %n| envía señal al proceso con el job \verb|n|
+(El símbolo de porcentaje indica nº de job, su ausencia indica pid)
+\item
+Algunos programas multiproceso, complejos, aunque los lancemos desde una shell no son
+hijos de esa shell y no figurarán en la lista de tareas. Por ejemplo firefox o nautilus
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+\verb|fg n| 
+
+pone la tarea \verb|n| en ejecución en primer plano
+\item
+\verb|bg n| 
+
+pone la tarea \verb|n| en ejecución en segundo plano 
+
+El resultado es el mismo que si hubiéramos lanzado la orden con el símbolo \verb|&|
+\end{itemize}
+Las órdenes 
+\verb|bg| y
+\verb|fg| 
+pueden lanzarse sin indicar \verb|n|, entonces se sobreentiende la tarea
+por omisión. 
+
+La orden \verb|kill| necesita que se le indique siempre explícitamente
+el número de tarea o el numero de pid
+
+\end{frame}
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+  \begin{footnotesize}
+  \begin{verbatim}
+vmstat 1 Lanzo vmstat, indicando que se actualice cada 1 segundo.
+Ctrl Z   Detengo el proceso. La shell me indica su número de trabajo. 
+fg 1     El trabajo 1 vuelve a primer plano. No puedo usar la shell.
+Ctrl Z   Vuelvo a detenerlo.
+jobs     Listado de todos los trabajos.
+bg 1     El trabajo 1 se ejecuta en segundo plano. Sigue escribiendo
+         en stdout, pero puedo usar la shell.
+         En este momento no puedo matarlo con ctrl C.
+fg       El trabajo pasa a primer plano, puedo matarlo.
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Screen}
+%%---------------------------------------------------------------
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{nohup}
+\begin{itemize}
+\item
+Normalmente, cuando un usuario cierra una sesión, todos sus procesos reciben
+la señal SIGHUP y mueren
+\item
+Si tenemos procesos que queremos que se continúen ejecutando aunque el
+usuario cierre la sesión, podemos usar \verb|nohup|
+\begin{itemize}
+\item
+\verb|nohup <orden>|
+
+\verb|<orden>| ignorará la señal SIGHUP. Escribirá stdout en ./nohup.out (o en \verb|~/nohup.out|)
+\item
+Si necesitamos stdin, es necesario redirigirla desde un fichero 
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Screen}
+\begin{itemize}
+\item
+Screen es una alternativa a \verb|nohup| mucho más potente: Además
+de mantener el proceso vivo cuando el usuario se desconecta, posteriormente
+se puede seguir usando interactivamente stdin y stdout
+\item
+Otra ventaja:
+
+\begin{itemize}
+\item
+Normalmente, si deseo tener n sesiones en una máquina remota, es necesario abrir
+n conexiones mediante ssh
+\item
+Usando screen, puedo abrir una única conexión ssh a una sesión screen, y en ella usar n ventanas
+\end{itemize}
+\item
+Inconventes:
+\begin{itemize}
+\item
+No es POSIX
+\item
+Es necesario memorizar media docena de atajos de teclado
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Screen maneja \emph{sesiones} 
+
+\begin{itemize}
+\item
+Una sesión de screen
+permite que un usuario se desasocie de ella (dettach). El
+usuario puede desconectarse y la sesión permanece (todos los procesos
+se siguen ejecutando).
+Cuando el usuario vuelva a conectarse (típicamente por ssh)
+puede reasociarse (reattach) 
+\end{itemize}
+
+En cada sesión puede haber
+diferentes \emph{ventanas}
+\begin{itemize}
+\item
+No son ventanas al estilo Windows / X Window ni incluso ncurses
+\item
+Se parece a tener varias pestañas en un gnome-terminal, o a diferentes sesiones en alt F1, alt F2
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Uso típico
+  \begin{footnotesize}
+  \begin{verbatim}
+screen       Creamos una sesión de screen y nos asociamos a ella
+screen -ls   Vemos listado de sesiones
+screen -d    Nos desasociamos de la sesión actual
+  \end{verbatim}
+  \end{footnotesize}
+Desconectamos ssh o cerramos el terminal. Volvemos a conectarnos
+
+  \begin{footnotesize}
+  \begin{verbatim}
+screen -ls        Vemos listado de sesiones
+screen -r nombre  Nos reasociamos a la sesión
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso de ventanas}
+
+Ordenes básicas para el uso de ventanas en screen
+  \begin{footnotesize}
+  \begin{verbatim}
+ctrl a "     Ver todas las ventanas de la sesión a las que estoy 
+             asociado, con los cursores elijo una.
+ctrl a c     Crear una nueva ventana dentro de la sesión actual
+             (c minúscula)
+
+  \end{verbatim}
+  \end{footnotesize}
+
+Otras órdenes para el uso de ventanas
+  \begin{footnotesize}
+  \begin{verbatim}
+ctrl a A     Cambiar el nombre a la ventana actual
+             (A mayúscula)
+ctrl a ?     Ayuda
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Observaciones}
+
+
+Si queremos desconectarnos de la máquina manteniendo la sesión de screen
+para usarla en otro momento
+\begin{itemize}
+\item
+Nos desasociamos de la sesión (screen -d)
+\item
+Cerramos la shell (exit/Ctrl d)
+\end{itemize}
+
+Si quieremos cerrar una sesión de screen
+\begin{itemize}
+\item
+Cerramos ordenadamente todas las ventanas (todas las shell, con exit o ctrl d).
+Esto cierra de forma definitiva todos los procesos
+\end{itemize}
+
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Si vemos una sesión como 
+
+  \begin{footnotesize}
+  \begin{verbatim}
+koji@mazinger:~$ screen -ls
+There is a screen on:
+        4680.pts-3.mazinger      (18/01/11 12:54:05)     (Attached)
+1 Socket in /var/run/screen/S-koji.
+  \end{verbatim}
+  \end{footnotesize}
+Esto significa que la sesión de screen 4680 ya tiene un terminal asociado, pero no sabemos si es el nuetro o es otro
+
+Podemos saber si  nuestro terminal está en alguna sesión de screen con  \verb|ctrl a "|
+\begin{itemize}
+\item
+Si estamos en screen,  veremos un listado de sus ventanas
+\item
+Si no, veremos \verb|"|
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Multi display mode
+\begin{itemize}
+\item
+
+  \begin{footnotesize}
+  \begin{verbatim}
+screen -r -x <nombre_sesion>   
+  \end{verbatim}
+
+  \end{footnotesize}
+Nos asocia a una sesión de screen aunque ya haya otra sesión asociada
+
+(Podremos usar ambos terminales)
+%. (Los bucles no se detectan
+\end{itemize}
+
+Encontraremos un buen tutorial sobre screen \emph{googleando}:
+\begin{itemize}
+\item
+\emph{Jeff linux screen tutorial}
+\end{itemize}
+
+Una vez familiarizados con screen, podemos usar \emph{byobu}, un
+recubrimiento de screen con algunas mejoras en el interfaz de usuario
+
+\end{frame}
+
+\end{document}
+%%----------------------------------------------
+%-------------------------------------END DOCUMENT
+%%----------------------------------------------
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \section{Inicio de sesión}
+{\flushleft\fontsize{8pt}{8pt}\selectfont
+\verb|Debian GNU/Linux 3.1 blas tty1|\\
+\verb| |\\
+\verb|blas login: |\texttt{\textbf{cespedes}}\\
+\verb|Password:|\\
+\verb| |\\
+\verb|Last login: Sat Jan 29 17:25:03 2005 on tty4|\\
+\verb| |\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{id}}\\
+\verb|uid=1000(cespedes) gid=1000(cespedes) groups=20(dialout),24(cdrom),|\\
+\verb|25(floppy),29(audio),44(video),1000(cespedes)|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{su}}\\
+\verb|Password:|\\
+\verb|blas:/home/cespedes# |\texttt{\textbf{id}}\\
+\verb|uid=0(root) gid=0(root) groups=0(root)|\\
+\verb|blas:/home/cespedes# |\texttt{\textbf{exit}}\\
+\verb|exit|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{id}}\\
+\verb|uid=1000(cespedes) gid=1000(cespedes) groups=20(dialout),24(cdrom),|\\
+\verb|25(floppy),29(audio),44(video),1000(cespedes)|\\
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{El intérprete de órdenes}
+  El intérprete, o \emph{shell}, es el programa encargado de
+  leer las órdenes dadas por un usuario y ejecutarlas una a una
+
+  Hay muchas \emph{shell}s distintas. Hoy en día, la más común es \texttt{bash}.
+  \begin{itemize}
+    \item Órdenes internas: control de la shell y programación:\\
+	    \texttt{cd}, \texttt{echo}, \texttt{exit}, \texttt{if}, \texttt{for}, \texttt{while}, \texttt{break}, \texttt{return}\ldots
+    \item Órdenes externas: ejecución de otro programa
+    \item Variables: comienzan con \verb+$+.\\
+	    Predefinidas: \verb+$HOME+, \verb+$PATH+, \verb+$$+\ldots\\
+	    \verb+cespedes@blas:~$ +\texttt{\textbf{echo \$PATH}}\\
+	    \verb+/home/cespedes/bin:/usr/local/bin:/usr/bin:+\\
+	    \verb+/bin:/usr/bin/X11:/usr/games+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Páginas de manual}
+  \texttt{\$ \textbf{man} \emph{[sección] página}} \hspace{\fill} (\texttt{\textbf{man} \emph{sección} \textbf{intro}})
+  \begin{itemize}
+    \item[]\textbf{Sección 1.} Órdenes de usuario
+    \item[]\textbf{Sección 2.} Llamadas al sistema
+    \item[]\textbf{Sección 3.} Llamadas a funciones de biblioteca
+    \item[]\textbf{Sección 4.} Ficheros especiales
+    \item[]\textbf{Sección 5.} Ficheros, formatos y protocolos
+    \item[]\textbf{Sección 6.} Juegos
+    \item[]\textbf{Sección 7.} Convenciones, miscelánea
+    \item[]\textbf{Sección 8.} Órdenes de administrador y privilegiadas
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Operaciones con ficheros: consulta}
+  \begin{itemize}
+    \item \texttt{pwd}$^*$ $\rightarrow$ Indica cuál es el directorio actual
+    \item \texttt{cd}$^*$ $\rightarrow$ Cambia el directorio actual
+    \item \texttt{ls} $\rightarrow$ Muestra el contenido de un directorio
+    \item \texttt{cat} $\rightarrow$ Muestra el contenido de un fichero
+    \item \texttt{find} $\rightarrow$ Busca ficheros que cumplan
+          determinadas catacterísticas
+    \item \texttt{du} $\rightarrow$ Indica el tamaño de un fichero
+    \item \texttt{cmp} $\rightarrow$ Compara dos ficheros
+    \item \texttt{diff} $\rightarrow$ Muestra diferencias entre dos ficheros
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Operaciones con ficheros: creación, borrado}
+  \begin{itemize}
+    \item \texttt{cp} $\rightarrow$ Copia un fichero en otro destino
+    \item \texttt{mv} $\rightarrow$ Renombra un fichero y/o lo mueve
+          de un directorio a otro
+    \item \texttt{ln} $\rightarrow$ Crea un enlace de un fichero a otro
+    \item \texttt{rm} $\rightarrow$ Borra un fichero
+    \item \texttt{rmdir} $\rightarrow$ Borra un directorio
+    \item \texttt{mkdir} $\rightarrow$ Crea un directorio
+    \item \texttt{mknod}$^*$ $\rightarrow$ Crea un fichero ``especial''
+    \item \texttt{tar} $\rightarrow$ Manipula conjuntos de ficheros
+    \item \texttt{gzip} $\rightarrow$ Comprime un fichero
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Operaciones con ficheros: manipulación}
+  \begin{itemize}
+    \item \texttt{touch} $\rightarrow$ Modifica la fecha de última
+          modificación de un fichero
+    \item \texttt{chmod} $\rightarrow$ Cambia los permisos de acceso
+          a un fichero
+    \item \texttt{chown}$^*$ $\rightarrow$ Cambia el dueño de un fichero
+    \item \texttt{chgrp}$^*$ $\rightarrow$ Cambia el grupo de un fichero
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Manejo de ficheros de texto}
+  \begin{itemize}
+    \item Editores: \texttt{ed}, \texttt{vi} (\texttt{vim}, \texttt{elvis},
+		    \texttt{nvi}), \texttt{emacs} (\texttt{xemacs},
+		    \texttt{jove}), \texttt{gedit}, \texttt{kedit},
+		    \texttt{nano}, \texttt{jed}, \texttt{wily},
+		    \texttt{the}, \texttt{aee}\ldots
+    \item Búsqueda de cadenas: \texttt{grep}
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{grep Debian /etc/motd}}\\
+\verb|The programs included with the Debian GNU/Linux system are free software;|\\
+\verb|Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent|\\
+}
+    \item Sustitución de cadenas: \texttt{sed}
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{grep Debian /etc/motd | sed s/GNU/Ñu/}}\\
+\verb|The programs included with the Debian Ñu/Linux system are free software;|\\
+\verb|Debian Ñu/Linux comes with ABSOLUTELY NO WARRANTY, to the extent|\\
+}
+    \item Manipulación general: \texttt{awk}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Usuarios conectados}
+{\flushleft\fontsize{8pt}{8pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{who}}\\
+\verb|rover    pts/0        Feb 16 09:14 (:0.0)|\\
+\verb|cespedes pts/1        Feb 16 10:56 (:0.0)|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{who am i}}\\
+\verb|cespedes pts/1        Feb 16 10:56 (:0.0)|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{tty}}\\
+\verb|/dev/pts/1|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{finger}}\\
+\verb|Login     Name               Tty      Idle  Login Time   Office|\\
+\verb|rover     Roberto Lumbreras  pts/0    1:59  Feb 16 09:14 (:0.0)|\\
+\verb|cespedes  Juan Cespedes      pts/1          Feb 16 10:56 (:0.0)|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{w}}\\
+\verb| 10:56:15 up 18:12,  2 users,  load average: 0,00, 0,12, 0,22|\\
+\verb|USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT|\\
+\verb|rover    pts/0    :0.0             09:14    1:59m  0.02s  0.02s -bash|\\
+\verb|cespedes pts/1    :0.0             10:56    0.00s  0.03s  0.01s w|\\
+\verb|cespedes@blas:~$|\\}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Procesos}
+{\flushleft\fontsize{8pt}{8pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{ps}}\\
+\verb|  PID TTY          TIME CMD|\\
+\verb| 3086 pts/1    00:00:00 bash|\\
+\verb| 3087 pts/1    00:00:00 ps|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{ps f}}\\
+\verb|  PID TTY      STAT   TIME COMMAND|\\
+\verb| 3086 pts/1    Ss     0:00 -bash|\\
+\verb| 3088 pts/1    R+     0:00  \_ ps f|\\
+\verb+cespedes@blas:~$ +\texttt{\textbf{ps af}}\\
+\verb|  PID TTY      STAT   TIME COMMAND|\\
+\verb|  623 tty1     Ss+    0:00 /sbin/getty 38400 tty1|\\
+\verb|  624 tty2     Ss+    0:00 /sbin/getty 38400 tty2|\\
+\verb|  625 tty3     Ss+    0:00 /sbin/getty 38400 tty3|\\
+\verb|  626 tty4     Ss+    0:00 /sbin/getty 38400 tty4|\\
+\verb|  627 tty5     Ss+    0:00 /sbin/getty 38400 tty5|\\
+\verb|  628 tty6     Ss+    0:00 /sbin/getty 38400 tty6|\\
+\verb| 2812 pts/0    Ss+    0:00 -bash|\\
+\verb| 3086 pts/1    Ss     0:00 -bash|\\
+\verb| 3282 pts/1    R+     0:00  \_ ps af|\\}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Procesos (2)}
+{\flushleft\fontsize{7pt}{7pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{top}}\\
+\verb|top - 11:55:44 up 18:52, 31 users,  load average: 0.49, 0.31, 0.25|\\
+\verb|Tasks: 177 total,   3 running, 174 sleeping,   0 stopped,   0 zombie|\\
+\verb|Cpu(s): 11.8% us,  2.9% sy,  0.0% ni, 85.3% id,  0.0% wa,  0.0% hi,  0.0% si|\\
+\verb|Mem:   1035924k total,   687348k used,   348576k free,    89188k buffers|\\
+\verb|Swap:  2457904k total,        0k used,  2457904k free,   292060k cached|\\
+\verb||\\
+\verb|  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND           |\\
+\verb|12118 cespedes  15   0  9500 2964 2640 S  8.7  0.3   0:04.92 mpg123             |\\
+\verb|12806 cespedes  16   0  2188 1128  848 R  8.7  0.1   0:00.10 top                |\\
+\verb|15888 cespedes  15   0  5824 3184 2212 S  2.9  0.3   0:00.30 xterm              |\\
+\verb|    1 root      16   0  1500  516  456 S  0.0  0.0   0:00.44 init               |\\
+\verb|    2 root      34  19     0    0    0 S  0.0  0.0   0:00.06 ksoftirqd/0        |\\
+\verb|    3 root       5 -10     0    0    0 S  0.0  0.0   0:04.20 events/0           |\\
+\verb|    4 root       5 -10     0    0    0 S  0.0  0.0   0:00.00 khelper            |\\
+\verb|   16 root       5 -10     0    0    0 S  0.0  0.0   0:00.00 kacpid             |\\
+\verb|  107 root       5 -10     0    0    0 S  0.0  0.0   0:00.07 kblockd/0          |\\
+\verb|  138 root      20   0     0    0    0 S  0.0  0.0   0:00.00 pdflush            |\\
+\verb|  139 root      15   0     0    0    0 S  0.0  0.0   0:00.15 pdflush            |\\
+\verb|  141 root      15 -10     0    0    0 S  0.0  0.0   0:00.00 aio/0              |\\
+\verb|  140 root      17   0     0    0    0 S  0.0  0.0   0:00.82 kswapd0            |\\
+\verb|  728 root      15   0     0    0    0 S  0.0  0.0   0:00.00 kseriod            |\\
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Procesos (3)}
+  \begin{itemize}
+    \item Pausa en un proceso: \texttt{sleep}
+    \item Terminación y avisos a procesos: \texttt{kill}
+  \end{itemize}
+  \vspace{.1cm}
+{\flushleft\fontsize{8pt}{8pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{sleep 3600 \&}}\\
+\verb|[1] 17093|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{kill -l}}\\
+\verb| 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL|\\
+\verb| 5) SIGTRAP      6) SIGABRT      7) SIGBUS       8) SIGFPE|\\
+\verb| 9) SIGKILL     10) SIGUSR1     11) SIGSEGV     12) SIGUSR2|\\
+\verb|13) SIGPIPE     14) SIGALRM     15) SIGTERM     17) SIGCHLD|\\
+\verb|18) SIGCONT     19) SIGSTOP     20) SIGTSTP     21) SIGTTIN|\\
+\verb|22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ|\\
+\verb|26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO|\\
+\verb|30) SIGPWR      31) SIGSYS      33) SIGRTMIN    34) SIGRTMIN+1|\\
+\verb|cespedes@blas:~$ |\texttt{\textbf{kill -6 17093}}\\
+\verb|[1]+ Aborted                  sleep 3600|\\
+\verb|cespedes@blas:~$ |\\
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Herramientas de gestión de discos}
+  \begin{itemize}
+    \item \texttt{fdisk} $\rightarrow$ Muestra y modifica la tabla
+          de particiones de un disco
+    \item \texttt{mkfs} $\rightarrow$ Crea un sistema de ficheros
+          (\emph{formatea} una partición)
+    \item \texttt{fsck} $\rightarrow$ Comprueba la integridad de un
+          sistema de ficheros
+    \item \texttt{df} $\rightarrow$ Muestra tablas de montaje y uso
+          de cada partición
+    \item \texttt{mount} $\rightarrow$ Muestra tablas de montaje,
+          monta una partición
+    \item \texttt{umount} $\rightarrow$ Desmonta una partición
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Herramientas de gestión de memoria}
+  \begin{itemize}
+    \item \texttt{top} $\rightarrow$ Información general acerca de
+          los procesos del sistema y de su uso de memoria y de CPU
+    \item \texttt{free} $\rightarrow$ Resumen del estado de la memoria
+          en el sistema
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|cespedes@blas:~$ |\texttt{\textbf{free}}\\
+\verb|             total       used       free     shared    buffers     cached|\\
+\verb|Mem:       1035924     735480     300444          0      94620     333940|\\
+\verb|-/+ buffers/cache:     306920     729004|\\
+\verb|Swap:      2457904          0    2457904|\\
+}
+  \end{itemize}
+  Gestión del \emph{swap} (área de intercambio):
+  \begin{itemize}
+    \item \texttt{mkswap} $\rightarrow$ Crea un área de intercambio
+    \item \texttt{swapon} $\rightarrow$ Activa un área de intercambio
+    \item \texttt{swapoff} $\rightarrow$ Desactiva un área de intercambio
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Gestión de red (TCP/IP)}
+  \begin{itemize}
+    \item \texttt{ifconfig} $\rightarrow$ Muestra/modifica información
+          de las tarjetas de red del sistema
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|root@orion:~$ |\texttt{\textbf{ifconfig eth0}}\\
+\verb|eth0      Link encap:Ethernet  HWaddr 00:0D:9D:D1:6A:27  |\\
+\verb|          inet addr:193.147.71.90  Bcast:193.147.71.255  Mask:255.255.255.128|\\
+\verb|          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1|\\
+\verb|          RX packets:2219198 errors:0 dropped:0 overruns:0 frame:0|\\
+\verb|          TX packets:949209 errors:0 dropped:0 overruns:0 carrier:0|\\
+\verb|          collisions:0 txqueuelen:1000 |\\
+\verb|          RX bytes:553335922 (527.7 MiB)  TX bytes:357891938 (341.3 MiB)|\\
+}
+    \item \texttt{route} $\rightarrow$ Muestra/modifica información
+          de la tabla de rutas del sistema
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|root@orion:~$ |\texttt{\textbf{route}}\\
+\verb|Kernel IP routing table|\\
+\verb|Destination     Gateway         Genmask         Flags Metric Ref    Use Iface|\\
+\verb|10.3.0.2        *               255.255.255.255 UH    0      0        0 tun0|\\
+\verb|193.147.71.0    *               255.255.255.128 U     0      0        0 eth0|\\
+\verb|192.168.64.0    *               255.255.255.0   U     0      0        0 eth1|\\
+\verb|default         193.147.71.1    0.0.0.0         UG    0      0        0 eth0|\\
+}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \section{Gestión de red (TCP/IP) (2)}
+  \begin{itemize}
+    \item \texttt{netstat} $\rightarrow$ Muestra el estado de las conexiones
+          TCP/IP de la máquina
+{\flushleft\fontsize{6pt}{6pt}\selectfont
+\verb|root@orion:~$ |\texttt{\textbf{netstat -nt}}\\
+\verb|Active Internet connections (w/o servers)|\\
+\verb|Proto Recv-Q Send-Q Local Address           Foreign Address         State      |\\
+\verb|tcp        0      0 193.147.71.90:137       193.147.62.27:32887     ESTABLISHED|\\
+\verb|tcp        0      0 193.147.71.90:36054     193.147.71.88:80        TIME_WAIT|\\
+\verb|tcp6       0     48 ::ffff:193.147.71.90:22 ::ffff:193.147.62:33050 ESTABLISHED|\\
+\verb|tcp6       0      0 ::ffff:193.147.71.90:22 ::ffff:193.147.62:32983 ESTABLISHED|\\
+}
+  \end{itemize}
+  Información acerca de protocolos, servicios, puertos, etc. en los ficheros
+\texttt{/etc/protocols} y \texttt{/etc/services}
+\end{frame}
+
+
+
+\end{document}
+
+
+
+
+\end{document}
+
+

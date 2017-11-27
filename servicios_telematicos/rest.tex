@@ -1,0 +1,1374 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={XML},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[REST]{REST:Representational State Transfer}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2016]{Abril de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+
+\section{Introducción a REST}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{REST}
+REST \emph{Representational State Transfer} 
+es la tecnología más empleada actualmente para intercambiar
+información \emph{de gestión} entre máquina y máquina
+
+\begin{itemize}
+\item
+En rigor, REST es una propuesta académica, no una arquitectura concreta.
+\item
+Define una serie de características que debería cumplir una arquitectura.
+\item
+Los protocolos que cumplen las restrucciones REST, se les denomina RESTful
+\item
+
+Desarrollado por
+Roy Fielding a finales de los años 90.
+Publica REST en su tesis doctoral, año 2000
+
+\begin{itemize}
+\item
+Fielding es uno de los autores de HTTP 1.1
+\end{itemize}
+
+\item
+En la práctica, cuando una aplicación dice ser REST, suele ser ROA
+(una arquitectura REST concreta desarrollada L.Richardson y S.Ruby)
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Características de una arquitectura REST}
+Una arquitectura es REST si cumple estas 6 caracterísitcas
+\begin{enumerate}
+\item
+Cliente-servidor
+\item
+Sin estado (\emph{stateless})
+\item
+Admite el uso de caches (\emph{cacheable})
+\item
+Sistema basado en capas (\emph{layered system})
+\item
+Generación (opcional) de código bajo demanda
+\item
+Uso de interfaces uniformes
+
+\begin{itemize}
+\item
+Identificación de recursos
+\item
+Manipulación de recursos mendiante representaciones
+\item
+Mensajes autodescriptivos
+\item
+Hipermedia como motor del estado de la aplicación (\emph{HATEOAS, 
+Hypermedia as the engine of application state})
+\end{itemize}
+
+\end{enumerate}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1. Cliente-servidor}
+\begin{itemize}
+\item
+Clara separación cliente-sevidor en el API, interfaz robusto que permita desarrollo
+independiente de cada parte
+
+\begin{itemize}
+\item
+P.e. El cliente no almacena datos
+\end{itemize}
+
+\item
+El servidor ignora al usuario: tanto el interfaz de usuario como el estado de usuario
+\item
+Cliente y servidor se pueden desarrollar por separado
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2. Sin estado}
+
+\begin{itemize}
+\item
+En el servidor no se almacena contexto de las peticiones del cliente
+\item
+Cada petición del cliente contienen toda la información necesaria para
+que el servidor responda
+\item
+La sesión y el estado del cliente se guardan en el cliente
+\item
+Todo esto simplifica la lógica del servidor
+
+\begin{itemize}
+\item
+Garantiza que no llegará
+a estados inconsistentes (no hay estado)
+\item
+Permite replicar los servidores
+\item
+Facilita el escalado
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Ejemplo de protocolo sin estado:
+\begin{itemize}
+\item
+HTTP
+\end{itemize}
+
+Ejemplo de protocolo que sí tiene estado:
+
+\begin{itemize}
+\item
+FTP
+
+\begin{itemize}
+\item
+Hay una sesión, con un usuario autenticado, con directorio de trabajo,
+con modo de transferencia (texto o binario) preestablecido
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{3. Admite cachés}
+\begin{itemize}
+\item
+Cada respuesta indica si es susceptible de ser almacenada en un cache o no
+
+\begin{itemize}
+\item
+Si no lo es, los cachés se deshabilitarán,
+lo que garantiza que no se usará información
+obsoleta o inadecuada
+\end{itemize}
+\item
+Usar caches mejora escalabilidad y el rendimiento
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{4. Sistema basado en capas}
+Entre cliente y servidor puede haber proxys, caches o gateways,
+sin que el cliente lo perciba y sin que produzcan resultados incorrectos
+\begin{itemize}
+\item
+
+Un proxy es un intermediario. Recibe la petición y la vuelve a enviar.
+
+\begin{itemize}
+\item
+Por motivos de seguridad, para poner un filtro para niños, para conseguir anonimato,
+para modificar los documentos sobre la marcha (cambiar formato, idioma..)
+para forzar a que una red pase por una máquina y haga cache...
+\end{itemize}
+
+\item
+Un gateway es como un proxy, pero cambiando de protocolo. P.e. gateway http-ftp
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{5. Puede generar código bajo demanda}
+\begin{itemize}
+\item
+Opcionalmente, el servidor puede ampliar la funcionalidad del cliente
+enviando código, como applets java o JavaScript
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{6. Interfaz uniforme}
+Es la característica principal de cualquier sistema REST. Permite sistemas
+débilmente acoplados
+
+\begin{itemize}
+\item
+6.1 Identificación de recursos
+\item
+6.2 Manipulación de recursos mendiante representaciones
+\item
+6.3 Mensajes autodescriptivos
+\item
+6.4 Hipermedia como motor del estado de la aplicación (\emph{HATEOAS})
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{6.1 Identificación de recursos}
+\begin{itemize}
+\item
+Los recursos individuales se identifican en las peticiones, típicamente mediante URIs en sistemas web.
+\item
+El recurso es una cosa y la representación es otra
+
+\begin{itemize}
+\item
+ Por ejemplo un recurso (un fichero) se puede
+servir representado en HTML, en XML o JSON. Pero ninguno de estos formatos tiene por qué ser el
+formato en que el recurso es almacenado en la base de datos
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{6.2 Manipulación de recursos mediante representaciones}
+En necesario desacoplar el recurso de la representación del recurso.
+\begin{itemize}
+\item
+El recurso tiene una única URI para todos los formatos
+\item
+En las cabeceras, cliente y servidor negocian qué formatos soportan, prefieren
+o solicitan de cada recurso.
+\item
+No hay una URI diferente para cada formato, cada formato no se entiende como una entidad
+separada
+\end{itemize}
+
+Recordatorio:
+
+
+\begin{itemize}
+\item
+URI: Uniform Resource Identifier
+\item
+URL: Uniform Resource Locator
+\item
+URN: Uniform Resource Name
+\end{itemize}
+
+Un identificador (URI) puede ser o bien una dirección (URL) o bien
+un nombre (URN) o bien ambas cosas
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{6.3 Mensajes autodescriptivos}
+Cada mensaje contiene toda la información necesaria para ser procesado.
+\begin{itemize}
+\item
+Ejemplo: \emph{Internet Media Type} (antiguamente llamado tipo MIME)
+
+\item
+Contraejemplo: Fichero de texto \emph{code page}
+% datetime naive
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{6.4 Hipermedia como motor del estado de la aplicación }
+\emph{HATEOAS, Hypermedia as the engine of application state}
+
+\begin{itemize}
+\item
+Las transiciones entre estados se especifican en un documento HTML, que devuelve
+el servidor
+\item
+El cliente puede descubrir por si mismo los estados a los que puede pasar,
+mediante información que le pasa en el servidor, en formato hipermedia
+(enlaces html), sin necesidad de instrucciones adicionales \emph{fuera de banda}
+\end{itemize}
+
+\end{frame}
+
+
+\section{ROA: Resource-Oriented Architecture}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ROA: Resource-Oriented Architecture}
+L. Richardson y S.Ruby en su libro de 2007 \emph{RESTful Web Services}
+proponen una arquitectura concreta,  RESTful, a la que denominan
+\emph{ROA: Resource-Oriented Architecture}
+%Pautas de Richardson y Ruby para hacer servicios RESTful
+% Richardson, pg 79
+
+\begin{itemize}
+\item
+La mayoría de los servicios RESTful actuales siguen esta arquitectura ROA
+\begin{itemize}
+\item
+Aunque sus usuarios pueden no reconocer este nombre
+\end{itemize}
+\item
+Hay arquitecturas que se autodenominan RESTful, pero que no siguen estas
+pautas, resulta discutible que sean verdaderamente RESTful
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Las pautas de Richardson y Ruby para hacer servicios RESTful son muy similares
+a las características definidas por Fielding, pero un poco más concretas
+% Richardson, pg 79
+\begin{enumerate}
+\item
+La arquitectura está basada en \emph{recursos} (\emph{resources})
+\item
+Todo recurso tiene que tener una URI
+\item
+Las  aplicaciones son direccionables  (\emph{Addressability})
+\item
+El servidor no tiene estado (es \emph{stateless})
+\item
+Las aplicaciones usan un interfaz uniforme: GET, PUT, DELETE
+
+\end{enumerate}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{1. La arquitectura está basada en recursos}
+Un recurso \emph{resource} 
+es cualquier cosa con suficiente entidad como para merecer ser nombrado e indentificado
+por sí mismo:
+
+\begin{itemize}
+\item
+La versión 1.0.3 de cierto software
+\item
+Un vídeo
+\item
+Una entrada en un blog
+\item
+Un mapa de Fuenlabrada
+\item
+El precio actual del bitcoin en euros en Kraken
+\item
+...
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2. Todo recurso tiene que tener una URI}
+Si no tiene URI, no es un recurso
+
+Y la estructura tiene que ser homogénea y predecible
+\begin{itemize}
+\item
+http://www.ejemplo.com/sowtware/releases/1.0.3.tgz
+\item
+http://www.ejemplo.com/videos/helloworld
+\item
+http://www.example.com/blog/2016/04/20
+\item
+http://www.example.com/mapas/ES/MAD/fuenlabrada
+\item
+http://www.example.com/bitcoin/kraken/BTCEUR
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{3. Las aplicaciones son direccionables}
+\emph{Addressability}
+
+Una aplicación  es direccionable si expone todos sus datos relevantes
+como recursos
+
+Ejemplo:
+\begin{itemize}
+\item
+http://www.google.com/search?q=fuenlabrada
+\end{itemize}
+
+Esto es muy importante, cuando no existía este concepto, por ejemplo con el protocolo FTP,
+había que dar indicaciones como
+\emph{abra una sesión FTP con el usuario anonymous, cambie el directorio a pub/files/ y descargue
+el fichero file.txt}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Por ser las aplicaciones direccionables, se puede:
+
+\begin{itemize}
+\item
+Crear un marcador
+\item
+Crear una URI, ponerla por escrito, en un email, en un QR
+\item
+Enlazar desde otra página web
+\item
+
+Usar una cache
+
+\begin{itemize}
+\item
+De forma que la segunda vez que se pida el recurso,
+no se vuelva a consultar la fuente original sino que se sirve la versión
+en cache (tomando las precauciones necesarias para no servir información
+anticuada)
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{itemize}
+\item
+La página que usa Iberia en 2016 para localizar un vuelo, no es RESTful, no es direccionable
+  \begin{footnotesize}
+  \begin{verbatim}
+http://www.iberia.com/es/arrivals-and-departures/
+  \end{verbatim}
+  \end{footnotesize}
+No es posible enviar por correo un enlace a tu vuelo
+
+\item
+Para ser REST, debería ser algo así
+  \begin{footnotesize}
+  \begin{verbatim}
+http://www.iberia.com/flights/ib3214/20160329
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+No solo las direcciones web son direccionables, por ejemplo también es direccionable
+
+
+\begin{itemize}
+\item
+Un sistema de ficheros 
+
+  \begin{footnotesize}
+  \begin{verbatim}
+/home/jperez/st/ejemplo.txt
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Las celdas de una hoja de cálculo
+\end{itemize}
+
+Algo tan sencillo como ponerle una URI a un folleto para que la gente lo
+pueda ver en su navegador no sería posible sin el direccionamiento
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Si un servicio web es direccionable, los clientes pueden usarlos de formas nuevas,
+no previstas en el diseño original
+\item
+Facilita el ser usado desde distintos dispositivos: aplicaciones de escritorio, clientes
+web, clientes nativos para smartphone (iOS, android, BlueBerry...)
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{4. El servidor no tienen estado}
+
+\begin{itemize}
+\item
+Cada petición es independiente de las anteriores
+
+\begin{itemize}
+\item
+Ejemplo: una búsqueda en google devuelve 10 entradas, cada una de ellas contiene toda la información necesaria para hacer la búsqueda
+
+\item
+Contraejemplo: Cualquier sistema con \emph{directorio actual}
+
+\end{itemize}
+\item
+Cada uno de los posibles estados es un recurso, con su propia URI
+
+\item
+El estado se tienen que guardar en el cliente, nunca en el servidor
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+El diseño original de HTTP era \emph{stateless}, pero al añadir cookies,
+este principio suele romperse
+
+\begin{itemize}
+\item
+Las cookies que escribe el servidor rompen este principio, no son el estado, son una
+clave para identificar un estado guardado en el servidor
+\item
+Las cookies puden ser RESTful si las genera el cliente y continen toda la información
+para hacer una petición (posible, pero no habitual)
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{5. Interfaz uniforme: GET, PUT, POST, DELETE}
+REST dice que el interfaz debe ser uniforme, pero no especifica ninguno en particular
+
+ROA, sí: Las únicas acciones posibles son métodos HTTP:   GET, PUT, POST, DELETE
+
+\begin{itemize}
+\item
+Atención con el término \emph{método}, es el que emplea HTTP pero no tiene 
+nada que ver con los métodos de la programación orientada a objetos
+\end{itemize}
+
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{itemize}
+\item
+GET obtiene un recurso
+\item
+PUT crea un recurso, creando una nueva URI especificada por el cliente
+\item
+PUT modifica un recurso, si la URI ya existía
+\item
+POST añade datos a una URI preexistente
+
+Este añadido puede significar:
+
+\begin{itemize}
+\item
+Modificar un recurso ya existente
+\item
+Crear un nuevo recurso, cuya URI crea el servidor, no el cliente. El cliente
+solo indica la dirección del recurso \emph{padre}
+
+  (ejemplo típico: añadir entrada a un blog)
+\end{itemize}
+
+\item
+DELETE borra un recurso
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En muchas ocasiones, POST se emplea de forma contraria a REST
+\begin{itemize}
+\item
+Es el comportamiento de SOAP/WSDL y XML-RPC, es el POST al estilo RPC
+
+Webber lo llama POST \emph{sobrecargado}
+
+
+\begin{itemize}
+\item
+El cliente hace todos los POST a la misma URI
+\item
+El servidor analiza el contenido y realiza una acción u otra
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Otros métodos de HTTP también pueden resultar útiles, no se
+usan mucho pero pueden usarse sin romper REST/ROA
+\begin{itemize}
+\item
+HEAD   
+
+Obtiene los metadatos de un recurso, no los datos
+\item
+OPTIONS  
+
+Averigua qué métodos soporta un recurso
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Seguridad e idempotencia
+\begin{itemize}
+\item
+Método seguro (\emph{safety})
+
+No modifica nada en el servidor
+\item
+Método idempotente
+
+Aplicarlo una vez es equivalente a aplicarlo varias veces
+
+\begin{itemize}
+\item
+Ejemplo: A=10
+\item
+Contraejemplo: A=A+1
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+Para que una aplicación sea ROA, GET y HEAD tienen que ser seguros 
+
+\begin{itemize}
+\item
+No pueden provocar ninguna acción excepto tal vez algún efecto lateral
+como p.e. actualizar un log
+\item
+Por ser seguros, también son idempotentes
+\end{itemize}
+
+Muchas aplicaciones web no cumplen este requisito
+
+Eso provocó el fracaso de la primer versión, de 2005, del \emph{Web accelerator}
+de Google
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+
+PUT y DELETE tienen que ser idempotentes
+Esto no siempre se cumple, entonces la aplicación ya no es REST, o al menos, no es ROA
+\item
+
+A veces los programadores incluso diseñan su sistema de forma que GET provoca
+cambios en los recursos. Esto va contra todos los principios no solo de REST,
+sino también de  HTTP
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\subsection{Ajax}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ajax}
+
+Es un conjunto de técnicas para enviar información asíncrona entre
+servidor web y cliente
+
+\begin{itemize}
+\item
+Aunque hay antecedentes desde 1996, el Ajax actual lo crea google en 2004, para gmail
+y google maps
+\item
+Evita que el usuario necesite pulsar \emph{enviar}. La aplicación
+web recibe información continuamente, resultando una experiencia de usuario similar
+a la de una aplicación de escritorio
+\item
+
+Originalmente significaba Asynchronous JavaScript and XML, pero cuando
+empieza a usarse sin JavaScript y sin XML, el acrónimo AJAX se abandona
+para usar la palabra Ajax
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funcionamiento de ajax}
+\begin{enumerate}
+%   richardson pg 316
+\item
+El usuario solicita una URL desde su navegador
+
+\item
+El servidor web devuelve la página, que contiene un script
+
+\item
+El navegador presenta la página y ejecuta el script
+
+\item
+El script hace peticiones HTTP asíncronas a una URI del servidor, sin que
+el usuario intervenga. El servidor suele ser RESTful
+
+\item
+El script interpreta las respuestas HTTP y modifica el HTML, sin que
+el usuario intervenga
+\end{enumerate}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{¿Es Ajax RESTful?}
+
+\begin{itemize}
+\item
+Ajax es una arquitectura muy similar a la de una aplicación de escritorio
+\item
+
+En una aplicación web ordinaria, el httl solo cambia (la vista solo se refresca) cuando el usuario envía
+una actualización (pulsa un botón como aceptar, enviar o similar)
+
+\item
+
+El inconveniente es que toda la aplicación tiene la misma URI
+
+No es direccionable ni stateless
+
+El usuario no puede guardar en un bookmark un estado, ni el botón \emph{back} funciona correctamente
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+El servicio tal vez sí es REST, pero solo el script javascript lo aprovecha
+
+En ocasiones hay \emph{atajos} para que el usuario también lo use, pero no está
+diseñado para usarse así
+
+Por ejemplo, buscar todos mis correos con el término \emph{fuenlabrada}
+  \begin{footnotesize}
+  \begin{verbatim}
+https://mail.google.com/mail/?q=fuenlabrada&search=query&view=tl
+  \end{verbatim}
+  \end{footnotesize}
+
+A esta arquitectura a veces se denomina \emph{REST híbrido}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Requests}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Libería Requests}
+En python hay diversas librerías para manejar HTTP
+
+Una de las más convenientes y populares es Requests
+\begin{itemize}
+\item
+  \begin{footnotesize}
+  \begin{verbatim}
+http://python-requests.org
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Desarrollado por Kenneth Reitz con licencia libre Apache2
+\item
+Extremadamente fácil de usar
+
+\begin{itemize}
+\item
+El método \verb|get()| hace una petición a la url pasada como parámetro
+\item
+El atributo \verb|status_code| devuelve el status http
+\item
+El métido \verb|json()| decodifica la respuesta json y devuelve un valor python
+\end{itemize}
+\item
+Instalación
+
+  \begin{footnotesize}
+  \begin{verbatim}
+pip install requests
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso básico de Requests}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import requests
+
+# Este servicio de prueba nos devuelve nuestra dirección ip
+url="http://httpbin.org/ip"
+
+r=requests.get(url)
+if r.status_code==200:
+    print r.json() # {u'origin': u'81.37.7.200'}
+else:
+    print "error "+str(r.status_code)
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Paso de parámetros}
+\begin{itemize}
+\item
+Para hacer peticiones con parámetros como p.e.
+
+  \begin{footnotesize}
+  \begin{verbatim}
+https://data.btcchina.com/data/ticker?market=all
+  \end{verbatim}
+  \end{footnotesize}
+
+basta pasar al método get el parámetros \verb|params|, dándole como 
+valor un diccionario
+\item
+Otro parámetro habitual es \verb|timeout|, en segundos
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import requests
+
+url="https://data.btcchina.com/data/ticker"
+payload={}
+payload["market"]="all"
+my_timeout=5
+
+r=requests.get(url,params=payload, timeout=my_timeout)
+if r.status_code==200:
+    print r.json()
+else:
+    print "error "+str(r.status_code)
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Valor devuelto:
+
+% https://www.btcc.com/apidocs/spot-exchange-market-data-rest-api
+  \begin{scriptsize}
+  \begin{verbatim}
+{u'ticker_ltcbtc': {u'sell': u'0.00780000', u'buy': u'0.00770000',
+u'last': u'0.00780000', u'vol': u'16.95500000', u'prev_close':
+u'0.0077', u'vwap': u'0.0076', u'high': u'0.00790000', u'low':
+u'0.00760000', u'date': 1459699123, u'open': u'0.0077'}, u'ticker_ltccny':
+{u'sell': u'21.20', u'buy': u'21.05', u'last': u'21.20', u'vol':
+u'5976.87000000', u'prev_close': u'21.16', u'vwap': u'21.07',
+u'high': u'21.21', u'low': u'21.00', u'date': 1459699123, u'open':
+u'21.16'}, u'ticker_btccny': {u'sell': u'2726.98', u'buy': u'2726.65',
+u'last': u'2726.79', u'vol': u'17131.95190000', u'prev_close':
+u'2725.22', u'vwap': u'2721', u'high': u'2730.49', u'low': u'2712.49',
+u'date': 1459699122, u'open': u'2725.02'}}
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Otras respuestas}
+\begin{itemize}
+\item
+Si la petición devuelve una imagen, un xml o cualquier otro tipo
+de recurso, basta leer el atributo \emph{content} de la respuesta
+
+\begin{itemize}
+\item
+Si el recurso está comprimido, la librería lo descomprimirá automáticamente
+\end{itemize}
+
+\item
+Las cabeceras están dispoibles en el atributo \emph{headers}
+
+\begin{itemize}
+\item
+Para saber el tipo de contenido (según la norma MIME):
+  \begin{footnotesize}
+  \begin{verbatim}
+headers["content-type"]
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import requests,sys
+def main():
+    url="http://placehold.it/150/15c072"
+    
+    r=requests.get(url)
+    if r.status_code!=200:
+        sys.stderr.write("error"+str(r.status_code))
+        raise SystemExit
+
+    print r.headers["content-type"] #   image/png
+    fichero=open('mi_imagen','wb')
+    fichero.write(r.content)
+    fichero.close()
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+
+
+\end{frame}
+
+
+
+
+\subsection{Flask}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Flask}
+Flask es un micro \emph{framework} para hacer aplicaciones web en python
+\begin{itemize}
+\item
+Desarrollado por Armin Ronacher en 2010, ha ido ganando mucha popularidad
+\item
+Especialmente útil para servicios REST
+\item
+Alternativa a herramientas más completas y complejas como Django
+\item
+Ofrece un uso muy sencillo, con la funcionalidad mínima para aceptar peticiones HTTP y ofrecer respuestas,
+sin integrar  gestión de formularios, bases de datos, autenticación de usuarios, etc
+
+\begin{itemize}
+\item
+Aunque todo esto se puede añadir mediante extensiones
+\end{itemize}
+
+\item
+Instalación de flask:
+\verb|pip install flask|
+
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import flask 
+app=flask.Flask(__name__)
+
+@app.route('/')
+def index():
+    return "hola mundo"
+
+if __name__ == '__main__': 
+    app.run(debug=True)
+  \end{verbatim}
+  \end{footnotesize}
+
+Para depurar el código, flask incorpora un servidor web, que 
+por omisión atiende peticiones en
+  \begin{footnotesize}
+  \begin{verbatim}
+http://127.0.0.1:5000
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+from flask import Flask 
+app=Flask(__name__)
+@app.route('/')
+def index():
+    return "hola mundo"
+
+@app.route('/user/<name>') 
+def user(name):
+    return "hola, "+name
+
+if __name__ == '__main__': 
+    app.run(debug=True)
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El ejemplo anterior lo invocamos con 
+  \begin{footnotesize}
+  \begin{verbatim}
+http://127.0.0.1:5000/user/pedro
+  \end{verbatim}
+  \end{footnotesize}
+
+Obtendremos en el navegador
+
+  \begin{footnotesize}
+  \begin{verbatim}
+hola, pedro
+  \end{verbatim}
+  \end{footnotesize}
+
+Y en la shell donde lanzamos el script python
+  \begin{footnotesize}
+  \begin{verbatim}
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger pin code: 128-685-262
+127.0.0.1 - - [13/Apr/2016 20:20:44] "GET /user/pedro HTTP/1.1" 200 -
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Respuesta json}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+from flask import Flask 
+import json
+
+app=Flask(__name__)
+@app.route('/')
+def index():
+    return "hola mundo"
+
+@app.route('/user/<name>') 
+def user(name):
+    respuesta=["hola","mundo"]
+    return json.dumps(respuesta)
+
+if __name__ == '__main__': 
+    app.run(debug=True)
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Query string}
+\begin{itemize}
+\item
+En http, cuando el cliente desea pasar parámetros no jerárquicos,
+usa la \emph{query string}
+
+\item
+Ejemplo:
+  \begin{footnotesize}
+  \begin{verbatim}
+http://127.0.0.1:5000/user/juanpedro?city=toledo&profile=basic
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Flask nos permite acceder a los argumentos de la query string,
+a través del diccionario \verb|args| del objeto global
+\verb|request| 
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import flask
+app=flask.Flask(__name__)
+
+@app.route('/user/<name>') 
+def user(name):
+    query_string= flask.request.args
+    respuesta="Solicitas "+name
+    respuesta=respuesta+" de la ciudad "+query_string["city"]
+    respuesta=respuesta+" con perfil "+query_string["profile"]
+    return json.dumps(respuesta)
+
+if __name__ == '__main__': 
+    app.run(debug=True)
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado:
+
+  \begin{footnotesize}
+  \begin{verbatim}
+Solicitas juanpedro de la ciudad toledo con perfil basic
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El servidor flash puede devolver una tupla, cuyo segundo parámetro
+es el status http
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import flask
+
+app=flask.Flask(__name__)
+
+@app.route('/user/<name>') 
+def user(name):
+    if name=="juan" or name =="maria":
+        respuesta="Datos de "+name+": ..."
+    else:
+        respuesta="Usuario desconocido",404
+    return respuesta
+
+if __name__ == '__main__': 
+    app.run(debug=True)
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+\end{document}
+
+
+

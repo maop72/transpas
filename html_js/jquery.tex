@@ -1,0 +1,915 @@
+\documentclass[ucs]{beamer}
+\usetheme{GSyC}
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+\usepackage{enumerate}
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={jQuery},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[jQuery]{jQuery}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+\section{jQuery}
+\subsection{Introducción}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{DOM: Document Object Model}
+
+
+DOM, Document Object Model es un API que permite tratar una página web con estructura de árbol
+\begin{itemize}
+\item
+Estándar de Internet, normalizado por el W3C
+
+\item
+Es el interfaz que emplean los navegadores web internamente
+
+\item
+Cuando un navegador carga una página HTML, la procesa para convertirla en la estructura del DOM. Desde ahí se representa en pantalla.
+
+\item
+Los cambios que pueda tener la página, p.e. desde JavaScript, se hacen directamente con el DOM, el HTML no se vuelve a utilizar
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{jQuery}
+
+
+JQuery es una librería JavaScript que permite recorrer un documento, seleccionar objetos del DOM, hacer animaciones,
+manejar enventos, usar Ajax y hacer plugins sobre JavaScript
+    \begin{itemize}
+    \item
+Creada por John Resig
+en 2006, es software libre
+
+    \item
+Aunque se puede procesar el DOM con JavaScript nativo, es poco frecuente. Es más conveniente y habitual
+emplear jQuery
+
+    \item
+También cuenta con una librería similar a Bootstrap, jQuery-UI
+
+
+    \begin{itemize}
+    \item
+En esta asignatura preferimos Bootstrap a jQuery-UI
+    \item
+Es frecuente preferir Boostrap. jQuery-UI no es tan popular como
+Bootstrap 
+    \end{itemize}
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Modificar el HTML ¿Para qué?}
+
+Programando sobre el DOM se puede hacer prácticamente cualquier cosa con una
+página
+
+\begin{itemize}
+\item
+Normalmente lo que deberíamos buscar es
+funcionalidad útil que mejore la experiencia de usuario
+
+\item
+Deberíamos evitar los
+efectos
+que llamen la atención gratuitamente, comportamiento no estándar o poco intuitivos,
+adornos que acaban molestando, etc
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Funcionalidad que realmente mejora la experiencia de usuario:
+\begin{itemize}
+\item
+Es normal que una aplicación tenga muchos parámetros, difíciles
+de asimilar para el usuario
+
+Ocultar unos y mostrar otros facilita su trabajo
+
+
+\begin{itemize}
+    \item
+Se puede ocultar y/o marcar como deshabilitado lo que en cierto momento no se puede hacer
+    \item
+Jerarquizar el interfaz. Por ejemplo modo básico, modo normal, modo experto
+\end{itemize}
+
+    \item
+Ofrecer información y ayuda contextual
+
+    \item
+Presentar la información en distintos formatos o unidades
+
+    \item
+Validación de formularios 
+
+
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+
+
+    \item
+Formularios mejorados
+
+Ejemplos
+
+    \begin{itemize}
+    \item
+Una entrada donde el usuario indica un porcentaje desplazando una barra, no introduciendo un número
+    \item
+Una entrada que inmediatamente actualiza otra información. \emph{Si gasta 20 entonces le quedan 80}
+    \end{itemize}
+
+    \item
+Información sobre el progreso de lo que el usuario ha pedido. P.e \emph{progress bar}
+en porcentaje, o en unidades de tiempo. O estimaciones del tiempo restante
+
+    \item
+Información en tiempo real sobre sucesos diversos
+\item
+Generación de gráficos 
+
+
+HTML Canvas.
+(No lo trataremos en esta asignatura)
+
+\item
+
+...
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso de jQuery}
+
+Es una librería compuesta por un único fichero
+
+    \begin{itemize}
+    \item
+Se puede descargar en el sistema de ficheros local y cargarla con
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<script src="jquery.js"></script>
+  \end{verbatim}
+  \end{scriptsize}
+
+    \item
+Se puede usar un CDN. Por ejemplo el de gogle
+
+  \begin{tiny}
+  \begin{verbatim}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  \end{verbatim}
+  \end{tiny}
+
+\end{itemize}
+
+JQuery es una única funcion, que a su vez incluye diversas funciones
+
+    \begin{itemize}
+    \item
+Esto es posible porque JavaScript usa funciones de orden superior, \emph{higher-order functions}.
+Nos puede ayudar considerarlo un objeto con métodos (en JavaScript las funciones son objetos)
+
+
+    \item
+Esta función normalmente recibe el nombre de \verb|$|
+
+Típicamente recibe como primer argumento un selector CSS que indica sobre qué
+debe actuar
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Añadir y quitar clases}
+
+
+Un patrón habitual en jQuery es
+\begin{itemize}
+\item
+Definir una clase CSS con el aspecto deseado. Por ejemplo ocultar un elemento
+
+\item
+Invocar los métodos 
+\verb|removeClass| y 
+\verb|addClass| 
+para añadir y quitar esa clase cuando se produzca cierto eventeo
+
+\end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+  <style>
+    .oculto {
+      display: none;
+    }
+  </style>
+
+[...]
+
+  <div id="marco_foto" class="oculto">
+    <img src="images/foto.jpg" alt="Foto de prueba">
+  </div>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+  <script>
+    function mostrar_marcofoto() {
+      $("#marco_foto").removeClass("oculto")
+    };
+
+    function ocultar_marcofoto() {
+      $("#marco_foto").addClass("oculto")
+    };
+
+    function main() {
+      $("#boton01").click(mostrar_marcofoto);
+      $("#boton02").click(ocultar_marcofoto);
+    };
+
+    $(document).ready(main());
+  </script>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+La función
+\verb|$(document).ready();|
+acepta la función principal que se ejecutará cuando acabe de cargase el documento HTML
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/hola_jquery01.html}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El ejemplo anterior es correcto pero no es idiomático.
+Para asignar un manejador a un evento, lo
+ habitual en JavaScript es
+usar funciones anónimas 
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("#boton01").click(function() {
+        $("#marco_foto").removeClass("oculto")
+      });
+
+      $("#boton02").click(function() {
+        $("#marco_foto").addClass("oculto")
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/hola_jquery02.html}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Quitar y poner una clase cuando se recibe un evento es muy común, así que
+hay una función para ello: \verb|toggleClass()|
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("#boton01").click(function() {
+        $("#marco_foto").toggleClass("oculto")
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/toggle.html}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Aunque normalmente es preferible quitar y poner clases, también
+es posible modificar las propiedades css directamente
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("span").mouseover(function() {
+        $(this).css("background-color","grey");
+      });
+
+      $("span").mouseleave(function() {
+        $(this).css("background-color","white");
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Eventos mouseover, mouseleave}
+
+\begin{itemize}
+\item
+Cuando el ratón se coloca sobre cierto elemento, este recibe
+el evento 
+\emph{mouseover}
+
+Para tratarlo, le pasamos a una función con el mismo nombre
+(\verb|mouseover()|) el manejador, esto es, la función
+que se invocará cuando se reciba el evento
+
+\item
+De la misma forma, la retirada del ratón de un elemento es
+\emph{mouseleave}
+\end{itemize}
+Ejemplo:
+Destaquemos el párrafo sobre el que se posiciona el ratón
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    .destacado {
+      background-color: LightGrey;
+    }
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("p").mouseover(function() {
+        $("p").addClass("destacado")
+      });
+
+      $("p").mouseleave(function() {
+        $("p").removeClass("destacado")
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/eventos_raton01.html}
+\end{flushright}
+\end{tiny}
+
+Esto tiene un problema: no estamos destacando el párrafo seleccionado,
+sino todos los párrados
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Para añadir el manejador al elemento que nos ha devuelvo la consulta
+anterior, usamos \verb|this|
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("p").mouseover(function() {
+        $(this).addClass("destacado");
+      });
+
+      $("p").mouseleave(function() {
+        $(this).removeClass("destacado");
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/eventos_raton02.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Modificar el texto de un elemento}
+Con el método 
+\verb|text()| podemos cambiar el texto de un elemento
+
+Como ejemplo, cada vez que se pulse un botón
+escribiremos la hora actual dentro de un DIV
+
+La hora estará en formato ISO 8651, para ello
+usaremos \emph{moment}, una librería muy popular para procesar fechas
+
+
+    \begin{itemize}
+    \item
+Podemos descargarla desde su sitio web
+\url{https://momentjs.com}
+e incluirla en nuestro directorio
+
+    \item
+Podemos descargarla desde un CDN 
+y añadirlo en el atributo \verb|src| de un elemento \verb|script|
+
+\url{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment-with-locales.min.js}
+
+    \end{itemize}
+
+\verb|moment().format()| devuelve la fecha actual en diversos formatos.
+Si no se indica ninguno, por omisión devuelve una cadena ISO 8651, 
+p.e.
+
+\verb|2017-11-11T22:21:17+01:00|
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+  <button id="boton01">Registrar hora </button>
+  <p id="text01">--</p>
+  <script>
+    $(document).ready(function() {
+      $("#boton01").click(function() {
+        $("#text01").text(moment().format());
+      });
+    });
+  </script>
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/text.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Leer el texto de un elemento}
+El método 
+\verb|text()| de jQuery devuelve el texto de un elemento
+
+Esto es un patrón común en los método de jQuery:
+\begin{itemize}
+\item
+Invocados sin argumentos, devuelven un valor
+
+\item
+Invocados con argumentos, modifican un valor
+\end{itemize}
+
+Ejemplo: leer una velocidad en m/s desde un 
+elemento 
+\verb|<div id="v_in">|
+
+y escribirla expresada en km/h en un 
+\verb|<div id="v_out">|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+      $("#boton02").click(function() {
+        let v_text=$("#v_in").text();
+        let v=parseInt(v_text,10)
+        v_out=v*3.6+"Km/h";
+        $("#v_out").text(v_out);
+      });
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/text2.html}
+\end{flushright}
+\end{tiny}
+
+Este programa es un ejemplo de diseño muy deficiente: lógica
+de negocio repartida por los botones
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{}
+Un diseño mucho más razonable es el que usamos en las
+prácticas:
+  \begin{scriptsize}
+  \begin{verbatim}
+      $("#boton02").click(function() {
+        let v_text=$("#v_in").text();
+        let v_out=calcula_velocidad(v_text, "m/s", "km/h");
+        $("#v_out").text(v_out);
+      });
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Añadir contenido}
+Una vez seleccionado un elemento o elementos
+mediante un selector, podemos modificarlo con los siguientes métodos:
+
+    \begin{itemize}
+    \item
+append()
+
+Inserta contenido al final de la selección, dentro de la selección
+    \item
+prepend()
+
+Inserta contenido al principio de la selección, dentro de la selección
+    \item
+after()
+
+Inserta contenido inmediatamente después de la selección, fuera de la selección
+
+    \item
+before()
+
+Inserta contenido inmediatamente antes de la selección, fuera de la selección
+
+    \item
+replacewith()
+
+Reemplaza la selección
+    \end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Ejemplo: añadir filas a una tabla
+  \begin{scriptsize}
+  \begin{verbatim}
+<body>
+  <button id=boton01>Registrar hora</button>
+  <table id=tabla_horas>
+    <tr>
+      <th>Hora ISO 8651</th>
+    </tr>
+  </table>
+
+  <script>
+    $(document).ready(function() {
+      $("#boton01").click(function() {
+        let texto;
+        texto = '<tr class="hora"><td>' +moment().format() + '</td></tr>';
+        $("#tabla_horas").append(texto);
+      });
+    });
+  </script
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/append.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Borrar contenido}
+El método \verb|remove()| borra los elementos seleccionados
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+      $("#boton01").click(function() {
+        var texto
+        texto = '<tr class="hora"><td>' + moment().format() + '</td></tr>';
+        $("#tabla_horas").append(texto);
+      });
+
+      $("#boton02").click(function() {
+        $(".hora").remove();
+      });
+    });
+  \end{verbatim}
+  \end{scriptsize}
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/remove.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{tooltip}
+Un \emph{tooltip} es un pequeño cuadro emergente con información contextual. Típicamente
+describe el elemento sobre el que se posiciona el ratón
+
+Para añadir un 
+\emph{tooltip}
+a un elemento cualquiera, con Bootstrap y jQuery:
+
+    \begin{itemize}
+    \item
+Añadimos al elemento la clase
+\verb|data-toogle="tooltip"|
+
+    \item
+Le añadimos el atributo \verb|title| con el texto del 
+\emph{tooltip}
+
+    \item
+Posicionamos el 
+\emph{tooltip}
+con el atributo
+\verb|data-placement|, que puede tomar los valores
+\verb|top|,
+\verb|bottom|,
+\verb|left| o
+\verb|right| 
+
+    \item
+Desde jQuery, activamos los 
+\emph{tooltip}
+con
+\verb|$('[data-toggle="tooltip"]').tooltip();|
+    \end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<body>
+  <div class="container">
+    <br>
+    <button data-toggle="tooltip" title="Esto es un tooltip" 
+     data-placement="bottom" >Al pasar el ratón aparecerá un 
+     <span class="italic">tooltip<span></button>
+  </div>
+  <script>
+    $(document).ready(function(){
+       $('[data-toggle="tooltip"]').tooltip();
+       });
+   </script>
+</body>
+</html>
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/tooltip.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Validación de un formulario}
+
+El método
+\verb|change()|
+recibe una función que será el manejador con el evento que se genera
+cuando cambia un input de un formulario 
+
+Una vez seleccionado el input, el método 
+\verb|$(this).val()|
+contiene su valor
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    <input type="password" name="contrasenia" id="contrasenia">
+    ...
+    $("#contrasenia").change(function() {
+      if ( $(this).val().length > 5) {
+        $("#validacion").text("Contraseña aceptable");
+      } else {
+        $("#validacion").text("Contraseña muy corta");
+      };
+    });
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/validar.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El ejemplo anterior tenía un problema: el evento
+\verb|change|
+solo se dispara cuando el foco abandona el input
+(cuando el usuario ha acabado de editar ese campo y
+pasa al siguiente)
+
+Si queremos vincular un manejador con cualquier cambio producido en 
+un input, debemos inscribir el manejador a los eventos
+\verb|change|,
+\verb|keyup|, 
+\verb|paste| y 
+\verb|mouseup|
+
+
+    \begin{itemize}
+    \item
+Para ello empleamos el método \verb|on()|, que recibe como primer agumento
+la lista de eventos, y como segundo, el manejador
+    \end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+      $("#contrasenia").on('change keyup paste mouseup', function() {
+        if ( $(this).val().length > 5) {
+          $("#validacion").text("Contraseña aceptable");
+        } else {
+          $("#validacion").text("Contraseña muy corta");
+        };
+      });
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/validar2.html}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+
+\end{document}

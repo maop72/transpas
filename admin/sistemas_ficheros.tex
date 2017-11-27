@@ -1,0 +1,1480 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{enumerate}
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={DevOps},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+%\newboolean{detallado}
+%\setboolean{detallado}{false}
+%\newcommand{\opcional}[1]{\ifthenelse{\boolean{detallado}}{#1}{}}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Sistemas de Ficheros]{Sistemas de Ficheros}
+
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2015]{Noviembre de 2015}
+
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+\begin{frame}
+  \frametitle{Contenidos}
+
+%\begin{tiny}
+  \tableofcontents
+%\end{tiny}
+
+\end{frame}
+
+
+%%---------------------------------------------------
+\section{Introducción}
+%%---------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{Introducción}
+% Sistema:   2. m. Conjunto de cosas que relacionadas entre si ordenadamente
+%   contribuyen a determinado objeto.
+  
+  \begin{itemize}
+    \item Un sistema de ficheros es una forma de almacenar y organizar ficheros para
+permitir su uso
+ \item Pueden usar un dispositivo de almacenamiento (disco, cdrom), la red o ser sólo
+un interfaz para acceder a datos
+    \item Para poder empezar a almacenar información en un sistema de ficheros,
+      éste tiene que ser \emph{inicializado}
+    \item En Unix, para poder usarlo, hay que \emph{montarlo} en alguna parte de
+      la jerarquía de directorios, un árbol cuya raíz es
+      el directorio llamado \texttt{\textbf{/.}}
+  \end{itemize}
+
+
+\end{frame}
+
+%--------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\emph{On a UNIX system, everything is a file; if something is not a file, it is a process}
+%http://www.faqs.org/docs/linux_intro/sect_03_01.html
+
+Los ficheros pueden ser
+ \begin{itemize}
+\item
+Ficheros normales
+\item
+Directorios
+\item
+Ficheros especiales (Entrada y salida. Están en \emph{/dev })
+\item
+Enlaces
+\item
+Fifos. (Pipes con nombre). Para comunicación entre procesos
+\item
+Sockets de dominio. Similares a los sockets TCP/IP
+%(Domain) sockets: a special file type, similar to TCP/IP sockets, providing inter-process networking protected by the file system's access control.
+  \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+% http://tldp.org/LDP/intro-linux/html/sect_03_01.html
+El primer caracter de \verb|ls -l| representa:
+\begin{verbatim}
+-       Regular file
+d       Directory
+c       Special file
+l       Link
+p       Named pipe
+s       Socket
+b       Block device
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Jerarquía del Sistema de Ficheros }
+Para quien se acerca a Linux resulta confuso un \verb|ls -l / |
+\begin{footnotesize}
+\begin{verbatim}
+drwxr-xr-x    2 root     root         4096 ene 30 20:34 bin
+drwxr-xr-x    2 root     root         4096 mar 12 19:46 boot
+drwxr-xr-x    5 root     root        24576 may 22 06:27 dev
+drwxr-xr-x   66 root     root         4096 may 19 00:26 etc
+drwxrwsr-x    7 root     staff        4096 abr 16 17:36 home
+drwxr-xr-x    6 root     root         4096 feb  1 18:02 lib
+drwxr-xr-x    2 root     root        16384 nov  7  2000 lost+found
+dr-xr-xr-x    2 root     root         4096 nov 10  2000 mix
+dr-xr-xr-x   67 root     root            0 may 19 02:25 proc
+drwxr-xr-x   14 root     root         4096 feb 12 19:28 root
+drwxr-xr-x    2 root     root         4096 ene 30 20:30 sbin
+drwxrwxrwt    9 root     root         4096 may 22 10:19 tmp
+drwxr-xr-x   15 root     root         4096 nov  8  2000 usr
+drwxr-xr-x   16 root     root         4096 nov  9  2000 var
+\end{verbatim}
+\end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item La estructura de todos los Unix se \emph{parece}
+\item La estructura de todas las distribuciones Linux 
+se \emph{parece mucho}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\frametitle{Jerarquía clásica}
+La jerarquía actual puede resultar algo ilógica, 
+pero hay motivos históricos
+
+En los primeros Unix los discos eran más pequeños y más caros, 
+
+en uno estaba lo \emph{imprescindible} para que el sistema funcionase:
+\begin{verbatim}
+/
+/etc
+/lib
+/tmp
+/bin
+/root
+\end{verbatim}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+y en un segundo disco, se montaba \verb|/usr|
+\begin{verbatim}
+/usr/spool
+/usr/bin
+/usr/include
+/usr/tmp
+/usr/adrn
+/usr/lib
+\end{verbatim}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{FHS Filesystem Hierarchy Standard}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{FHS Filesystem Hierarchy Standard}
+Estándar propuesto para todos los Linux y para los UNIX que
+quieran unirse. Año 1994.  Versión actual: 2.3 (enero 2004)
+
+Dos criterios
+
+¿Un fichero puede almacenarse en una máquina y usarse en otra?
+\begin{itemize}	
+\item
+Sí: Compartibles. (\emph{shareable}) 
+\item 
+No: No compartibles. (\emph{unshareable})
+% pj locks
+\end{itemize}
+
+¿Un fichero puede cambiar sin intervención del administrador?
+
+\begin{itemize}	
+\item 
+Sí: Dinámicos. 
+\item 
+No: Estáticos. Pueden almacenarse el modo sólo-lectura. Copias
+de seguridad menos frecuentes
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\begin{enumerate}
+\item Directorios de usuarios
+\item Programas (incluyendo mandatos y librerías)
+\item Configuración del sistema        
+\item El Hardware
+\item Documentación
+\item Ficheros Temporales
+\item Otros directorios relacionados con el S.O.
+\item Puntos de montaje
+\end{enumerate}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\subsection{Directorios de usuarios}
+%%---------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{Directorios de usuarios}
+\begin{itemize}
+
+\item 
+
+Directorio del administrador
+
+\verb|/root|
+
+\item 
+
+Usuarios locales
+
+\verb|/home/jperez|
+
+o bien
+
+\verb|/home/profesores|
+
+\verb|/home/alumnos|
+\item 
+Usuarios NIS
+
+\verb|/users/jperez|
+
+\end{itemize}
+\end{frame}
+
+
+%\begin{frame}[fragile]
+
+%No forma parte de la norma FHS pero es importante:
+
+%\verb|~/.bash_profile|
+
+%(No confundir con 
+%\verb|/etc/profile|   )
+
+%\end{frame}
+
+%---------------------------------------------
+\subsection{Programas y mandatos} 
+%---------------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Programas y mandatos} 
+\begin{itemize}
+
+\item 
+Mandatos útiles para todos los usuarios
+
+/bin
+
+/usr/bin
+
+\item
+Mandatos útiles para el root
+
+/sbin
+
+/usr/sbin
+
+\end{itemize}
+(Todo lo que haya bajo \verb|/usr| debería ser sólo lectura)
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item  Programas
+
+        \begin{itemize}
+\item
+
+Software no incluido en la distribución Linux 
+
+/usr/local
+
+
+
+\item
+Grandes aplicaciones en la distribución
+
+/opt
+
+
+        \end{itemize}
+\end{itemize}
+\end{frame}
+
+%----------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+
+
+\item
+Librerías estáticas y dinámicas
+
+/lib
+
+/usr/lib
+
+/usr/local/lib
+
+\item
+Ficheros de cabecera (para compilar) 
+
+/usr/include
+
+
+\item
+Ficheros independientes de la arquitectura
+
+/usr/share
+
+
+
+\end{itemize}
+\end{frame}
+
+
+%----------------------------------------------------
+\subsection{Configuración del sistema}        
+%----------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Configuración del sistema}        
+
+Directorio \verb|/etc|
+\begin{itemize}
+
+\item  
+
+Información sobre el sistema de ficheros (puntos de montaje, opciones)
+
+/etc/fstab
+\item  
+cuentas de usuarios
+
+/etc/passwd
+\item  
+Passwords de los usuarios
+
+/etc/shadow
+\item  
+Scripts para arranque del sistema
+
+/etc/init.d
+\item  
+...
+\end{itemize}
+\end{frame}
+
+
+%----------------------------------------------------
+\subsection{El Hardware}
+%----------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{El Hardware}
+
+Los dispositivos del sistema
+\verb|/dev|
+\begin{verbatim}
+/dev/hda     IDE primario master 
+/dev/hdb     IDE primario slave
+/dev/hdc     IDE secundario master 
+/dev/hdd     IDE secundario slave 
+
+/dev/hda1    Primera partición primaria del hda
+/dev/hda2    ...
+
+/dev/sda     Primer disco SCSI
+/dev/sdb     Segundo disco SCSI
+/dev/sda1    ...
+
+
+\end{verbatim}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{verbatim}
+/dev/cdrom
+/dev/fd0     disquete 
+/dev/audio   tarjeta sonido
+/dev/modem
+/dev/mouse
+/dev/input/mouse0
+/dev/ttyN    donde N es el nº de consola (no gráfica)
+/dev/pts/N   Consola (X Window)
+
+\end{verbatim}
+El estándar no dice mucho sobre \verb|/dev|, es bastante variable
+
+\end{frame}
+
+
+%---------------------------------------------
+
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+  
+\item 
+Ficheros \emph{virtuales} que representan las estructuras del Kernel
+en ejecución,  dan información sobre la cpu...
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+/proc/cpuinfo     CPU
+/proc/pci         Tarjetas PCI
+/proc/ioports     Puertos I/O
+/proc/meminfo     Información sobre la memoria
+/proc/NN          Información sobre el proceso de pid NN
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+  
+
+
+Los directorios \texttt{\textbf{/proc}} y \texttt{\textbf{/sys}} no se corresponden
+con discos físicos, sino que son un medio de enviar y recibir información directamente del \emph{kernel}.
+
+Cuando se   lee o se escribe algún fichero del \texttt{\textbf{/proc}}, se está
+pidiendo o recibiendo información del kernel
+\end{frame}
+
+
+
+%---------------------------------------------
+\subsection{Documentación}
+%---------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Documentación}
+\begin{itemize}
+
+\item
+
+/usr/share/doc
+
+Documentación sobre el software del sistema
+\item
+/usr/man
+
+Ficheros del mandato \emph{man}
+
+\end{itemize}
+\end{frame}
+
+%----------------------------------------------------
+\subsection{Ficheros Temporales}
+%----------------------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Ficheros Temporales}
+\begin{itemize}
+
+\item 
+Ficheros temporales 
+
+(se borran cuando la máquina arranca)
+
+\verb|/tmp|
+\item
+Fragmentos de ficheros recuperados
+
+\verb|/lost+found|
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item
+Ficheros que cambian con frecuencia
+
+\verb|/var|
+
+  \begin{footnotesize}
+  \begin{verbatim}
+/var/log/syslog        bitácora principal del sistema  
+/var/log/messages      otra bitácora con diversos mensajes
+/var/log/dmesg         mensajes del sistema al arrancar
+/var/spool/lpd/lp      spool de la impresora
+/var/tmp               Ficheros temporales
+/var/mail              Correo de los usuarios
+/var/run               PID de programas en ejecución
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+\end{frame}
+
+%----------------------------------
+\subsection{Otros directorios relacionados con el S.O.}
+%----------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Otros directorios relacionados con el S.O.}
+\begin{itemize}
+
+\item 
+\verb|/boot|
+
+Todo lo requerido para el arranque, antes de que el sistema ejecute
+programas de usuario
+
+
+\item
+Código fuente
+        \begin{itemize}
+\item 
+Código fuente del software de sistema
+
+\verb|/usr/src|
+
+\item 
+Código fuente del kernel linux
+
+\verb|/usr/src/linux|
+        \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\subsection{Puntos de Montaje}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Puntos de Montaje}
+
+Unidades extraibles: Disquetes, cdrom, \emph{pendrives}
+
+Solían colocarse en el raiz
+p.e. \verb|/cdrom|. Pero esto llena el raiz de directorios
+
+En FHS 2.3 (año 2004) aparece 
+\verb|/media|
+
+\verb|/media/cdrom  /media/cdrecorder  /media/zip  /media/floppy|
+
+
+\begin{itemize}
+\item 
+Si solo hay uno de un tipo:
+
+\verb|/media/cdrom|
+
+\item 
+Si hay más de uno del mismo tipo
+
+\verb|/media/cdrom0|
+
+\verb|/media/cdrom1|
+
+\verb|/media/cdrom -> /media/cdrom1|
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{verbatim}
+/mnt
+\end{verbatim}
+
+Directorio vacío para que el administrador monte 
+un sistema de ficheros que necesita temporalmente. Los programas no deberían usarlo
+
+\begin{itemize}	
+\item
+\verb|/mnt/cdrom      |    ¡No es estándar!
+
+Es una costumbre reciente, va contra el estándar. Dentro  de \verb|/mnt| 
+debe estar directamente el sistema de ficheros temporal, sin subdirectorios
+% el estándar es una costumbre mucho más antigua
+\end{itemize}
+
+
+
+\end{frame}
+
+%---------------------------------------
+  \section{Montaje de sistemas de ficheros }
+%---------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Montaje de sistemas de ficheros }
+  \begin{itemize}
+  \item Normalmente, no todos los ficheros del árbol de directorios se
+    encuentran en el mismo disco.
+  \item \emph{Punto de montaje}: directorio que pertenece a un disco
+    (o \emph{partición}) distinto, junto con todo su contenido
+    (excluyendo otros puntos de montaje).
+%  \item El \emph{kernel} incluye información de todas las particiones
+%    y puntos de montaje asociados en el fichero
+%    \texttt{\textbf{/proc/mounts}} (el fichero
+%    \texttt{\textbf{/etc/mtab}} contiene prácticamente la misma
+%    información).
+  \item Se pueden consultar los puntos de montaje junto con
+    los discos o particiones que están \emph{montadas} en ellos con
+    las órdenes \emph{mount} y \emph{df}
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------
+  \subsection{mount, df}
+%---------------------------------------
+\begin{frame}[fragile]
+  \frametitle{mount, df}
+  \begin{itemize}
+  \item \texttt{\textbf{mount}}: Muestra las particiones, puntos de
+    montaje, tipo de partición y opciones de cada una de ellas:
+    {\flushleft\fontsize{7pt}{7pt}\selectfont
+\begin{verbatim}
+/dev/hda2 on / type ext3 (rw,noatime)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+/dev/hda5 on /scratch type ext3 (ro,noatime)
+tmpfs on /tmp type tmpfs (rw)
+\end{verbatim}
+    }
+  \item \texttt{\textbf{df}}: Muestra cada una de las particiones
+    \emph{con ficheros reales} montadas en el sistema, el punto en el que
+    está montada, su capacidad y su uso:
+    {\flushleft\fontsize{7pt}{7pt}\selectfont
+\begin{verbatim}
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/hda2             28842780   6957692  20419960  26% /
+/dev/hda5             38448276  32838556   3656620  90% /scratch
+tmpfs                   517960      1196    516764   1% /tmp
+\end{verbatim}
+    }
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  Para montar un sistema de ficheros 
+  \begin{itemize}
+  \item Crear el directorio si no existe:
+
+    \texttt{\textbf{mkdir /var}}
+  \item Hacer visible el sistema de ficheros bajo ese directorio:
+
+    \texttt{\textbf{mount -t ext2 -o rw /dev/hda3 /var}}
+
+(es más habitual indicar las opciones en \verb|/etc/fstab|)
+
+  \item Si queremos desmontar (o hacer invisible) un sistema de
+    ficheros que esté montado en el directorio \texttt{\textbf{/var}}:
+
+    \texttt{\textbf{umount /var}}
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+  %\subsection{\texttt{\textbf{/etc/fstab}}}
+  \subsection{/etc/fstab}
+%http://www.tuxfiles.org/linuxhelp/fstab.html
+
+    {\flushleft\fontsize{7pt}{7pt}\selectfont
+\begin{verbatim}
+# <filesystem> <mount point>   <type>  <options>         <dump><pass>
+proc           /proc           proc   defaults              0    0
+/dev/hda2      /               ext3   noatime               0    1
+/dev/hda5      /scratch        ext3   noatime,ro            0    1
+/dev/hda6      none            swap   sw                    0    0
+tmpfs          /tmp            tmpfs  defaults              0    0
+/dev/sda1      /media/pendrive vfat   defaults,user,noauto  0    0
+
+\end{verbatim}
+    }
+
+  \begin{itemize}
+  \item \verb|mount -a| monta todo lo indicado en este fichero
+  \item En el arranque se ejecuta \verb|mount -a|
+  \item \verb|mount /media/pendrive|  
+
+monta el pendrive con todas
+  las opciones indicadas en fstab
+
+  \end{itemize}
+
+
+ \verb|<dump>|
+¿Incluir en las copias de seguridad hechas con \emph{dump}? (Normalmente no)
+
+ \verb|<pass>|
+Orden para el \verb|fsck| del arranque (0: desactivado).
+\end{frame}
+%---------------------------------------
+\begin{frame}[fragile]
+%  \subsection{Opciones de los sistemas de ficheros}
+\begin{verbatim}
+<options>
+\end{verbatim}
+  \begin{itemize}
+  \item \texttt{\textbf{rw}}: Permisos de lectura y escritura.
+  \item \texttt{\textbf{ro}}: Sólo lectura.
+  %\item \texttt{\textbf{loop}}: Permite montar un \emph{fichero} en lugar de un dispositivo de bloques.
+  \item \texttt{\textbf{auto/noauto}}: ¿Montar automáticamente con \verb|mount -a|?
+  \item \texttt{\textbf{user/nouser}}: ¿Los usuarios normales pueden montar y desmontar? 
+(o hace falta ser \texttt{\textbf{root}}) 
+  \item \texttt{\textbf{exec/noexec}}: ¿Se pueden ejecutar binarios?
+  \item \texttt{\textbf{sync}}: Al modificar un fichero, se escribe físicamente de inmediato
+  \item \texttt{\textbf{async}}: Se usan buffers 
+  \item \texttt{\textbf{defaults}}: \verb|rw, suid, dev, exec, auto, nouser, async|
+  \item \ldots 
+  \end{itemize}
+\end{frame}
+
+% dev /nodev : ¿se puede hacer mknod? Esto es ¿puede haber dispositivos en ese
+% sistema de ficheros
+
+%---------------------------------------
+  \subsection{Tipos de sistemas de ficheros}
+%---------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Tipos de sistemas de ficheros}
+  \begin{itemize}
+%  \item Los que reconoce el \emph{kernel} están en \texttt{\textbf{/proc/filesystems}}.
+  \item Tradicionales
+    \begin{itemize}
+    \item \texttt{\textbf{msdos}}: El usado por MS-DOS y Windows
+      pre-95, sin permisos ni dueños, nombres de fichero de 8
+      caracteres con extensiones de 3 caracteres
+    \item \texttt{\textbf{vfat}}: Usado a partir de Windows-95,
+      compatible con MS-DOS pero con posibilidad de nombres de fichero
+      largos
+    \item \texttt{\textbf{ntfs}}: Desde Windows NT hasta Windows XP. Añade
+      características de seguridad (permisos, dueños, etc). Los primeros 
+     \emph{drivers} para Linux tenían limitaciones, en la actualidad se puede
+      leer y escribir con normalidad 
+% en marzo 2007 el driver de serie permite leer y modificar ficheros. No crear
+% nuevos ni borrarlos. Hay otros drivers beta que sí pueden
+% redhat no incluye este driver por dudar legales
+% MS anunció en 2003 aprox el sistema de ficheros winfs, un sistema de ficheros
+% como el de las BD relaciones. En 2006 lo abandonó
+% vista lleva un nuevo sistema de ficheros, llamado txfs, que es un ntfs con
+% journaling
+    \item \texttt{\textbf{iso9660}}: Sistema de fichero utilizado en
+      los CDs de datos
+    \item \texttt{\textbf{minix}}: usado por MINIX y por los
+      primeros Linux
+    \item \texttt{\textbf{ext2}}: Sistema de ficheros tradicional    
+      en Linux
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+  \begin{itemize}
+  \item Con \emph{journal}
+%http://en.wikipedia.org/wiki/Journaling_file_system
+    \begin{itemize}
+    \item \texttt{\textbf{ext3}}: Siguiente versión del
+      \texttt{\textbf{ext2}}, idéntico pero con adición de
+      \emph{journal}. El más utilizado actualmente
+    \item \texttt{\textbf{reiserfs}}, \texttt{\textbf{jfs}}, \texttt{\textbf{xfs}}
+
+    Mejores prestaciones, pero incompatibles con   
+    \texttt{\textbf{ext2}}
+    \end{itemize}
+  \item Con características especiales :
+
+ \verb|romfs, cramfs, autofs, umsdos|
+  \item No asociados a dispositivo
+
+ \verb|proc, sysfs, devfs, devpts, tmpfs, ramfs, usbfs|
+  \end{itemize}
+\end{frame}
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Tipos de sistemas de ficheros (3)}
+%  \begin{itemize}
+%  \item Con características especiales:
+%    \begin{itemize}
+%    \item \texttt{\textbf{romfs}}: ideado para discos pequeños y de
+%      solo lectura, típicamente discos grabados en ROM o en EPROM.
+%    \item \texttt{\textbf{cramfs}}: similar al
+%      \texttt{\textbf{romfs}}, pero incluyendo compresión de los
+%      datos.
+%    \item \texttt{\textbf{autofs}}: pseudo-sistema de ficheros para
+%      permitir el auto-montaje de unidades extraíbles.
+%    \item \texttt{\textbf{umsdos}}: Compatible con discos MS-DOS,
+%      añade características esenciales para sistemas UNIX (dueños y
+%      grupos, permisos, nombres largos, enlaces, etc).
+%    \end{itemize}
+%  \end{itemize}
+%\end{frame}
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Tipos de sistemas de ficheros (4)}
+%  \begin{itemize}
+%  \item No asociados a dispositivo:
+%    \begin{itemize}
+%    \item \texttt{\textbf{proc}}, \texttt{\textbf{sysfs}}: Información
+%      proporcionada por el \emph{kernel} a los procesos de usuario.
+%    \item \texttt{\textbf{devfs}}, \texttt{\textbf{devpts}}:
+%      Sistema de ficheros en el que se generan automáticamente
+%      los dispositivos reconocidos por el \emph{kernel} en cada
+%      momento.
+%    \item \texttt{\textbf{tmpfs}}, \texttt{\textbf{ramfs}}: Sistema de
+%      ficheros de lectura/escritura, con contenido en memoria, con
+%      carácter temporal y para permitir un acceso más rápido.
+%    \item \texttt{\textbf{usbfs}}: lista de dispositivos conectados al
+%      \emph{bus} USB y características de cada uno de ellos.
+%    \end{itemize}
+%  \end{itemize}
+%\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+  \begin{itemize}
+  \item Remotos:
+    \begin{itemize}
+    \item \texttt{\textbf{nfs}}: \emph{Network File System},
+      desarrollado por SUN, el más usado entre los sistemas ficheros
+      remotos en UNIX
+%.  proporcionada por el \emph{kernel} a los procesos de usuario.
+    \item \texttt{\textbf{smb}}/\texttt{\textbf{cifs}}: Sistema de
+      ficheros remotos usado por Microsoft
+%cifs, 1996 es una mejoría para smb
+    \item \texttt{\textbf{ncp}}: \emph{Netwate Core Protocol},
+      protocolo sobre IPX para montar sistemas de ficheros de Novell
+      Netware
+%    \item \texttt{\textbf{coda}}: Sistema de ficheros remoto avanzado,
+%      con muchas ventajas sobre NFS, pero muy complicado de poner en
+%      funcionamiento.
+%    \item \texttt{\textbf{afs}}: \emph{Andrew filesystem}.
+    \item \texttt{\textbf{sshfs}}: \emph{Secure SHell FileSystem},
+protocolo basado en ssh
+    \end{itemize}
+
+%SSHFS (Secure SHell FileSystem) is a file system for Linux (and other
+%operating systems with a FUSE implementation, such as Mac OS X or FreeBSD)
+%capable of operating on files on a remote computer using just a secure
+%shell login on the remote computer. On the local computer where the
+%SSHFS is mounted, the implementation makes use of the FUSE (Filesystem
+%in Userspace) kernel module. The practical effect of this is that the
+%end user can seamlessly interact with remote files being securely served
+%over SSH just as if they were local files on his/her computer. On the
+%remote computer the SFTP subsystem of SSH is used.
+
+
+
+\item
+Soporte de otras plataformas:
+
+    \texttt{\textbf{hfs}} (Apple Macintosh),
+ \texttt{\textbf{bfs}} (\emph{Boot File System}, SCO),
+    \texttt{\textbf{efs}} (SGI, IRIX), \texttt{\textbf{jffs}}
+    (\emph{Journaling Flash File System}), 
+\texttt{\textbf{hpfs}} (OS/2),
+    \texttt{\textbf{qnx4}}, \texttt{\textbf{sysv}} (System V),
+    \texttt{\textbf{ufs}} (SunOS, FreeBSD, NetBSD, OpenBSD)\ldots
+
+  \end{itemize}
+\end{frame}
+
+
+%%  en 2003 Ms presentó Winfs, previsto para vista. 
+%% todo era una una base de datos, muchos metadatos
+%% muere oficialmente en junio de 2006, donando organos a sqlserver
+
+
+
+%%---------------------------------------------------------------
+\subsection{Sistemas de Ficheros en Espacio de usuario}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sistemas de Ficheros en Espacio de usuario}
+\begin{itemize}	
+\item
+Los sistemas de ficheros tradicionales están implementados 
+en el núcleo. Añadir uno sistema de ficheros es complicado, 
+y puede comprometer la integridad del sistema.
+\item 
+Los sistemas de ficheros en espacio de usuario son aplicaciones
+\emph{normales}
+\item 
+Para Linux, FreeBSD, NetBSD, OpenSolaris y Mac OS X exite FUSE
+\emph{Filesystem in Userspace}. Es un módulo del núcleo que
+actúa de puente entre el núcleo y el código del sistema de
+ficheros
+
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Ejemplos de sistemas de ficheros FUSE
+\begin{itemize}	
+\item
+sshfs
+\item 
+GmailFS. Almacena los datos sobre correos de gmail. No es fiable
+porque no está aprobado por google. (Tampoco prohibido, al menos
+explícitamente)
+\item 
+Acceso a ficheros empaquetados (tgz, zip, etc)
+\item
+Almacenamiento en Bases de Datos
+\item
+Encriptación
+\item
+Hardware poco común
+\item
+Sistemas de versiones de ficheros (CVS, SVN...)
+\item
+Monitorización de sistemas de ficheros
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\subsection{sshfs}
+Secure SHell FileSystem. Basado en FUSE. Sistema de ficheros de red
+\begin{itemize}	
+\item
+Menos eficiente pero más seguro que NFS
+\item
+En el servidor basta disponer del demonio ssh convencional
+\item 
+En el cliente basta instalar el paquete \verb|sshfs|
+\end{itemize}
+
+Montar el \emph{home} remoto:
+
+\verb|sshfs -C usuario@maquina: /punto/de/montaje|
+
+
+Montar un directorio remoto
+
+
+\verb|sshfs -C usuario@maquina:/un/directorio  /punto/de/montaje|
+
+
+Desmontar:
+
+\verb|fusermount -u /punto/de/montaje|
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+%http://www.netsplit.com/blog/articles/2006/08/26/upstart-in-universe
+\subsection{upstart}
+
+\begin{itemize}
+\item
+El sistema de arranque tradicional de Linux (System V)
+no es adecuado para las máquinas actuales
+\begin{itemize}
+\item
+Son externos: aparecen y desaparecen
+\item
+Están en red
+\item
+Ahorran energía
+\item \ldots
+\end{itemize}
+
+% Storage buses allow more than a fixed number of drives, so they must be scanned for; this operation frequently does not block.
+% Firmware may need to be loaded after the device has been detected, but before it is usable by the system.
+% Mounting a partition in /etc/fstab may require tools in /usr which is a network filesystem that cannot be mounted until after networking has been brought up.
+
+\item
+\emph{Upstart} es un sistema de arranque basado en eventos,
+desarrollado por Ubuntu, con el propósito de extenderlo
+a todos los Linux
+
+Aparece en Ubuntu 6.10 \emph{edgy} (Octubre de 2006)
+
+\item
+Alternativas: \emph{launchd} (MacOS X), \emph{initng},  SMF 
+%smf: solaris
+
+\item
+Está previsto que reemplace a \emph{cron} y tal vez a  \emph{inetd}, manteniendo siempre la compatibilidad
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+En \emph{upstart} se modifica la columna \verb|<filesystem>| de \verb|/etc/fstab|,
+%(a menos que esté el \emph{sticky bit} activado 
+%\verb|   chmod [+-]t dir|)
+
+incorporando un \emph{Universally Unique Identifier }
+\begin{tiny}
+\begin{verbatim}
+# <file system> <mount point>   <type>                      <options><dump><pass>
+proc            /proc           proc                               defaults 0 0
+UUID=e8a76033-f833-490d-8a55-ceca132c2ba7 / ext3 defaults,errors=remount-ro 0 1
+UUID=e38c8abf-1af7-49be-bba5-bcf45dab8dc2 /home               ext3 defaults 0 2
+UUID=967cf88c-7b0b-42a9-bf93-deb7b710aad2 /media/sda6         ext3 defaults 0 2
+UUID=f5c3bc51-7795-4bc9-b18e-4a16b7496e93 none                      swap sw 0 0
+/dev/hda        /media/cdrom0                       udf,iso9660 user,noauto 0 0
+\end{verbatim}
+
+\end{tiny}
+
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\section{Codificación de caracteres}
+%%---------------------------------------------------------------
+%http://en.wikipedia.org/wiki/Code_pages
+\begin{frame}[fragile]
+\frametitle{Codificación de caracteres}
+Correspondencia entre un carácter de lenguaje natural
+y un símbolo en otro sistema de representación. En informática,
+uno o más octetos
+
+A veces se llama \emph{code pages} (IBM, Microsoft)
+
+\subsection{Codificaciones clásicas}
+
+\begin{itemize}	
+\item 
+EBCDIC: Extended Binary Coded Decimal Interchange Code. IBM, año 1963. 8 bits. 
+Se usa en algunos equipos IBM.
+Diferentes versiones incompatibles entre sí
+\item 
+ASCII: American Standard Code for Information Interchange. 
+ANSI, American National Standards Institute, año 1963). 7 bits. Solo inglés
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\subsection{ASCII extendido}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ASCII extendido}
+8 bits.  Cada conjunto
+de idiomas necesita su propia variante. Compatible con ASCII
+\begin{itemize}	
+\item 
+Code Pages 437. Inglés. Primeros IBM PC, MS-DOS
+
+Code Pages 850. Europa occidental. Primeros IBM PC, MS-DOS
+\item 
+ISO-8859 (Organización Internacional para la Estandarización), año 1992. 
+Habitual en linux hasta mediados de los años \emph{cerenta}
+
+ISO-8859-1, informalmente conocido como Latin-1
+
+ISO-8859-2 europa central, ISO-8859-5 cirílico , ISO-8859-6 árabe, ...
+
+ISO-8859-15 o Latin-9. Año 1998. Muy parecido a Latin-1, incluye
+%\textgreek{\euro} 
+el símbolo del euro
+\item
+windows-1252. Parecido a ISO-8859-1. Se confunden con frecuencia. 
+Se empleaba en los primeros Windows
+\end{itemize}
+\end{frame}
+%%---------------------------------------------------------------
+
+%las codificaciones anteriores permiten trabajar en tu lengua local
+%y en ingles. Pero no entre varias lenguas distintas al tiempo.
+% iso 8859, sin información extra no se puede saber en qué idioma está.
+
+
+
+% unicode incluye élfico, klingon, geroflíficos egipcios y el rongorongo:
+% unos geroglíficos usados en la isla de pascua en la ¿edad media?
+% que ni siquiera se han podido descifrar
+
+
+\begin{frame}[fragile]
+\subsection{Unicode}
+Estándar industrial. \emph{Unicode Consortium}, año 1991. 
+Compatible con ISO 10646.
+
+Asocia un número a cada carácter empleado por algún lenguaje escrito del mundo.
+Más de 100.000 caracteres
+
+Se puede codificar de diferentes maneras
+\begin{itemize}	
+\item 
+UTF-8 es la forma en Unix de codificar unicode. 
+
+Compatible
+con ASCII. Cada carácter ocupa entre 1 y 4 octetos
+% lo hizo ken thomoson, para plan 9. tiene la gracia de que se autosincroniza:
+% si lees un chorro de bytes puedes entenderlo si saber dónde ha empezado
+% (en otros codificaciones no sabrías donde está el límite entre caracteres)
+\item 
+UTF-16. Cada carácter ocupa entre 2 y 4 octetos.
+
+Nativo en Windows desde Windows 2000, aunque
+se seguía usando windows-1252.
+\item 
+Punycode. RFC 3492. Empleado en la Internacionalización 
+de Nombres de Dominio en Aplicaciones (IDNA). Años 2003-2005. Permite nombres de dominio en unicode.
+
+\verb|españa.es   ->   xn--espaa-rta.es|
+
+\verb|ortuño.es   ->   xn--ortuo-rta.es|
+
+\item 
+UCS-2, UCS-4, SCSU, ...
+\end{itemize}
+
+\end{frame}
+%%----------------------------------------------
+\subsection{recode}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{recode}
+%El mandato \emph{recode} 
+Orden que convierte ficheros entre diferentes codificaciones
+\begin{itemize}	
+\item
+\verb|recode utf-8|
+
+Lee \emph{stdin}, convierte desde utf-8 hasta las locales actuales
+y escribe en \emph{stdout}
+\item
+\verb|recode latin-1..utf-8|
+
+Lee \emph{stdin}, convierte desde latin-1 hasta utf-8 
+y escribe en \emph{stdout}
+\item
+\verb|recode  utf-8..windows-1252 fichero|
+
+Modifica el fichero, convirtiendo desde utf-8 hasta 
+windows-1252
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Tipos de sistemas de ficheros (6)}
+%  \begin{itemize}
+%  \item Además de los mencionados, en Linux hay soporte para muchos
+%    otros sistemas de ficheros, la mayor parte de ellos utilizados por
+%    otras plataformas para guardar su información.
+%  \item Entre ellos están: \texttt{\textbf{udf}},
+%    \texttt{\textbf{adfs}} (\emph{Acorn Disc Filing System}),
+%    \texttt{\textbf{affs}} (\emph{Amiga Fast File System}),
+%    \texttt{\textbf{asfs}} (\emph{Amiga Smart File System}),
+%    \texttt{\textbf{hfs}} (Apple Macintosh), \texttt{\textbf{befs}}
+%    (BeOS), \texttt{\textbf{bfs}} (\emph{Boot File System}, SCO),
+%    \texttt{\textbf{efs}} (SGI, IRIX), \texttt{\textbf{jffs}}
+%    (\emph{Journaling Flash File System}), \texttt{\textbf{vxfs}}
+%    (VERITAS VxFS), \texttt{\textbf{hpfs}} (OS/2),
+%    \texttt{\textbf{qnx4}}, \texttt{\textbf{sysv}} (System V),
+%    \texttt{\textbf{ufs}} (SunOS, FreeBSD, NetBSD, OpenBSD)\ldots
+%  \end{itemize}
+%\end{frame}
+
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Cómo añadir un disco al sistema}
+
+%  Para añadir un disco nuevo al sistema, es necesiario:
+%  \begin{enumerate}
+%  \item Preparar las particiones del disco
+%  \item Crear el sistema de ficheros
+%  \item Elegir (y crear) el punto de montaje
+%  \item Montar el nuevo disco,
+%  \item Añadir contenido al disco.
+%  \item Modificar \texttt{\textbf{/etc/fstab}} para que se monte
+%    automáticamente en el arranque.
+%  \end{enumerate}
+%\end{frame}
+%
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{1. Preparar las particiones del disco}
+%  \begin{itemize}
+%  \item No siempre es necesario: en disquetes no se utilizan nunca, y
+%    en llaveros USB, a veces tampoco se hacen particiones y se utiliza
+%    todo el disco (\texttt{\textbf{/dev/sda}} en lugar de
+%    \texttt{\textbf{/dev/sda1}}).
+%  \item Uso de las órdenes ``\texttt{\textbf{fdisk}}'',
+%    ``\texttt{\textbf{cfdisk}}'' o ``\texttt{\textbf{sfdisk}}'' para
+%    modificar la tabla de particiones.
+%    \begin{itemize}
+%    \item \texttt{\textbf{fdisk}}: Herramienta original, es necesario
+%      hacer todo ``a mano'', algo complicada.
+%    \item \texttt{\textbf{cfdisk}}: Con menús a toda pantalla, bonito,
+%      fácil de usar.
+%    \item \texttt{\textbf{sfdisk}}: Orientado para ser usado desde
+%      \emph{scripts}.
+%    \end{itemize}
+%  \end{itemize}
+%\end{frame}
+%
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{2. Crear el sistema de ficheros}
+%  \begin{itemize}
+%  \item Hay que elegir el tipo de sistema de ficheros más adecuado.
+%  \item Normalmente, a menos que haya necesidades especiales, se
+%    utilizará el mismo sistema para todas las particiones. Se suele
+%    elegir ``\texttt{\textbf{ext3}}'', o bien algún otro sistema con
+%    \emph{journaling}.
+%  \item Creación del sistema de ficheros con la orden
+%    ``\texttt{\textbf{mkfs}}'':
+%
+%    \texttt{\textbf{mkfs -t ext3 /dev/hda3}}
+%  \end{itemize}
+%\end{frame}
+%
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{3. Elegir (y crear) el punto de montaje}
+%  \begin{itemize}
+%  \item Los puntos de montaje más habituales, entre los directorios
+%    ``estándar'', son: \texttt{\textbf{/usr}}, \texttt{\textbf{/var}},
+%    \texttt{\textbf{/home}}, \texttt{\textbf{/tmp}},
+%    \texttt{\textbf{/var/tmp}}.
+%  \item Pero se puede crear cualquier otro, dependiendo de nuestras
+%    necesidades, por ejemplo \texttt{\textbf{/musica}}.
+%  \item Antes de poder \emph{montar} un nuevo sistema de ficheros en
+%    un directorio, es necesario que este directorio exista: hay que
+%    crearlo con \texttt{\textbf{mkdir}}.
+%  \item Los permisos que tenga este directorio no son muy relevantes,
+%    ya que desaparecerán una vez montado el nuevo sistema de ficheros.
+%  \end{itemize}
+%\end{frame}
+%
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{4. Montar el nuevo disco}
+%  \begin{itemize}
+%  \item Si queremos montar un disco de manera temporal, para
+%    examinarlo o para comprobar que ha sido creado correctamente, se
+%    suele hacer en un directorio espeacial para montajes temporales,
+%    el \texttt{\textbf{/mnt}}:
+%
+%    \texttt{\textbf{mount -t ext3 /dev/hda3 /mnt}}
+%  \end{itemize}
+%\end{frame}
+%
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{5. Añadir contenido al disco}
+%  \begin{itemize}
+%  \item El contenido original del punto de montaje, al igual que los
+%    permisos que tenga, desaparecerán una vez montado el nuevo sistema
+%    de ficheros.
+%  \item Si queremos que el nuevo disco tenga la misma información que
+%    tenía ese directorio, hay que hacer una copia (con
+%    \texttt{\textbf{cp}}, \texttt{\textbf{rsync}}\ldots):
+%
+%    \texttt{\textbf{rsync -avHWSx /var /mnt}}
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{6. Modificar \texttt{\textbf{/etc/fstab}}}
+%  \begin{itemize}
+%  \item Por cada punto de montaje que tengamos en el sistema, es
+%    necesaria una línea nueva en el fichero
+%    \texttt{\textbf{/etc/fstab}}.
+%  \item Normalmente, las opciones no se modifican (``\texttt{\textbf{defaults}}'').
+%
+%  \item El contenido original del punto de montaje, al igual que los
+%    permisos que tenga, desaparecerán una vez montado el nuevo sistema
+%    de ficheros.
+%  \item Si queremos que el nuevo disco tenga la misma información que
+%    tenía ese directorio, hay que hacer una copia (con
+%    \texttt{\textbf{cp}}, \texttt{\textbf{rsync}}\ldots)
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Ejemplo de montaje de un nuevo disco}
+%
+%  Estas acciones deberán realizarse preferiblemente en modo
+%  monousuario, para evitar que haya procesos que interfieran con
+%  nuestras acciones.
+%
+%  Si queremos crear una nueva partición, \texttt{\textbf{/dev/hda3}},
+%  para montarla en el directorio \texttt{\textbf{/var}}:
+%
+%  {\flushleft\fontsize{8pt}{8pt}\selectfont
+%\begin{verbatim}
+%# cfdisk /dev/hda
+%# mkfs -t ext3 /dev/hda3
+%# mount -t ext3 /dev/hda3 /mnt
+%# rsync -avHWSx /var /mnt
+%# rm -rf /var
+%# mkdir /var
+%# umount /mnt
+%# echo "/dev/hda3 /mnt ext3 defaults 0 2" >> /etc/fstab
+%# mount /var
+%\end{verbatim}
+%  }
+%\end{frame}
+%
+%---------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Integridad del sistema de ficheros}
+%  \begin{itemize}
+%  \item En el arranque, se hace una comprobación rutinaria de los
+%    sistemas de ficheros, buscando fallos que puedan ser corregidos.
+%  \item Esta comprobación se realiza con la orden
+%    ``\texttt{\textbf{fsck}}'', y puede realizarse a mano (siempre con
+%    el disco sin montar):
+%
+%    \texttt{\textbf{fsck -t ext3 /dev/hda3}}
+%  \end{itemize}
+%\end{frame}
+
+
+
+\end{document}

@@ -1,0 +1,549 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={XML},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Antecedentes de REST]{Antecedentes de REST: sockets, RPC, SOAP, WSDL}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2016]{Marzo de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+
+\section{Antecedentes de REST}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Antecedentes de REST}
+La tecnología más habitual desde la década de 2010 para
+intercomunicar aplicaciones en red (no aplicaciones con usuarios),
+es REST
+
+En el pasado, se emplearon diversos paradigmas
+(que pueden seguir en uso hoy)
+\begin{itemize}
+\item
+Sockets de red (\emph{network sockets})
+\item
+RPC. \emph{Remote Procedure Call}
+\item
+SOAP (\emph{Simple Object Access Protocol}) +
+ WSDL (\emph{Web Services Description Language})
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Network Sockets}
+\begin{itemize}
+\item
+Los más difundidos son los sockets
+Berkeley de BSD, en los años 80
+\item
+Su principal limitación es que son de muy bajo nivel, simplemente
+envían y reciben datos entre dos \emph{end points}: dirección IP+Puerto
+\item
+Se siguen usando hoy cuando es necesario este acceso de bajo a nivel a la red
+\item
+Para desarrollar aplicaciones suelen resultar poco prácticos, obliga al programador
+a \emph{reinventar la rueda} en todo lo relativo a comunicaciones
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{RPC}
+RPC, \emph{Remote Procedure Call}
+\begin{itemize}
+\item
+En los años 90 se popularizan arquitecturas más complejas que los sockets, basadas
+en el paradigma RPC
+
+\item
+Se populariza el \emph{middleware}
+
+Software de sistemas que proporciona al software de aplicaciones funcionalidad
+por encima de la ofrecida por el SO. Facilita a los desarrolladores las tareas
+de comunicación y entrada/salida
+
+\begin{itemize}
+\item
+CORBA: \emph{Common Object Request Broker Architecture}, año 1991
+\item
+Java RMI, Remote Method Invocation
+\item
+DCOM (\emph{Distributed Component Object Model}). Protocolo
+propietario de Microsoft, competidor de CORBA
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+
+\item
+El programador invoca a funciones en máquinas remotas de manera prácticamente igual
+a una llamada a una función local. Se supone que el programador puede olvidar
+que trabaja en un sistema distribuido
+
+\item
+El propósito era ocultar al programador toda la complejidad propia de la red:
+(qué recursos hay, dónde están, cómo se accede, qué sucede si fallan)
+
+
+
+\item
+Todo esto que en principio parece muy conveniente, cae en desuso en la década de 2000
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Inconvenientes del modelo RPC}
+\begin{itemize}
+\item
+Las red es compleja. Ocultar esta complejidad inicialmente hace que programar sea sencillo,
+pero el software resultante resulta frágil
+% mejor que el fallo lo maneje el software de aplicación, cerca
+% de la lógica de negocio. No una capa intermedia de software de sistemas
+\item
+Localizar una función local
+es trivial, una función remota, no
+\item
+Las llamadas locales raramente fallan. Las remotas, a menudo
+\item
+Las diferencias de latencia son típicamente de varios órdenes de magnitud...
+\item
+Las tecnologías RPC son muy heterogéneas
+
+\item
+Los atributos de las clases normalmente se exportan
+directamente, hay un acople muy fuerte entre el lenguaje de programación
+y el interfaz que se expone
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Inconvenientes del modelo RPC (2)}
+\begin{itemize}
+\item
+Se exportan tipos de datos complejos, propios del modelo de negocio. Proclives a cambiar, generando
+incompatibilidad
+\item
+Los sistemas resultan fuertemente acoplados: en ocasiones es necesario que todo el sistema
+emplee el mismo lenguaje de programación, un simple cambio de sistema operativo
+puede llegar a ser conflictivo
+\item
+Mala integración con cortafuegos y otros dispositivos de seguridad en red
+\item
+
+Supongamos paradigma cliente-servidor (el más habitual)
+
+\begin{itemize}
+\item
+El cliente tiene que saber exactamente a qué funciones llamar, con qué parámetros
+de entrada y con qué valores de retorno
+\item
+Típicamente, un pequeño cambio en el cliente o el servidor obliga a cambiar también
+el servidor o el cliente
+\end{itemize}
+
+\end{itemize}
+% webber también es muy crítico con WSDL (pg383) . Lo llama un modelo centrado en métodos
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Web services centradas en métodos}
+
+En los años 2000 aparece la primera generación del paradigma \emph{web service}
+con tecnologías como XML-RPC, SOAP y WSDL
+
+Tienen ventajas importantes sobre RPC:
+\begin{itemize}
+\item
+Están basados en HTTP, una de las causas fundamentales del éxito del web,
+por ser un estándar sencillo y práctico para el intercambio de documentos
+entre máquina y persona
+
+\begin{itemize}
+\item
+Un \emph{web service} usa el mismo principio y protocolo para la comunicación
+máquina-máquina
+\end{itemize}
+
+\item
+Están basados en XML, un estándar de datos
+
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Las ventajas de esta primera generación de web services
+consiguen reducir mucho el acoplamiento con el sistema operativo y lenguaje
+de programación
+\item
+La integración con cortafuegos y otros dispositivos similares es muy
+sencilla, pues resulta tráfico web a estos efectos
+\item
+Pero el acoplamiento cliente-servidor sigue siendo fuerte, el cliente tiene que saber
+exactamente a qué función llamar, con qué parámetros y qué valores recibir
+\end{itemize}
+
+\end{frame}
+
+\section{SOAP}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{SOAP}
+SOAP (\emph{Simple Object Access Protocol}) es un protocolo que permite la intercomunicación
+máquina-maquina,
+mediante llamadas a métodos
+
+\begin{itemize}
+\item
+Desarrollado en 1998 por Dave Winer y otros, con respaldo de Microsoft
+\item
+SOAP comenzó siendo un protocolo privado de Microsoft, lo que provocó
+la aparición de un protocolo muy similar, pero libre, XML-RPC
+
+\item
+Normalmente emplea HTTP, aunque también soporta otros protocolos como SMTP y RSS
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+SOAP intercambia documentos XML, tanto para los distintos métodos como para los datos
+\item
+Los métodos no forman parte de SOAP, sino que los define el programador 
+de la aplicación 
+\item
+Similar a RPC, pero más sencillo al basarse en mensajes http
+\item
+Muy fácil integración con proxies y cortafuegos
+\item
+
+SOAP especifica exactamente cómo codificar las cabeceras HTTP y los documentos XML para
+intercambiar toda la información
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Mensajes SOAP}
+Un mensaje SOAP es un documento XML ordinario que contiente:
+\begin{itemize}
+\item
+Un \emph{sobre} (\emph{envelope}) que identifica el documento XML como mensaje SOAP
+\item
+Opcionalmente, una cabecera
+\item
+El cuerpo, con información sobre las llamadas y las respuestas
+\item
+Opcionalmente, un elemento \emph{fault} con información sobre errores
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{WSDL}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{WSDL}
+Web Services Description Language (WSDL) es un lenguaje basado en XML para describir la 
+funcionalidad
+ofrecida por un servicio web de primera generación, normalmente SOAP
+
+\begin{itemize}
+\item
+v1.0 año 2000, desarrollada por IBM y Microsoft
+\item
+v1.1 año 2001, muy similar a 1.1. 
+Adoptada por el W3C (\emph{World Wide Web Consortium}).
+La más popular
+\item
+v2.0 año 2007. No muy extendida
+\end{itemize}
+
+En su momento (sobre el año 2000) SOAP + WSDL fueron técnicas disruptivas.
+
+Pero resultan protocolos bastante complejos,
+es necesario especificar muchos detalles
+sobre los métodos a invocar
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Componentes de WSDL}
+%https://en.wikipedia.org/wiki/Web_Services_Description_Language
+\begin{itemize}
+
+\item
+Servicio
+
+Contiene un conjunto de funciones que se exponen a http
+\item
+Puerto
+
+Dirección donde se ubica el servicio. Típicamente es una cadena con una URL http.
+El puerto es siempre el mismo para cualquier llamada
+\item
+Vínculo (Binding)
+
+Enlace entre la especificación RPC y la especificación SOAP
+
+
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Componentes de WSDL (2)}
+\begin{itemize}
+\item
+PortType
+
+Define un servicios web, las operaciones que se pueden realizar y los mensajes empleados
+para realizar las operaciones
+\item
+Operation
+
+Equivalente a una función de un lenguaje tradicional
+\item
+Message
+
+Parámetros de la operación
+\item
+Types
+
+Descripción de los tipos de los parámetros
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://www.w3.org/ns/wsdl"
+             xmlns:tns="http://www.tmsws.com/wsdl20sample"
+             xmlns:whttp="http://schemas.xmlsoap.org/wsdl/http/"
+             xmlns:wsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+             targetNamespace="http://www.tmsws.com/wsdl20sample">
+
+<documentation>
+    This is a sample WSDL 2.0 document.
+</documentation>
+
+<!-- Abstract type -->
+   <types>
+      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://www.tmsws.com/wsdl20sample"
+                targetNamespace="http://www.example.com/wsdl20sample">
+
+         <xs:element name="request"> ... </xs:element>
+         <xs:element name="response"> ... </xs:element>
+      </xs:schema>
+   </types>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<!-- Abstract interfaces -->
+   <interface name="Interface1">
+      <fault name="Error1" element="tns:response"/>
+      <operation name="Get" pattern="http://www.w3.org/ns/wsdl/in-out">
+         <input messageLabel="In" element="tns:request"/>
+         <output messageLabel="Out" element="tns:response"/>
+      </operation>
+   </interface>
+
+<!-- Concrete Binding Over HTTP -->
+   <binding name="HttpBinding" interface="tns:Interface1"
+            type="http://www.w3.org/ns/wsdl/http">
+      <operation ref="tns:Get" whttp:method="GET"/>
+   </binding>
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<!-- Concrete Binding with SOAP-->
+   <binding name="SoapBinding" interface="tns:Interface1"
+            type="http://www.w3.org/ns/wsdl/soap"
+            wsoap:protocol="http://www.w3.org/2003/05/soap/bindings/HTTP/"
+            wsoap:mepDefault="http://www.w3.org/2003/05/soap/mep/request-response">
+      <operation ref="tns:Get" />
+   </binding>
+
+<!-- Web Service offering endpoints for both bindings-->
+   <service name="Service1" interface="tns:Interface1">
+      <endpoint name="HttpEndpoint"
+                binding="tns:HttpBinding"
+                address="http://www.example.com/rest/"/>
+      <endpoint name="SoapEndpoint"
+                binding="tns:SoapBinding"
+                address="http://www.example.com/soap/"/>
+   </service>
+</description>
+  \end{verbatim}
+  \end{scriptsize}
+
+
+  \begin{scriptsize}
+  \begin{flushright}
+Fuente: wikipedia
+  \end{flushright}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{table}[htbp]\center\footnotesize
+  \begin{tabular}[h]{|l|l|l|}\hline
+
+ & \bf{Acoplamiento }&  \bf{Acoplamiento}   \\ 
+ & \bf{con la plataforma }&  \bf{cliente-servidor}   \\ \hline \hline
+
+Sockets & Muy fuerte & Muy fuerte\\ \hline
+RPC & Fuerte (middleware) & Fuerte\\ \hline
+Web services 1ª gen. &     &    \\ 
+(SOAP, XML-RPC, WSDL) & Débil     & Fuerte    \\ \hline
+Web services 2ª gen. &    & \\ 
+(REST) & Débil  & Débil\\ \hline
+
+
+  \end{tabular}
+\end{table}
+
+
+
+\end{frame}
+
+
+
+\end{document}

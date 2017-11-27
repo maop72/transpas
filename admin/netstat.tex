@@ -1,0 +1,327 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Netstat},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+%% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[netstat]{netstat }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+
+
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\section{netstat}
+%%---------------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{netstat}
+
+
+
+
+\begin{itemize}
+\item
+\verb|netstat| es una herramienta básica en cualquier SSOO (Unix, Linux, MacOS, Windows...)
+\item
+Muestra 
+información sobre 
+conexiones de red, tablas de encaminamiento, estadísticas de los interfaces,
+NAT y multicast
+
+\end{itemize}
+
+Nos permitirá comprobar qué demonios están funcionando en nuestra
+máquina
+
+\begin{itemize}
+\item
+Es una herramienta básica para depurar cualquier servicio
+
+\item
+Un principio básico de seguridad en cualquier sistema es tener
+activos solo los servicios necesarios, cualquier nuevo
+servicio siempre implica un cierto riesgo
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\subsection{Información sobre conexiones de red}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Información sobre conexiones de red, Linux}
+\begin{itemize}
+\item
+\verb|-tu|
+
+Muestra información sobre TCP y UDP (y no sobre los
+\emph{Unix domain sockets})
+\item
+\verb|-p|
+
+Indica el programa a quien pertenece el socket
+
+Si lo ejecuta un usuario ordinario, solo muestra algunos nombres
+
+Si lo ejecuta root, muestra todos los nombres
+\item
+\verb|-a|
+
+Muestra todos los sockets, no solamente las conexiones establecidas
+sino también los sockets que están \emph{escuchando}
+
+\item
+\verb|-n|
+
+Muestra direcciones IP y no nombres de máquina.
+
+Muestra números de puerto, no nombre de servicio asociado (en los \emph{well know ports}).
+No intenta resolver nombres de máquina. 
+
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{tiny}
+  \begin{verbatim}
+koji@afrodita:~$ sudo netstat -tupan
+Conexiones activas de Internet (servidores y establecidos)
+Prot Recv-Q Send-Q Dirección_Local Dirección_Externa    Estado      PID/Program name
+tcp    0     0 0.0.0.0:22          0.0.0.0:*            ESCUCHAR    27488/sshd      
+tcp    0     0 127.0.0.1:631       0.0.0.0:*            ESCUCHAR    1320/cupsd      
+tcp    0     0 193.147.71.120:22   193.147.71.62:56881  ESTABLECIDO 26653/sshd: koji 
+tcp6   0     0 :::79               :::*                 ESCUCHAR    19514/xinetd    
+tcp6   0     0 :::22               :::*                 ESCUCHAR    27488/sshd      
+tcp6   0     0 ::1:631             :::*                 ESCUCHAR    1320/cupsd      
+udp    0     0 0.0.0.0:49573       0.0.0.0:*                        32398/avahi-daemon:
+udp    0     0 0.0.0.0:5353        0.0.0.0:*                        32398/avahi-daemon:
+
+  \end{verbatim}
+  \end{tiny}
+
+\end{frame}
+
+%    Recv-Q
+%       The count of bytes not copied by the user program connected to this socket.
+%
+%   Send-Q
+%       The count of bytes not acknowledged by the remote host.
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+  \begin{tiny}
+  \begin{verbatim}
+koji@afrodita:~$ sudo netstat -tupa
+Conexiones activas de Internet (servidores y establecidos)
+Prot Recv-Q Send-Q Dirección_Local Dirección_Externa Estado      PID/Program name
+tcp    0     0 *:ssh                   *:*           ESCUCHAR    27488/sshd      
+tcp    0     0 localhost:ipp           *:*           ESCUCHAR    1320/cupsd      
+tcp    0     0 afrodita:ssh            doublas:56881 ESTABLECIDO 26653/sshd: koji 
+tcp6   0     0 [::]:finger             [::]:*        ESCUCHAR    19514/xinetd    
+tcp6   0     0 [::]:ssh                [::]:*        ESCUCHAR    27488/sshd      
+tcp6   0     0 ip6-localhost:ipp       [::]:*        ESCUCHAR    1320/cupsd      
+udp    0     0 *:49573                 *:*                       32398/avahi-daemon:
+udp    0     0 *:mdns                  *:*                       32398/avahi-daemon:
+
+  \end{verbatim}
+  \end{tiny}
+Problema:
+
+Netstat no comprueba que el demonio que está atado a un puerto sea
+el demonio \emph{habitual} en ese puerto.
+
+Ejemplo: si atamos un servicio cualquiera al puerto 80, netstat
+lo tomará por un servidor web
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{itemize}
+\item
+Un demonio puede escuchar en un puerto (p.e. el 22) de cualquier
+dirección de la máquina, por tanto, en cualquiera de los interfaces de la máquina
+  \begin{tiny}
+  \begin{verbatim}
+tcp    0     0 0.0.0.0:22          0.0.0.0:*            ESCUCHAR    27488/sshd      
+  \end{verbatim}
+  \end{tiny}
+\item
+O bien puede escuchar en un puerto (p.e. el 631), pero no de todas 
+las direcciones/todos los interfaces, sino de una en concreto
+  \begin{tiny}
+  \begin{verbatim}
+tcp    0     0 127.0.0.1:631       0.0.0.0:*            ESCUCHAR    1320/cupsd      
+  \end{verbatim}
+  \end{tiny}
+Este demonio está en la máquina afrodita, pero no atiende peticiones hechas a la
+dirección pública de afrodita, solamente a \emph{localhost}/127.0.0.1
+\item
+Podemos usar \verb|grep| para filtrar la salida de netstat
+  \begin{tiny}
+  \begin{verbatim}
+koji@afrodita:~$ netstat -tupan |grep 22
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               ESCUCHAR    -               
+tcp        0      0 193.147.71.120:22       193.147.71.62:34285     ESTABLECIDO -               
+tcp6       0      0 :::22                   :::*                    ESCUCHAR    -      
+  \end{verbatim}
+  \end{tiny}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Netsat en OS X}
+Uso típico:
+
+\verb|netstat -f inet -an|
+\begin{itemize}
+\item
+Para ver solo las conexiones tcp y udp, la opción no es -tu sino
+\verb|-f inet|
+
+\item
+\verb|-a| y \verb|-n| se comportan como en Linux
+
+\item
+Para saber qué proceso escucha en cada puerto, no hay un equivalente
+a  \verb|-p|
+
+Pero podemos usar
+
+\verb|sudo lsof -iTCP:12345 -sTCP:LISTEN|
+
+(Donde 12345 sería el puerto a consultar)
+
+o bien
+
+\verb@sudo lsof -i -n -P |grep UDP@
+
+\end{itemize}
+
+\end{frame}
+
+\end{document}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Referencias}
+\begin{itemize}
+\item
+Tutorial de netstat
+
+CIP Tudela 
+\item
+Netstat tutorial
+
+Security Quick-Start HOWTO for Linux
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
+

@@ -1,0 +1,617 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+%\usepackage {hthtml}
+
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Administración de Usuarios},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Administración de Usuarios]{Administración de Usuarios }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Octubre de 2017}
+
+
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 3.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+  \section{Usuarios y grupos}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \frametitle{Usuarios y grupos}
+%http://www.unix.org.ua/orelly/networking/puis/ch04_01.htm
+  \begin{itemize}
+    \item Cada usuario tiene un identificador (\emph{UID}), un grupo
+      principal (o primario) al que pertenece (\emph{GID}), una serie de grupos
+      adicionales, un nombre de usuario (\emph{login}), un directorio
+      de trabajo  (\emph{home})
+%(\texttt{$HOME})
+    \item La orden \texttt{\textbf{id}} nos da el UID, el GID y los
+      grupos adicionales de un usuario
+
+    \item Cada usuario puede tener dos tipos de recursos en un sistema
+      UNIX: Procesos y Ficheros
+%  \begin{enumerate}
+%    \item Procesos. Cada proceso tiene asociado un UID, un GID y 
+%      grupos adicionales
+%    \item Ficheros. Cada fichero tiene asociado un UID y un GID
+%  \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \begin{itemize}
+    \item Cada UID y cada GID puede tener asociado un nombre,
+      especificado en los ficheros \texttt{/etc/passwd} y \texttt{/etc/group},
+      respectivamente
+    \item La información de \verb+/etc/passwd+ y \verb+/etc/group+ la utilizan
+      diversas órdenes de administración.
+      Ambos ficheros deben existir y ser coherentes para que el sistema funcione correctamente
+ \item 
+No es recomendable editar estos ficheros directamente, sino mediante mandatos
+como \verb|usermod|
+\item
+Si se edita \verb|/etc/passwd| y \verb|/etc/group/| directamente, debe usarse
+\verb|vipw| y \verb|vigr|
+  \end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Elección de la palabra clave}
+  \begin{itemize}
+    \item El campo \emph{passwd} en el \texttt{\textbf{/etc/passwd}} y el
+      \texttt{\textbf{/etc/shadow}} se encuentra cifrado con una función \emph{hash} para evitar que los usuarios (y administradores) puedan
+      conocer las contraseñas de otros usuarios.
+    \item Se usa un cifrado de un solo sentido: no existe algoritmo para averiguar la contraseña a partir de estos ficheros.
+    \item Pero se pueden probar varias contraseñas, hasta millones por segundo (John the Ripper).
+    \item Es imprescindible elegir palabras clave seguras, que no aparezcan en diccionarios, evitando nombres
+      o fechas significativas, combinando símbolos, y de la mayor longitud posible.
+  \end{itemize}
+\end{frame}
+
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+\begin{itemize}
+
+\item
+Ejemplos de malas contraseñas:
+  \begin{footnotesize}
+  \begin{verbatim}
+123456
+4312
+toby
+r2d2
+tornillo
+fromage
+mostoles
+  \end{verbatim}
+  \end{footnotesize}
+\item
+Contraseñas que parecen buenas, pero son malas:
+  \begin{footnotesize}
+  \begin{verbatim}
+XCV330
+NCC-1701-A 
+ARP2600V
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item
+
+Buenas contraseñas
+
+Para usos ordinarios, una contraseña razonablemente buena será parecida (¡pero no igual!)
+a una de estas
+
+
+  \begin{footnotesize}
+  \begin{verbatim}
+Contraseña  Nemotécnico
+----------------------------------------------------
+00QuReMa:   Queridos Reyes Magos:
+3x4igDoze   3x4=doce
+1pt,yTp1    uno para todos,todos para uno
+19Dy500n    19 dias y 500 noches
+R,cmqht?0   Rascayú, cuando mueras que harás tú?
+wali1YS!    we all live in a Yellow Submarine
+Lh10knpr.   le hare una oferta que no podrá rechazar
+  \end{verbatim}
+  \end{footnotesize}
+
+Para aplicaciones especialmente sensibles, es necesario ampliar
+el \emph{keyspace} a 14 caracteres o más
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+Es conveniente que busquemos e inutilicemos las contraseñas débiles de nuestros usuarios, ya que suponen un primer punto de entrada en nuestro sistema
+\item
+En Unix, el root no puede leer las contraseñas. Pero en otros entornos sí. Y muchos usuarios emplean siempre la misma contraseña
+
+Ejemplo:
+\begin{enumerate}
+\item Juan Torpe usa como contraseña  dgj441iU en juan.torpe@hotmail.com
+\item Juan Torpe se apunta en \verb|www.politonosdebisbalgratis.com|, con su cuenta de correo y su contraseña de siempre
+\item El administrador malicioso de este web ya conoce el nombre de Juan, su cuenta de correo y su contraseña.
+\begin{itemize}
+\item Puede usar la función \emph{¿contraseña olvidada?}  y colarse en cualquier otra cuentas de Juan
+\end{itemize}
+\end{enumerate}
+
+Debemos instruir a nuestros usuarios sobre esto
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Los usuarios sin duda olvidarán en ocasiones su contraseña y tendremos que generles una nueva, de forma segura
+\item
+Pero es muy poco profesional que nosotros como administradores olvidemos una contraseña. Debemos usar varias y guardarlas de
+forma medianamente segura (gpg, lastpass, etc)
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{\texttt{/etc/passwd}}
+  \begin{itemize}
+    \item Contiene la información de todos los usuarios del sistema.
+    \item Contenido: líneas con campos separados por dos puntos:\\
+      \texttt{\emph{login}:\emph{passwd}:\emph{UID}:\emph{GID}:\emph{info}:\emph{home-dir}:\emph{shell}}
+
+    \item El campo ``\emph{login}'' puede tener hasta 32 caracteres en Linux, pero se recomienda
+limitarlo a 8, como en los UNIX clásicos
+
+    \item El campo ``\emph{passwd}'' contiene la contraseña cifrada (con DES o con MD5) y puede estar en
+      otro fichero, en el \verb+/etc/shadow+.
+    \item El campo ``\emph{info}'' contiene el nombre real del usuario e información
+ adicional como el teléfono, etc.
+Por (desafortunados) motivos históricos, también se le denomina GECOS
+
+%Tenían una impresora en un ordenador usando gecos, para poder usar hacía
+%falta cierto código dependiente de cada usuario, y no se les ocurrió mejor
+% cosa que ponerlo aquí
+%This field is optional and only used for informational purposes. Usually,
+%t contains the full user name. GECOS means General Electric Comprehensive
+%perating System, which has been renamed to GCOS when GE's large
+%systems division was sold to Honeywell. Dennis Ritchie has reported:
+%"Sometimes we sent printer output or batch jobs to the GCOS machine. The
+%gcos field in the password file was a place to stash the information
+%for the $IDENTcard. Not elegant."
+%
+    \item En algunos sistemas, puede haber información externa (NIS, LDAP\ldots)
+    \item Programas que lo utilizan directamente: \texttt{\textbf{login}}, \texttt{\textbf{su}}, \texttt{\textbf{passwd}}.
+  \end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{\texttt{/etc/group}}
+  \begin{itemize}
+    \item Nombres de grupos del sistema, y miembros de cada grupo.
+    \item Contenido: líneas con campos separados por dos puntos:\\
+      \texttt{\emph{nombre}:\emph{passwd}:\emph{GID}:\emph{lista-logins}}
+    \item ``\emph{lista-logins}'' son usuarios separador por comas que
+      pertenecen a ese grupo.
+    \item El campo ``\emph{passwd}'' no se suele utilizar. Permite ingresar en un grupo
+en el que no se es miembro. 
+% hay editar estos ficheros a mano, no hay mandato, una prueba más de lo poco que
+% se usa
+%, casi siempre está bloqueado (``\texttt{\textbf{*}}'').
+%      Lo utilizan únicamente las órdenes \texttt{\textbf{sg}} y \texttt{\textbf{newgrp}}.
+%      Si se usa, puede estar en otro fichero, en el \verb+/etc/gshadow+.
+    \item En algunos sistemas, puede haber información externa (NIS, LDAP\ldots)
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{\texttt{/etc/shadow}}
+  \begin{itemize}
+    \item Si existe, contiene las contraseñas cifradas de los usuarios del sistema.
+    \item Contenido: líneas con campos separados por dos puntos:\\
+      \texttt{\emph{login}:\emph{passwd}:\emph{a}:\emph{b}:\emph{c}:\emph{d}:\emph{e}:\emph{f}:\emph{g}}
+      \begin{itemize}
+        \item[\texttt{\textbf{\emph{a}}}:] momento en que la \emph{passwd} fue cambiada por última vez.
+        \item[\texttt{\textbf{\emph{b}}}:] días que deben pasar antes de que pueda cambiarse.
+        \item[\texttt{\textbf{\emph{c}}}:] días después de los cuales la \emph{passwd} debe cambiarse.
+        \item[\texttt{\textbf{\emph{d}}}:] días antes de la expiración para avisar al usuario.
+        \item[\texttt{\textbf{\emph{e}}}:] días después de la expiración para desactivar la cuenta.
+        \item[\texttt{\textbf{\emph{f}}}:] momento en que la cuenta se ha desactivado.
+        \item[\texttt{\textbf{\emph{g}}}:] campo reservado.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \frametitle{Para mejorar la seguridad se añade un "salt"}
+\emph{salt} es un tipo de \emph{nounce}: Number used once. 2 bytes aleatorios
+que se añaden a la contraseña
+
+\res{Sin salt}
+  \begin{footnotesize}
+  \begin{verbatim}
+password  -->  hash (password)
+"sesamo" --> zv/coRb$PjGToGEqNZF434TmQ7bAH.rVi3i.o7IWQAI9qqzeGKe/JkJq
+bDfQE2gBFYzBTDNCHyoxpZvSLhenkPT3L6aZN0
+  \end{verbatim}
+  \end{footnotesize}
+
+
+El atacante puede usar una \emph{rainbow table}: El resultado de aplicar
+hash a un diccionario completo. Si encuentra la hash en la tabla, conoce
+la contraseña que fue usada
+
+  \begin{footnotesize}
+  \begin{verbatim}
+rainbow table
+hash(palabra1)
+hash(palabra2)
+hash(palabra3)
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\res{Con salt}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+password+salt  -->  hash (password+salt)
+
+rainbow table:
+hash(palabra1+salt1)
+hash(palabra1+salt2)
+hash(palabra1+salt3)
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\begin{itemize}
+\item
+\emph{salt} se guarda en abierto: se añade al hash, son los primeros dos bytes
+\item
+Esto obliga a que la rainbow table sea mucho mayor, puede hacerla inviable
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Añadir un usuario al sistema}
+%  \begin{itemize}
+%    \item Elegir un \emph{login}, un UID y un GID para el nuevo usuario.
+%    \item Decidir a qué grupos adicionales debe pertenecer.
+%    \item Modificar \texttt{\textbf{/etc/passwd}}, \texttt{\textbf{/etc/shadow}}, \texttt{\textbf{/etc/group}}.
+%    \item Crear el directorio HOME (normalmente \texttt{\textbf{/home/\emph{login}}}), con el UID
+%      y el GID adecuados.
+%    \item Copiar los ficheros de inicio de la cuenta (desde \texttt{\textbf{/etc/skel}}).
+%    \item Todas estas tareas están automatizadas y las lleva a cabo la orden \texttt{\textbf{adduser}}.
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Desactivar un usuario del sistema}
+  \begin{itemize}
+    \item Bloquear su contraseña en el \texttt{\textbf{/etc/passwd}} o \texttt{\textbf{/etc/shadow}}
+      (añadiendo un carácter ``\texttt{\textbf{-}}'' o ``\texttt{\textbf{*}}'', por ejemplo).
+    \item Eliminar sus tareas periódicas (\texttt{\textbf{/var/spool/cron}}).
+    \item Revisar \texttt{\textbf{/etc/aliases}} y \texttt{\textbf{.forward}} por si el usuario tuviera
+      acciones a realizar con el correo recibido.
+%    \item Revisar sus ficheros de personalización, haciendo hincapié en \texttt{\textbf{.forward .rhosts .shosts .ssh/authorized\_keys}}
+  \end{itemize}
+  
+Eliminar un usuario           
+  \begin{itemize}
+    \item \texttt{\textbf{userdel}} 
+    \item \texttt{\textbf{userdel -r}}   también borra su correo y su \emph{home}
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Eliminar un usuario del sistema}
+%  \begin{itemize}
+%    \item Hay que deshacer el proceso de creación de cuenta: modificación de \texttt{\textbf{/etc/passwd}},
+%      \texttt{\textbf{/etc/shadow}}, \texttt{\textbf{/etc/group}}.
+%    \item Eliminar \texttt{\textbf{/home/\emph{login}}} y cualquier otro fichero que pueda tener en el sistema
+%      (en el \texttt{\textbf{/tmp}}, etc).
+%    \item Eliminar sus tareas periódicas (\texttt{\textbf{/var/spool/cron}}).
+%    \item Eliminar su correo (\texttt{\textbf{/var/mail/\emph{login}}}).
+%    \item La orden \texttt{\textbf{deluser}} se encarga de hacer la mayor parte de estas tareas.
+%  \end{itemize}
+%\end{frame}
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \frametitle{Ficheros de personalización}
+%  \begin{itemize}
+%    \item Residen en el directorio de inicio (\texttt{\textbf{\$HOME}}).
+%    \item Cada intérprete, cada programa, cada orden puede usar ficheros distintos.
+%    \item Su nombre suele comenzar por ``\texttt{\textbf{.}}''
+%    \item \texttt{bash}: \texttt{\textbf{.profile .bash\_profile .bashrc .bash\_history}}
+%    \item \texttt{ssh}: \texttt{\textbf{.rhosts .shosts .ssh/}}
+%    \item \emph{e-mail}: \texttt{\textbf{.forward}}
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Usuarios especiales}
+  \begin{itemize}
+    \item No todas las líneas del \texttt{\textbf{/etc/passwd}} corresponden con usuarios físicos.
+    \item Super-usuario: uid=0 (su \emph{login} es normalemente \texttt{\textbf{root}}).
+    \item Otros usuarios del sistema: se utilizan para:
+      \begin{itemize}
+        \item tareas específicas de administración
+        \item propietarios de determinados ficheros del sistema
+        \item ejecución de determinadas aplicaciones (bases de datos, servidores de web, ftp, e-mail, noticias, etc)
+      \end{itemize}
+    \item Normalmente, los usuarios normales tienen UIDs entre el 1000 y el 30000.
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Proceso de \emph{login}}
+%  \begin{itemize}
+%    \item Para que un usuario \emph{entre} en el sistema, algún servicio (\texttt{\textbf{getty}},
+%      \texttt{\textbf{ssh}}, \texttt{\textbf{telnetd}}, etc) ejecuta un proceso de \texttt{\textbf{login}}:
+%      \begin{itemize}
+%        \item Se comprueba el nombre de usuario y la contraseña (en el \texttt{\textbf{/etc/passwd}}
+%          y \texttt{\textbf{/etc/shadow}}).
+%        \item Se comprueban posibles restricciones de acceso (contraseña caducada, etc) en el
+%          \texttt{\textbf{/etc/shadow}}.
+%        \item Registro de usuarios: \texttt{\textbf{/var/run/utmp}}, \texttt{\textbf{/var/log/wtmp}}.
+%        \item \texttt{\textbf{setuid()}}, \texttt{\textbf{setgid()}}, \texttt{\textbf{setgroups()}}.
+%        \item \texttt{\textbf{chdir(HOME)}}.
+%        \item \texttt{\textbf{exec(SHELL)}}.
+%      \end{itemize}
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Registro de usuarios}
+%  \begin{itemize}
+%    \item Cada vez que un usuario realiza un proceso de \emph{login} o de \emph{logout} en el sistema,
+%      se modifican los ficheros \texttt{\textbf{/var/run/utmp}} y \texttt{\textbf{/var/log/wtmp}}.
+%    \item Ambos son ficheros con contenido binario, no se pueden consultar ni editar directamente con un editor de texto.
+%    \item \texttt{\textbf{/var/run/utmp}}: usuarios conectados.
+%      \begin{itemize}
+%        \item Se puede consultar con ``\texttt{\textbf{who}}'', ``\texttt{\textbf{w}}'' o ``\texttt{\textbf{finger}}''.
+%      \end{itemize}
+%    \item \texttt{\textbf{/var/log/wtmp}}: registro de usuarios pasados.
+%      \begin{itemize}
+%        \item Se puede consultar con ``\texttt{\textbf{last}}'' o ``\texttt{\textbf{who /var/log/wtmp}}''.
+%      \end{itemize}
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Cambio de contraseña}
+    Para cambiar la contraseña y otros datos se utilizan las órdenes
+      \texttt{\textbf{passwd}} (contraseña), \texttt{\textbf{chfn}} (info/gecos), \texttt{\textbf{chsh}} (\emph{shell}):
+      \begin{itemize}
+        \item Estas órdenes tienen \emph{set-uid} para que un usuario normal pueda modificar
+          información privilegiada.
+        \item Antes de nada, piden la \emph{passwd} del usuario para verificar que es quien dice ser.
+        \item Bloquean cada fichero a modificar para asegurar exclusión de accesos.
+        \item Realizan las modificaciones.
+        \item Desbloquean ficheros.
+      \end{itemize}
+
+Para cambiar la contraseña de un usuario desde un script
+
+\begin{itemize}
+\item
+  \begin{scriptsize}
+  \begin{verbatim}
+echo "jperez:sesamo" | chpasswd
+  \end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Cambios de usuario y grupo}
+  \begin{itemize}
+    \item \texttt{\textbf{su}} ejecuta otra \emph{shell} bajo un usuario distinto.
+
+  \begin{itemize}
+        \item \texttt{\textbf{su jperez}} 
+
+ejecuta otra shell, perteneciente al usuario \emph{jperez}
+        \item \texttt{\textbf{su}} 
+
+ejecuta shell con uid=0 (\texttt{\textbf{root}}).
+
+        \item Pide la contraseña del usuario destino, excepto  salvo si el origen es \texttt{\textbf{root}}.
+
+  \end{itemize}
+
+
+    %\item \texttt{\textbf{sg}} y \texttt{\textbf{newgrp}} ejecutan una \emph{shell} con distinto GID.
+    \item \texttt{\textbf{newgrp}} ejecuta una \emph{shell} con distinto GID.
+      \begin{itemize}
+        \item Tiene \emph{set-uid} 
+%para poder realizar las llamadas al sistema
+  %        \texttt{\textbf{setuid()}}, \texttt{\textbf{setgid()}} y \texttt{\textbf{setgroups()}}.
+        \item  \texttt{\textbf{newgrp}} permite cambiar el GID a otro grupo al que
+          pertenezcamos  (cambia el grupo primario)
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Mandatos que sólo pueden ejecutarse como root
+\begin{itemize}
+\item \texttt{groupadd } \emph{grupo}\\  crea un grupo
+\item \texttt{adduser} \emph{usuario}\footnote{En RedHat, useradd usuario y chfn usuario} \\añade un usuario. Copia en su home el directorio \verb|/etc/skel| \\
+ \texttt{adduser} \emph{ usuario grupo } \\añade un usuario a un grupo
+\item \texttt{usermod -g }  \emph{grupo\_primario  usuario}
+\\ Cambia el grupo primario por omisión del usuario 
+\item \texttt{passwd}  \emph{usuario}\\Cambia la contraseña de un usuario
+%\item \texttt{su}  \emph{usuario}  \\Cambia el id. de usuario actual
+
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item \texttt{chown} \emph{dueño fichero(s)}\\  cambia el dueño de un fichero
+\item \texttt{chgrp} \emph{dueño fichero(s)}\\ cambia el grupo de un fichero
+\end{itemize}
+
+Mandatos para cualquier usuario
+\begin{itemize}
+\item \texttt{passwd} \\Cambia la contraseña del usuario
+%\item \texttt{groups }  \emph{usuario}\\ muestra los grupos de un usuario
+%\item \texttt{id }  \emph{usuario}\\ muestra id, gid, grupos
+\item \texttt{newgrp}  \emph{grupo}\\Entre los grupos de un usuario, elige el grupo primario
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\end{document}

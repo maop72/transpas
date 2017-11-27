@@ -1,0 +1,694 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={XML},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Fecha y hora en internet ]{Fecha y hora en internet}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2016]{Abril de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+
+\section{Fecha y Hora}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{datetime}
+
+El lenguaje python tiene un tipo de datos muy conveniente para
+el manejo de fechas: datetime
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import datetime
+def main():
+    dt=datetime.datetime.now()
+    print dt # 2016-03-05 17:39:15.900732
+    print dt.year, # 2015
+    print dt.month, # 3
+    print dt.day, # 5
+    print dt.hour, # 17
+    print dt.minute, # 39
+    print dt.second, # 15
+    print dt.microsecond # 900732
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import datetime
+def main():
+    dt1=datetime.datetime(2016,1,1,0,0,0)
+    print dt1  # 2016-01-01 00:00:00
+
+    dt2=datetime.datetime.now()
+    print dt2  # 2016-03-05 17:51:45.604391
+
+    diferencia= dt2-dt1
+    print diferencia  # 64 days, 17:51:45.604391
+    print diferencia.total_seconds() # 5593905.60439
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{timestamp}
+
+El tipo de datos datetime es propio del lenguaje python. En otros
+lenguajes y en las librerías de Unix y de Windows lo habitual es usar 
+\emph{timestamp}, que es el número de segundos transcurridos desde
+un instante inicial denominado \emph{epoch}
+
+\begin{itemize}
+\item
+En Unix el \emph{epoch} es el 1 de enero de 1970 a las 00:00 UTC
+\item
+En Windows el \emph{epoch} es el 1 de enero de 1601 a las 00:00 UTC
+\end{itemize}
+
+El \emph{Unix time} es el \emph{timestamp} basado en el \emph{epoch} Unix
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Timestamp es el formato en que se almacenan y procesan las fechas, cuando
+se tienen que presentar a las personas se emplea algún formato más legible
+
+\begin{itemize}
+\item
+El problema es que los formatos humanos para representar fechas son muy
+heterogéneos
+%#https://en.wikipedia.org/wiki/Date_format_by_country
+
+\begin{itemize}
+\item
+Dia, mes y año en Europa, parte de Asia, norte de Africa, América Central,
+América del Sur
+\item
+Mes, día y año en Estados Unidos
+\item
+Años, mes y día en China
+\end{itemize}
+\item
+Una alternativa normalizada es el ISO8601, similar al formato chino
+
+2016-03-05T06:24:57+00:00
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+En python disponemos de la librería \emph{time} para trabajar con 
+\emph{timestamps}
+\item
+Pero \emph{datetime} normalmente resulta más conveniente. Cuando nuestro
+programa tenga que aceptar y generar 
+\emph{timestamps} es recomendable
+
+\begin{itemize}
+\item
+En la entrada, convertir el 
+\emph{timestamp}
+en 
+\emph{datetime}
+\item
+Procesar el 
+\emph{datetime}
+\item
+En la salida, generar o bien un 
+\emph{timestamp}
+o bien algún formato legible para los humanos, según nuestros requisitos
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import time,datetime
+def main():
+    # Obtenemos la hora actual, como timestamp
+    ts=time.time()
+    print ts    # 1457197258.88
+
+    # Convertimos el timestamp a datetime naive
+    dt=datetime.datetime.utcfromtimestamp(ts)
+    print dt  # 2016-03-05 18:00:58.881041
+
+    # Convertimos el datetime naive de nuevo a timestamp
+    ts=time.mktime( dt.timetuple())
+    print ts # 1457197258.0
+
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Zonas horarias}
+En cualquier aplicación que funcione en internet es muy importante
+tener en cuenta la zona horaria
+\begin{itemize}
+\item
+Los sistemas operativos que usamos actualmente y la mayoría de los lenguajes
+de programación actuales son anteriores a internet
+\item
+Una aplicación tradicional suele
+ejecutarse en algún lugar del mundo en concreto,  con lo que no es especialmente
+importante especificar la zona horaria. Suele sobreentender \emph{hora local}
+\item
+En internet no existe la \emph{hora local}. Es imprescindible indicar siempre
+la zona horaria
+\item
+En la actualidad, cualquier representación de una hora que no especifique
+claramente su zona horaria, es ambigüa y muy desaconsejable
+
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+
+\item
+Las horas locales son muy complejas, es necesario tener en cuenta no solo el 
+huso horario sino la presencia o ausencia del horario de verano
+(adelantar una hora a principios de la primavera y se retrasarla en otoño)
+
+\item
+Lo más recomendable es almacenar y procesar todas las fechas en UTC
+\emph{Coordinated Universal Time}
+
+\begin{itemize}
+\item
+Esta hora es casi idéntica a la antigua GMT,
+\emph{Greenwich Mean Time}
+\end{itemize}
+
+\item
+Cualquier programa debería usar siempre horas UTC, y convertirla a hora
+local solo inmediatamente antes de presentarla a un humano
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+El tipo de datos 
+\emph{timestamp}
+no requiere indicar cuál es su zona horaria, se trata de los segundos
+transcurridos desde el epoch, y el epoch siempre es UTC
+
+\item
+Con el tipo \emph{datetime} sí es necesario indicar zona horaria
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{pytz}
+\begin{itemize}
+\item
+En python, el formato datetime tradicional no incluye información sobre
+la zona horaria
+\item
+Actualmente se le denomina
+\emph{naive datetime} (datetime ingenuo)
+\item
+En un datetime naive, es necesario sobreentender si se trata de una hora local
+o una hora UTC
+
+\begin{itemize}
+\item
+Obviamente, esto es muy problemático
+\end{itemize}
+
+\item
+El soporte para zonas horarias en python no es muy bueno. Es recomendable usar
+la librería pytz, que no está incluida en la distribución estándar de python,
+es necesario instalarla
+
+\verb|pip install pytz|
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+El método strftime del tipo datetime admite una cadena de formato, con
+la que podemos indicar que el datetime se muestre indicando zona horaria
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    fmt = "%Y-%m-%d %H:%M:%S %Z%z"
+    print dt.strftime(fmt) # 2016-03-05 19:47:53 UTC+0000
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\begin{itemize}
+\item
+Aunque si el datetime es naive, no mostrará ninguna zona 
+\end{itemize}
+
+\item
+Un objeto pytz contiene la localización de una zona horaria
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    madrid=pytz.timezone("Europe/Madrid")
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+import datetime,pytz
+def main():
+    usa_eastern=pytz.timezone("US/Eastern")
+    utc=pytz.utc
+    fmt = "%Y-%m-%d %H:%M:%S %Z%z"
+ 
+    dt=datetime.datetime(2016,7,4,tzinfo=usa_eastern)
+    print dt.strftime(fmt) # 2016-07-04 00:00:00 EST-0500
+
+    dt=datetime.datetime(2016,10,12,12,0, tzinfo=utc)
+    print dt.strftime(fmt) # 2016-10-12 12:00:00 UTC+0000
+  
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+
+
+\item
+A partir de un datetime naive, podemos añadirle zona horaria con el método 
+\emph{localize}
+del objeto
+\emph{pytz}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    dt=madrid.localize(dt)
+    print dt.strftime(fmt) # 2016-03-05 20:47:53 CET+0100
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Cuando un datetime tiene zona horaria, podemos obtener otro datetime de diferente zona con el método
+\emph{astimezone}
+del objeto
+\emph{pytz}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+    dt=dt.astimezone(utc)
+    print dt.strftime(fmt) # 2016-03-05 19:47:53 UTC+0000
+  \end{verbatim}
+  \end{footnotesize}
+
+\item
+Observa que 
+\emph{localize} es un método del 
+\emph{timezone} 
+que recibe un 
+\emph{datetime}, 
+mientras que 
+\emph{astimezone} es un método del 
+\emph{datetime}
+que recibe un 
+\emph{timezone} 
+
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{footnotesize}
+  \begin{verbatim}
+import datetime,pytz
+def main():
+    madrid=pytz.timezone("Europe/Madrid")
+    pekin=pytz.timezone("Asia/Shanghai")
+    utc=pytz.utc
+
+    dt=datetime.datetime.now()
+    fmt = "%Y-%m-%d %H:%M:%S %Z%z"
+
+    # dt naive, sin información de zona horaria
+    print dt.strftime(fmt) # 2016-03-05 20:47:53
+
+    # Añadimos zona horaria
+    dt=madrid.localize(dt)
+    print dt.strftime(fmt) # 2016-03-05 20:47:53 CET+0100
+
+    # Cambiamos la zona horaria
+    dt=dt.astimezone(pekin)
+    print dt.strftime(fmt) # 2016-03-06 03:47:53 CST+0800
+
+    dt=dt.astimezone(utc)
+    print dt.strftime(fmt) # 2016-03-05 19:47:53 UTC+0000
+
+  \end{verbatim}
+  \end{footnotesize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{Incompatibilidad pytz - time.mktime()}
+%Un datetime con zona horaria no es un tipo nativo de python, no 
+%todas las librerías lo soportan
+%\begin{itemize}
+%\item
+%Supongamos que tenemos un datetime, y queremos pasarlo a timestamp
+%con time.mktime()
+%
+%\begin{itemize}
+%\item
+%Si le ponemos zona con localize y luego lo convertimos en timestamp, se comporta
+%correctamente
+%\item
+%Pero si le volvemos a cambiar la zona con astimezone() e intentamos convertirlo
+%en timestamp, el valor se corrompe
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%
+%%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{}
+%Ejemplo:
+%
+%  \begin{scriptsize}
+%  \begin{verbatim}
+%def compara(original,current):
+%    if original==current:
+%        print "iguales"
+%    else:
+%         print "distintos"
+%    return
+%
+%def main():
+%    ts=int(time.time())
+%    original=ts
+%    dt=datetime.datetime.fromtimestamp(ts)
+%
+%    dt=moscu.localize(dt)
+%    ts=time.mktime( dt.timetuple())
+%    compara(original,ts)  # iguales
+%
+%    dt=dt.astimezone(utc)
+%    ts=time.mktime( dt.timetuple())
+%    compara(original,ts)  # distintos
+%
+%    dt=dt.astimezone(moscu)
+%    ts=time.mktime( dt.timetuple())
+%    compara(original,ts)  # iguales
+%    return
+%  \end{verbatim}
+%  \end{scriptsize}
+%
+%\end{frame}
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{}
+%Solución
+%\begin{itemize}
+%\item
+%La hora que nuestro programa recibe, convertirla cuanto antes en datetime UTC
+%\item
+%Guardar y procesar siempre el datetime UTC
+%\item
+%Convertir el datetime UTC en el último momento al formato/zona requerido
+%\begin{itemize}
+%\item
+%Y  no volver a cambiar este formato/zona
+%\end{itemize}
+%
+%
+%\end{itemize}
+%\end{frame}
+%%----------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{}
+%Esto es, hacer esto:
+%  \begin{footnotesize}
+%  \begin{verbatim}
+%                                  |--> datetime de otra zona
+%cualquier cosa  --> datetime utc -|
+%                                  |--> timestamp
+%  \end{verbatim}
+%  \end{footnotesize}
+%
+%NUNCA hacer esto:
+%
+%  \begin{footnotesize}
+%  \begin{verbatim}
+%cualquier cosa --> datetime zona 1 --> datetime zona 2--> timestamp
+%  \end{verbatim}
+%  \end{footnotesize}
+%
+%\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Conversión datetime con zona en timestamp}
+A partir de un datetime, podemos necesitar convertirlo en un timestamp
+\begin{itemize}
+\item
+Si el datetime tiene zona horaria, ya no es aplicable \emph{time.mktime()}
+  \begin{footnotesize}
+  \begin{verbatim}
+  \end{verbatim}
+time.mktime( dt.timetuple())
+  \end{footnotesize}
+
+\item
+%Debemos usar el método \emph{utctimetimple()} del módulo \emph{calendar}
+Debemos usar el método \emph{timegm()} del módulo \emph{calendar}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+import calendar 
+
+ts=calendar.timegm(dt.utctimetuple())
+  \end{verbatim}
+  \end{footnotesize}
+
+
+\end{itemize}
+
+\end{frame}
+
+% receta mágica encontrada en
+%http://mostlyhighperformance.blogspot.com.es/2015/03/date-time-and-datetime-conversions.html
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lista completa de zonas horarias}
+
+  \begin{footnotesize}
+  \begin{verbatim}
+#!/usr/bin/python -tt
+import pytz
+def main():
+    for tz in pytz.all_timezones:
+        print tz
+if __name__ == "__main__":
+    main()
+  \end{verbatim}
+  \end{footnotesize}
+
+Resultado:
+  \begin{tiny}
+  \begin{verbatim}
+Africa/Abidjan
+Africa/Accra
+Africa/Addis_Ababa
+Africa/Algiers
+Africa/Asmara
+[...]
+US/Mountain
+US/Pacific
+US/Pacific-New
+US/Samoa
+UTC
+Universal
+W-SU
+WET
+Zulu
+  \end{verbatim}
+  \end{tiny}
+
+\end{frame}
+
+
+
+\end{document}

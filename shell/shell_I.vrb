@@ -1,0 +1,16 @@
+\begin{itemize}
+\item
+Una manera típica de localizar un proceso \emph{a mano}  es
+\verb$ps -ef | grep <cadena>$
+
+o
+
+\verb$ps -ef | grep <cadena> | less$
+\item
+\verb|killall| envía señales a procesos a partir de su nombre. (El nombre de la señal
+se indica de manera ligeramente distinta a como se emplea en kill)
+\item
+\verb|pkill| envía señales a procesos, identificables mediante nombre u otros atributos
+
+\end{itemize}
+

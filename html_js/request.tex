@@ -1,0 +1,253 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+%\usepackage{hthtml}
+%\usepackage{html}
+
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Librería request},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[request]{Librería request}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+\section{request}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{request}
+Para hacer peticiones http RESTful en JavaScript / node.js tenemos diversas opciones
+\begin{itemize}
+\item
+http
+
+Librería estándar, de bajo nivel
+\item
+request
+
+Libería para hacer peticiones http, de más alto nivel que la 
+librería http. No es estándar pero es muy popular
+
+Para instalarla:
+
+\verb|npm install request|
+
+\item
+Axios
+
+Librería basada en promesas (programación asíncrona). Para el navegador
+y para node.js
+
+\item
+SuperAgent
+Similar a Axios 
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Mediante consultas basadas en API a diversos servidores podemos construir
+sistemas con una gran funcionalidad
+
+\begin{itemize}
+\item
+Directorio de recursos web accesibles mediante API:
+
+\url{https://www.programmableweb.com}
+
+\item
+Como ejemplo, vamos a consultar el tiempo actual y la predicción
+que ofrece
+
+\url{http://www.myweather2.com}
+    \begin{itemize}
+    \item
+
+Necesitamos abrir una cuenta (gratuita), que nos proporcionará
+un 
+\emph{uac, unique access code}
+con el que podremos hacer peticiones http RESTful
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Consultas a myweather2}
+Al método 
+\verb|request.get()| le pasamos
+\begin{itemize}
+\item
+Una cadena con la URI del recurso. Incluye:
+
+    \begin{itemize}
+    \item
+El uac
+    \item
+El parámetro 
+\emph{output}, que
+permite elegir el formato json o el format xml
+
+    \item
+El parámetro
+\emph{query}, que indica 
+latitud y longitud del punto a consultar
+    \end{itemize}
+
+\item
+La función que manejará la respuesta. Con los parámetros
+
+    \begin{itemize}
+    \item
+error
+
+Valdrá null si la consulta tuvo éxito
+
+    \item
+response
+
+Si hubo respuesta, este objeto contendrá todos los detalles. Muy bajo
+nivel
+    \item
+body
+
+Cuerpo de la respuesta, si la hubo
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let request = require('request');
+let uri='http://www.myweather2.com/developer/forecast.ashx?uac=XXXXXX
+         &output=json&query=40.28276,-3.81912'
+
+request.get(uri, function(error, response, body){
+    console.log("error:");
+    console.log(error);
+    console.log("body:");
+    console.log(body);
+});
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/request.js.txt}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Respuesta:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+error:
+null
+body:
+{ "weather": { "curren_weather": [ {"humidity": "50", "pressure": "1020", 
+"temp": "11", "temp_unit": "c", "weather_code": "1", "weather_text": 
+"Partly cloudy",  "wind": [ {"dir": "W", "speed": "2", "wind_unit": "kph" } 
+] } ],  "forecast": [ {"date": "2017-11-18",  "day": [ {"weather_code": "0",
+ "weather_text": "Sunny skies",  "wind": [ {"dir": "ENE", "dir_degree": "63", 
+"speed": "11", "wind_unit": "kph" } ] } ], "day_max_temp": "19",  "night":
+ [ {"weather_code": "0", "weather_text": "Clear skies",  "wind": [ {"dir": 
+"NE", "dir_degree": "35", "speed": "11", "wind_unit": "kph" } ] } ], 
+"night_min_temp": "11", "temp_unit": "c" }, {"date": "2017-11-19",  "day":
+ [ {"weather_code": "0", "weather_text": "Sunny skies",  "wind": [ {"dir": 
+"E", "dir_degree": "86", "speed": "11", "wind_unit": "kph" } ] } ], 
+"day_max_temp": "16",  "night": [ {"weather_code": "0", "weather_text": 
+"Clear skies",  "wind": [ {"dir": "W", "dir_degree": "278", "speed": "4", 
+"wind_unit": "kph" } ] } ], "night_min_temp": "9", "temp_unit": "c" } ] }}
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+\end{document}

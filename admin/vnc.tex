@@ -1,0 +1,882 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={VNC},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+%% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+\definecolor{darkred}{rgb}  {1.0, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{darkblue}{rgb} {0.0, 0.0, 0.8}
+
+% for resalted text
+\newcommand{\res}[1]{\textcolor{darkred}{#1}}
+% for different text
+\newcommand{\dif}{\textsl}
+% for reserved words
+\newcommand{\rw}[1]{\textrm{\textbf{#1}}}
+% for commands
+\newcommand{\com}[1]{\textrm{\textbf{#1}}}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Sesiones gráficas remotas]{Sesiones gráficas remotas }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\section{Sesiones gráficas remotas}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Sesiones gráficas remotas}
+
+Definiciones 
+
+\begin{itemize}
+\item
+Máquina local
+
+Equipo en el que trabaja el usuario, donde tiene su pantalla, teclado, y posiblemente, ratón
+
+\item
+Máquina remota
+
+Máquina donde se ejecuta la aplicación a usar. El usuario no tiene acceso a su
+teclado, pantalla ni ratón
+\end{itemize}
+
+
+Sesiones de texto / Sesiones remotas
+
+\begin{itemize}
+\item
+El protocolo ssh nos permite trabajar cómodamente en máquinas
+Unix remotas, con sesiones de texto 
+
+
+\item
+También se puede ssh usar en Microsoft Windows, aunque con muchas limitaciones, resulta
+poco natural
+
+\item
+Pero habrá ocasiones en que será conveniente o imprescindible usar
+sesiones gráficas en máquinas remotas
+
+\end{itemize}
+\end{frame}
+
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ Protocolos para sesiones gráficas remotas (1)}
+\begin{itemize}
+\item
+Soluciones propietarias como LogMeIn o TeamViewer
+
+\item
+RDP. \emph{Remote Desktop Services}, también conocido como  \emph{Terminal Services}.  
+
+Nativo en Microsoft Windows, usable desde otras plataformas, p.e. \verb|gnome-rdp|, \verb|vinagre| (clientes) 
+o \verb|xrdp| (servidor) 
+
+Puerto por omisión: 3389 TCP
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{ Protocolos para sesiones gráficas remotas (2)}
+\begin{itemize}
+\item
+X11 forwarding. Forma parte de X Window.
+
+Tradicional y nativo en Linux/UNIX, usable en Microsoft Windows. 
+
+Normalmente
+no trabaja sobre un escritorio
+completo sino con ventanas individuales.
+
+Anticuado auque sigue disponible. Intrínsecamente poco seguro.
+Puerto por omisión: 6000 TCP
+
+\item
+VNC
+
+Protocolo abierto, multiplataforma. Nativo en muchos Linux.  Disponible en Microsoft Windows, Unix, 
+*BSD, MacOS, Android, iOS, ...
+
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{X11 Forwarding}
+\begin{itemize}
+\item
+X Window (año 1984) es el protocolo tradicional en Unix para mostrar gráficos. En local
+y también en remoto
+
+Nada que ver con Microsoft Windows
+
+\item
+En 1987 aparece la versión 11 de X Window, sigue siendo la versión actual. De ahí el
+nombre X11
+
+
+\item
+X Window es un protocolo cliente-servidor. Aunque la terminología puede ser
+anti-intuitiva:
+
+
+\begin{itemize}
+\item
+La máquina local es el servidor. En ella están los gráficos.
+Normalmente lo llamaríamos \emph{cliente},
+pero es el \emph{servidor X11} (ofrece el servicio de representación gráfica)
+
+\item
+En la máquina remota está
+el \emph{cliente X Window}. Aunque en esta máquina 
+están los procesos que usan los gráficos, esto es,
+los servicios. (Los servicios son los clientes de los
+gráficos) 
+
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+
+\item
+En la máquina local puede ser necesario configurar los permisos del servidor
+
+
+\verb|xhost +| 
+
+permite que cualquier cliente X Window
+desde cualquier máquina lance ventanas en nuestro servidor
+X Window local. 
+
+
+\begin{itemize}
+\item
+También se pueden dar permisos más específicos
+\end{itemize}
+
+\item
+Entre dos máquinas Ubuntu con el mismo usuario en ambas
+máquinas, mediante ssh, no es necesario dar permisos adicionales
+
+\end{itemize}
+
+
+Para lanzar una aplicación gráfica en una máquina remota:
+
+\begin{itemize}
+\item
+Desde la máquina local hacemos ssh a la máquina remota con la opción
+\verb|-X| (mayúscula)
+
+
+\verb|jperez@gamma12:~$ ssh -X alpha| 
+
+
+\item
+Lanzamos la aplicación en segundo plano
+
+p.e
+
+\verb|jperez@alpha:~$ xeyes&|
+
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{VNC}
+VNC, \emph{Virtual Network Compute}
+es un protocolo para abrir sesiones gráficas en máquinas remotas
+
+
+\begin{itemize}
+\item
+Arquitectura cliente-servidor, desarrollado por The Olivetti \& Oracle Research Lab
+\item
+La terminología es la habitual, no la de X Windows. El cliente está en la máquina local, el servidor,
+en la máquina remota
+\item
+Implementación liberada como software libre en 2002
+\item
+Muy popular. Muchas implementaciones para cualquier plataforma
+(Microsoft Windows, Linux, Unix, MacOS, Android, iOS, Raspberry Pi ...)
+
+Cualquier servidor de cualquier plataforma puede trabajar con cualquier
+cliente en cualquier otra
+
+\end{itemize}
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+En Ubuntu
+
+
+\begin{itemize}
+\item
+Tenemos un servidor integrado por omisión, llamado \verb|vino|
+\item
+Hay un cliente llamado \verb|vinagre|
+
+\item
+También podemos usar 
+\emph{TightVNC}, entre otras implementaciones
+
+\end{itemize}
+
+
+En Windows
+
+\begin{itemize}
+\item
+Podemos usar 
+\emph{TightVNC}, entre otras implementaciones
+\end{itemize}
+
+
+En MacOS
+
+\begin{itemize}
+\item
+Como cliente podemos usar el navegador nativo de MacOS, Safari. Basta escribir en
+la barra de direcciones la dirección del servidor:
+
+\verb|vnc://maquina:puerto|
+
+\item
+Otra opción (con cliente y servidor) es RealVNC. Tiene una versión comercial
+y otra libre (RealVNC Open Edition)
+
+\end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{vinagre}
+El cliente de VNC oficial de Ubuntu es
+\verb|vinagre| 
+\begin{itemize}
+\item
+Está desarrollado conjuntamente con
+\verb|vino|, algunas opciones avanzadas pueden funcionar mejor con este servidor
+
+\item
+También tiene soporte para RDP 
+\end{itemize}
+
+Uso:
+
+\verb|vinagre <MAQUINA>:<PUERTO>| 
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{vino}
+\begin{itemize}
+\item
+En Ubuntu, 
+el servidor
+\verb|vino| 
+está instalado por omisión en las máquinas con escritorio 
+gráfico
+\item
+Por omisión
+trabaja en el puerto 5900 TCP
+
+\item
+
+Para cambiar el puerto del servidor:
+
+    \begin{enumerate}
+    \item
+Instalamos dconf-editor
+
+\verb|sudo apt install dconf-editor|
+    \item
+Lanzamos dconf-editor
+
+    \item
+
+En 
+
+
+\verb% org | gnome | desktop | remote-access%
+
+Cambiamos \verb|alternative-port|
+
+Activamos \verb|use-alternative-port|
+    \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Normalmente usaremos vino cuando ya tenemos una sesión gráfica 
+abierta en un Ubuntu con escritorio tradicional
+
+
+Pero no es adecuado para abrir:
+\begin{itemize}
+\item
+Una segunda sesión gráfica en la misma máquina
+
+\item
+Una sesión gráfica en una máquina remota a la que no
+tenemos acceso físico o en la que no queremos abrir una sesión gráfica
+tradicional
+
+\item
+Una sesión en una máquina donde no queramos un escritorio tan pesado
+como Unity o Gnome
+
+\end{itemize}
+
+
+En cualquiera de estos casos
+
+\begin{itemize}
+\item
+En vez de usar 
+\emph{vino},
+ podremos usar 
+\emph{TightVNC}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Servidor de TightVNC en Ubuntu}
+
+El servidor de TightVNC es 
+\verb|vncserver|.
+Para usarlo necesitaremos, además del propio 
+\verb|vncserver|, 
+un escritorio. Podríamos emplear Gnome o Unity, pero son muy pesados. Generalmente será
+más adecuado
+
+\begin{itemize}
+\item
+O bien un escritorio ligero como Xfce4
+\item
+O bien un gestor de ventanas como Openbox
+
+(podemos considerar a Openbox como un escritorio ultra-ligero)
+\end{itemize}
+
+
+Los pasos son:
+
+    \begin{enumerate}
+    \item
+Instalación de vncserver
+
+    \item
+Instalación del escritorio
+
+    \item
+Preparación del escritorio
+
+    \item
+Lanzamiento del servidor
+
+    \item
+Lanzamiento del cliente
+
+    \end{enumerate}
+
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{1 Instalación de vncserver}
+
+
+En caso de que TightVNC no esté instalado en nuestro sistema
+
+
+    \begin{enumerate}
+    \item
+Como en cualquier instalación de un paquete nuevo, suele ser recomendable
+actualizar el sistema
+
+\verb|sudo apt update; sudo apt upgrade|
+
+    \item
+Instalamos el paquete
+
+\verb|sudo apt install tightvncserver|
+    \end{enumerate}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{2 Instalación del escritorio}
+Si vamos a usar Openbox
+
+\begin{itemize}
+\item
+Para saber si está instalado, intentamos ejecutar
+
+\verb|openbox-session|
+
+\item
+Para instalarlo
+
+\verb|sudo apt install openbox|
+\end{itemize}
+
+
+Si vamos a usar Xfce4
+
+\begin{itemize}
+\item
+Para saber si está instalado, intentamos ejecutar
+
+\verb|xfce4-session|
+
+\item
+Para instalarlo
+
+\verb|sudo apt install xfce4|
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{3 Preparación del escritorio}
+
+    \begin{enumerate}
+    \item
+En el servidor escribiremos un fichero
+\verb|~/.vnc/xstartup|
+
+con el siguiente contenido
+\begin{itemize}
+\item
+Si vamos a usar Xfce4
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+xrdb ~/.Xresources
+/usr/bin/xfce4-session
+  \end{verbatim}
+  \end{scriptsize}
+
+\item
+Si vamos a usar Openbox
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+xrdb ~/.Xresources
+/usr/bin/openbox-session
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+    \item
+Como a cualquier script, le damos permiso de ejecución, p.e.
+
+\verb|chmod 755 ~/.vnc/xstartup|
+    \end{enumerate}
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{4 Lanzamiento del servidor}
+
+Para lanzar el servidor ejecutamos la orden \verb|vncserver|, indicando
+el tamaño de la pantalla y la profundidad del color, especificada en número
+de bits
+
+Ejemplo:
+
+\verb|vncserver  -geometry 1024x768 -depth 16|
+
+Si vamos a usarlo con frecuencia, puede ser conveniente poner esta
+orden en un script de shell, p.e.
+
+\verb|~/bin/mi_vncserver|
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+La primera vez que lancemos 
+\verb|vncserver|, nos preguntará
+la contraseña de la sesión.
+
+Quedará almacenada en el fichero
+
+\verb|~/.vnc/passwd|
+\item
+Si necesitamos cambiar la contraseña, ejecutamos
+
+\verb|vncpasswd|
+
+\item
+También podemos cambiar la contraseña desde un script.
+
+P.e. la contraseña \emph{sesamo} sería:
+
+\verb@echo "sesamo\nsesamo\n\n" | vncpasswd@
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+Como cualquier demonio,
+\verb|vncserver|
+deberá atarse a un puerto para aceptar peticiones, en su caso a un puerto TCP 
+
+\begin{itemize}
+\item
+El puerto por omisión es el 5900 TCP
+
+\item
+Atención, el servidor de VNC no emplea el concepto \emph{puerto TCP}, 
+sino 
+\emph{display port}, donde
+
+\emph{puerto TCP} = 5900 + \emph{display port} 
+
+\item
+Sin embargo, en el cliente normalmente sí indicaremos el puerto TCP, no el
+\emph{display  port}
+
+\end{itemize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+Si no indicamos otra cosa, el demonio
+\verb|vncserver|
+ intentará usar el
+\emph{display port} 0, puerto TCP  5900.
+\begin{itemize}
+\item
+
+Si está libre, mostrará el mensaje
+\begin{scriptsize}
+\begin{verbatim}
+New 'X' desktop is gamma:0
+\end{verbatim}
+\end{scriptsize}
+
+
+\item
+Si está ocupado (tal vez por vino), lo intentará en el
+\emph{display port} 1,  puerto TCP
+ 5901. Si 
+tiene éxito el mensaje será
+
+\begin{scriptsize}
+\begin{verbatim}
+New 'X' desktop is gamma:1
+\end{verbatim}
+\end{scriptsize}
+
+y así sucesivamente con los
+\emph{display port} 2, 3, etc
+(puertos TCP 5902, TCP 5903, etc)
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{itemize}
+\item
+También podemos indicar 
+explícitamente el  \emph{display port}
+que usará el servidor:
+
+
+Ejemplo: 
+\emph{display port} 10 (puerto TCP 5910)
+
+\verb|vncserver :10 -geometry 1024x768 -depth 16|
+
+\item
+La sesión permanecerá abierta hasta que la matemos explícitamente
+con
+
+
+\verb|vncserver -kill :10|
+
+
+\begin{itemize}
+\item
+Esta orden mata el proceso
+\verb|vncserver|, la sesión X11 en 
+\verb|/tmp/.X11-unix|
+y los logs en 
+\verb|~/.vnc/|
+
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{5 Lanzamiento del cliente}
+En la máquina local ejecutamos
+
+\verb|vinagre <SERVIDOR>:<PUERTO|
+
+p.e.
+
+\verb|vinagre gamma:5901|
+
+Observa que en este caso indicamos el puerto TCP, no el \emph{display port}
+
+
+
+\begin{itemize}
+\item
+Recuerda que para cerrar la sesión hay que matar el servidor, no basta
+con cerrar el cliente
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso de VNC en Docker}
+VNC es una forma conveniente de abrir sesiones gráficas dentro de un contenedor.
+
+Configuración de ejemplo para el 
+\emph{display port} 0, contraseña 
+\emph{sesamo}
+
+\verb|entrypoint.sh:|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+vncserver :0 -geometry 1024x768 -depth 16
+/usr/bin/xterm&
+/bin/bash
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\verb|Dockerfile:|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+FROM ubuntu:16.04
+ENV USER root
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive &&  \
+    apt-get install -y \
+    tightvncserver openbox \
+    xterm
+
+# Expose VNC port
+EXPOSE 5900
+
+#set password for vnc
+RUN echo "sesamo\nsesamo\n\n" | vncpasswd
+
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/Dockerfile_vnc.txt}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Lanzamiento del contendor:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/bin/bash
+DISPLAY_NUMBER=0
+PORT=$((DISPLAY_NUMBER+5900))
+IMAGEN=vnc
+NOMBRE=jper${IMAGEN}01
+USUARIO=jperez
+
+docker run -it --rm -h ${NOMBRE}  --name ${NOMBRE} -p ${PORT}:${PORT} \
+    -e DISPLAY=:${DISPLAY_NUMBER} ${USUARIO}/${IMAGEN}
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/lanza_vnc.txt}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\end{document}

@@ -1,0 +1,345 @@
+\documentclass[ucs]{beamer}
+\usetheme{GSyC}
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+\usepackage{enumerate}
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Ejemplos de APIs},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Ejemplos de APIs]{Ejemplos de APIs en JavaScript}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+\section{YouTube}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{YouTube}
+Insertar un reproductor de vídeo de YouTube en JavaScript es muy sencillo
+
+\begin{itemize}
+\item
+En el cuerpo del HTML incluimos un div con un identificador, donde irá el reproductor
+
+\item
+Cargamos el script
+\url{https://www.youtube.com/iframe_api}
+
+\item
+En la función
+\verb|onYouTubeIframeAPIReady()|,
+creamos una instancia de YT.Player, y en sus atributos
+fijamos el tamaño del reproductor y el identificador del video
+
+\item
+En la función
+\verb|onPlayerReady()|,
+invocamos 
+
+\verb|event.target.playVideo()|
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    // Carga asíncrona del API del IFrame Player de YouTube
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // Creación de un <iframe<, con reproductor de YouTube
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '768',
+        width: '1024',
+        //videoId: 'YVpyk_Y6ZF8',
+        videoId: 'lKCCZTUx0sI',
+        events: {
+          'onReady': onPlayerReady,
+        }
+      });
+    }
+    // El API llama a esta función cuando el reproductor esté listo
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/youtube.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{OpenStreeMap}
+
+
+OpenStreetMap (OSM) es un proyecto que tiene como objetivo crear
+un mapa del mundo editable y libre
+
+\begin{itemize}
+\item
+Creado por Steve Coast en el Reino Unido en el año 2004
+
+\item
+Muy similar a Wikipedia, por su filosofía y funcionamiento
+
+\item
+Muy similar a Google Maps en cuanto a funcionalidad y calidad
+
+
+\item
+Hay mucho software y muchas APIs relacionadas con este proyecto:
+captura de datos, generación de mapas, de capas, etc
+
+
+\item
+El uso básico consiste en integrar un mapa y puntos de interés
+en un página HTML.  Una de las APIs más populares para 
+esto es leaflet (\url{http://leafletjs.com})
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+La representación de mapas se basa en \emph{tiles} (azulejos, baldosas)
+
+
+\begin{itemize}
+\item
+Un 
+\emph{tile} es un \emph{bitmap} / mapa de bits con un fragmento de
+mapa. Su tamaño típico es 256x256 pixeles. Aunque en ocasiones se usa
+64x64 (para dispositivos móvileS) o 512x512, para dispositivos de alta
+resolución
+
+\item
+Los datos de OpenStreetMap son libres (y gratuitos). El servidor
+de 
+\emph{tiles}
+no lo es
+
+    \begin{itemize}
+    \item
+Podemos contratarlo o desplegar uno propio
+
+    \item
+Para usos experimentales, con poca carga de datos, podemos usar
+alguno proporcionado por la propia organización, como 
+\url{tile.osm.org}
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Representación de un mapa OSM con leaflet}
+Para representar un mapa OpenStreetMap en una página HTML, usando
+la librería leaflet
+\begin{itemize}
+\item
+Incluimos la librería desde el CDN
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+ <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js">
+  \end{verbatim}
+  \end{scriptsize}
+
+Esto crea un objeto global llamado L
+
+\item
+En nuestro HTML definimos un DIV donde irá el mapa. 
+Es necesario que tenga definido 
+un atributo CSS \emph{height} con la altura
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+  <style>
+    #id_mapa {
+      height: 400px;
+    }
+  </style
+
+...
+
+  <div id="id_mapa"></div
+  \end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Creamos un objeto de tipo 
+\verb|L.map()|, pasando las coordenadas del centro
+del mapa deseado y el zoom inicial 
+
+(el zoom 0 es un mapa de toda la tierra, numeros mayores van
+haciendo el mapa más detallado)
+
+\item
+
+Invocamos el método \verb|L.tileLayer()|, 
+con la URL del mapa en el servidor de tiles
+y el mensaje de atribución del mapa
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    $(document).ready(function() {
+          let latitud=40.417; //coordenada y
+          let longitud=-3.703; //coordenada x
+          let zoom=16;
+          let mi_mapa = L.map('id_mapa').setView([latitud, longitud], zoom);
+          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+          }).addTo(mi_mapa);
+        });
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/openstreet.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Marcadores y mensajes popup}
+\begin{itemize}
+\item
+Podemos añadir marcadores, invicando el método
+\verb|L.marker(<COORDENADAS>).addTo(<OBJETO MAP)|
+
+\item
+Podemos añadir mensajes emergentes de tipo
+\emph{popup}, con el método \verb|.bindPopup| de un
+marcador
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+      let mi_marcador = L.marker(coord_labIII).addTo(mi_mapa);
+      mi_marcador.bindPopup("Laboratorios III").openPopup();
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/openstreet2.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+\end{document}

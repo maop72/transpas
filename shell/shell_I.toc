@@ -1,0 +1,20 @@
+\beamer@endinputifotherversion {3.36pt}
+\select@language {spanish}
+\beamer@sectionintoc {1}{Shell:Int\IeC {\'e}rprete de \IeC {\'o}rdenes}{4}{0}{1}
+\beamer@subsectionintoc {1}{1}{\IeC {\textquestiondown }Qui\IeC {\'e}n soy? \IeC {\textquestiondown }D\IeC {\'o}nde estoy? \IeC {\textquestiondown }Qu\IeC {\'e} tengo?}{6}{0}{1}
+\beamer@subsectionintoc {1}{2}{Metacaracteres de la Shell}{9}{0}{1}
+\beamer@subsectionintoc {1}{3}{Funcionamiento de la shell}{10}{0}{1}
+\beamer@sectionintoc {2}{Ficheros}{15}{0}{2}
+\beamer@subsectionintoc {2}{1}{\IeC {\'A}rbol de directorios}{15}{0}{2}
+\beamer@subsectionintoc {2}{2}{Permisos}{17}{0}{2}
+\beamer@subsectionintoc {2}{3}{path}{25}{0}{2}
+\beamer@sectionintoc {3}{Variables}{26}{0}{3}
+\beamer@subsectionintoc {3}{1}{Variables de entorno}{27}{0}{3}
+\beamer@subsectionintoc {3}{2}{La variables de entorno PATH}{31}{0}{3}
+\beamer@sectionintoc {4}{Operaciones b\IeC {\'a}sicas con ficheros y directorios}{42}{0}{4}
+\beamer@sectionintoc {5}{Enlaces}{57}{0}{5}
+\beamer@sectionintoc {6}{Mandatos de uso b\IeC {\'a}sico de la red}{61}{0}{6}
+\beamer@sectionintoc {7}{Entrada y salida}{68}{0}{7}
+\beamer@sectionintoc {8}{Programaci\IeC {\'o}n de Scripts}{74}{0}{8}
+\beamer@sectionintoc {9}{Filtros}{76}{0}{9}
+\beamer@sectionintoc {10}{Manejo b\IeC {\'a}sico de procesos}{83}{0}{10}

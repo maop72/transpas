@@ -1,0 +1,1905 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Administración de Servicios y Aplicaciones},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Administración de Servicios y Aplicaciones]{Administración de Servicios y Aplicaciones}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Tec. Sup. Ingeniería de Telecomunicación}
+\institute{gsyc-profes (arroba) gsyc.es}
+\date[2014]{Diciembre de 2014}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+
+
+%%---------------------------------------------------
+\section{Empaquetado de ficheros}
+%%---------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Empaquetado de ficheros}
+
+Almacenar varios ficheros en uno solo, no necesariamente
+con compresión
+
+Utilidad:
+\begin{itemize}
+\item
+Más cómodo de manejar (copiar, enviar por correo, etc)
+\item
+Conservar metainformación (permisos) o incluso mayúsculas/minúsculas, tildes, etc
+si los ficheros van a pasar por un sistema de ficheros diferente
+\begin{itemize}
+\item
+ISO9660 (cdrom)
+\item
+vfat (Windows, discos externos,   pendrives)
+\item
+ntfs (Windows)
+\end{itemize}
+
+\end{itemize}
+
+
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{gzip}
+
+
+Comprime o descomprime 1 fichero
+
+Extensión: \verb|fichero.z    fichero.gz|
+\begin{itemize}	
+\item
+Comprimir y descomprimir (borrando el original):
+
+\verb|gzip fichero |
+
+\verb|gunzip fichero.gz|
+
+\end{itemize}
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+\item
+Comprimir y descomprimir (manteniendo el original):
+
+\verb|gzip -c fichero > fichero.gz   | 
+
+\verb|zcat fichero.gz > fichero| 
+
+\verb@zcat fichero.gz  | less @ 
+
+% zcat = gunzip -c
+
+
+\end{itemize}
+
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{tar + gzip}
+Comprime o descomprime varios ficheros, directorios\\
+Extensión: \verb|fichero.tar.gz    fichero.tgz|
+\begin{itemize}	
+\item
+Comprimir:\\ \verb|tar -cvzf fichero.tgz fichero1 fichero2| 
+\item
+Descomprimir:\\ \verb|tar -xvzf fichero.tgz |
+\item
+Mostrar contenido:\\ \verb|tar -tzf fichero.tgz| 
+\end{itemize}
+
+
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+
+\frametitle{WinZip}
+\begin{itemize}	
+\item 
+Por motivos de licencias, originalmente no había compresores para
+Linux.
+(Pero las aplicaciones Windows saben descomprimir descomprimir \verb|.tgz|)
+\item 
+Descomprimir: 
+\verb|   unzip fichero.zip |
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{bz2}
+Formato que ofrece compresión más alta que .gz, (empleando 
+más CPU y memoria)
+% En windows el WinImp lo abre, el winzip se lía
+\begin{itemize}	
+\item 
+Comprimir y descomprimir 1 fichero, borrando el original
+
+\verb|bzip2 fichero|
+
+\verb|bunzip2 fichero.bz2 |
+\item 
+Comprimir y descomprimir 1 fichero, manteniendo el original
+
+\verb|bzip2 -c fichero > fichero.bz2|
+
+\verb|bunzip2 -c fichero.bz2 >  fichero |
+\item 
+Comprimir y descomprimir varios ficheros, manteniendo el original
+
+\verb@tar -c fichero1 fichero2  |  bzip2 > fichero.bz2  @
+
+
+\verb@tar -xjf fichero.bz2@
+\end{itemize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Disquetes }
+
+\begin{itemize}
+\item
+Podemos montar la disquetera como un sistema de ficheros Unix
+
+\item
+Pero suele ser más práctico copiar un \verb|.tgz| en modo \verb|msdos|
+
+\verb|   mdir a:  |
+
+\verb|   mcopy fichero a:  |
+
+\verb|   mcopy a:fichero   |
+
+\end{itemize}
+
+\end{frame}
+
+%-------------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Fragmentación de ficheros }
+Si necesitas trocear una imagen de gran tamaño en ficheros que quepan en un 
+\emph{pendrive} o cdrom
+
+\begin{itemize}
+\item
+Empaquetar y comprimir un directorio:\\ \verb|tar -cvzf mi_imagen.tgz mi_directorio|
+\item
+Mostrar contenido:\\ \verb|tar -tzf mi_imagen.tgz|
+
+\item
+Trocear:\\
+\verb|#     tamaño    fichero        prefijo|
+\verb|split -b 500MB  mi_imagen.tgz  mi_imagen.tgz.|
+\begin{footnotesize}
+(Observa que el segundo parámetro es igual al primero, pero
+añadiendo un punto)
+\end{footnotesize}
+
+
+\item
+Habremos generado
+  \begin{footnotesize}
+  \begin{verbatim}
+mi_imagen.tgz.aa  mi_imagen.tgz.ab  mi_imagen.tgz.ac
+  \end{verbatim}
+  \end{footnotesize}
+\end{itemize}
+\end{frame}
+
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+En la máquina destino (no importa si en el \emph{host} el S.O. es distinto)
+\begin{itemize}
+\item
+Unir los fragmentos
+\verb|cat mi_imagen.tgz.* > mi_imagen.tgz|
+
+(En MS Windows para este paso podemos emplear HjSplit, Free File Splitter o cualquier otro programa similar)
+\item
+Descomprimir y desempaquetar:\\ \verb|tar -xvzf mi_imagen.tgz |
+
+(En MS Windows podemos usar 7-Zip  o similares)
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Instalación de paquetes}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\frametitle{Instalación de paquetes}
+\begin{itemize}	
+\item
+Método clásico para instalar programas:
+
+Formato .tgz
+
+Descomprimir y seguir las instrucciones del fichero README
+
+Suele ser del estilo de
+\begin{verbatim}
+./configure
+make compile
+make install
+\end{verbatim}
+\item 
+Sistema de gestión de paquetes
+
+Colección de herramientas que automatizan
+la instalación, actualización y eliminación de programas.
+\end{itemize}
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}	
+
+\item 
+Gestión de paquetes, Debian y derivados 
+
+Paquetes en formato .\verb|deb|
+
+Se pueden manejar directamente con \verb|dpkg|, o con \verb|apt-get, aptitude,|
+\verb|dselect|, o \verb|synaptic| 
+
+\item
+Gestión de paquetes, RedHat y derivados
+
+Paquetes en formato .\verb|rpm|
+
+Se pueden manejar directamente con \verb|rpm|, o con \verb|up2date| o \verb|yum| 
+%up2date son los repositorios de redhat y de los primeros fedores
+%yum es para fedora
+
+
+\end{itemize}
+
+
+\end{frame}
+%---------------------------------------------
+\subsection{El sistema de paquetes de Debian}
+%---------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{El sistema de paquetes de Debian}
+
+%\begin{itemize}
+%\item Dos tipos de paquetes:
+%  \begin{itemize}
+%  \item Binarios (.deb)
+%  \item Fuentes (.dsc, .orig.tar.gz, .diff.gz)
+%  \end{itemize}
+%\item 
+Los paquetes mantienen \emph{dependencias} entre sí, de forma que
+  la instalación de un paquete puede:
+  \begin{itemize}
+  \item \emph{depender} de que se instale también otro
+  \item \emph{recomendar} que se instale también otro
+%se instala por omisión. El paquete podría funcionar sin ello,
+%pero para hacer algo util normalmente lo querrán isntalar
+  \item \emph{sugerir} que se instale también otro
+  \item \emph{entrar en conflicto} con otro actualmente instalado
+  \end{itemize}
+%\item Los nombres de los paquetes Debian siguen el siguiente convenio:\\
+%\verb|<nombre>_<NúmeroVersión>-<NúmeroRevisiónDebian>.deb|
+%\end{itemize}
+
+
+\end{frame}
+
+
+
+%-----------------------------------------------------------------
+\subsection{dpkg}
+%-----------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{dpkg}
+
+\begin{itemize}
+\item Es la herramienta básica de gestión de paquetes, que es usada
+  por las otras (dselect, apt-get, aptitude, synaptic).
+\item Usos principales:
+  \begin{itemize}
+  \item 
+\verb|dpkg -i paquete_VVV-RRR.deb|
+
+Instala un paquete
+  \item 
+\verb|dpkg -r paquete|
+
+Desinstala  (\emph{remove}) un paquete, elimina todo excepto los ficheros de configuración
+  \item 
+\verb|dpkg -P paquete| 
+
+Purga un paquete, eliminando incluso los ficheros de configuración
+  \end{itemize}
+\item Tiene muchas opciones. Puede esquivarse el esquema de
+  dependencias (peligroso) con las opciones que empiezan por
+  \verb|--force-...|
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+Versiones de Ubuntu:
+
+
+\begin{verbatim}	
+nombre año.mes 
+
+Warty Warthog 4.10     Hoary Hedgehog 5.04
+Breezy Badger 5.10     Dapper Drake 6.04 
+Edgy Eft 6.10          Feisty Fawn 7.04
+Gutsy Gibbon 7.10      Hardy Heron  8.04  LTS
+Intrepid Ibex 8.10     Jaunty Jackalope 9.04
+Karmic Koala 9.10      Lucid Lynx 10.04 LTS
+Maverick Meerkat 10.10 Natty Narwhal 11.04
+Oneiric Ocelot 11.10   Precise Pangolin 12.04 LTS
+Quantal Quetzal 12.10  Raring Ringtail 13.04
+Saucy Salamander 13.10 Trusty Tahr 14.04 LTS
+Utopic Unicorn 14.10   Vivid Vervet 15.04
+\end{verbatim}
+
+Versión estándar: Desde 13.04, soportada durante 9 meses
+(18 meses en las versiones anteriores)
+
+LTS: Long Term Support: 3 años en escritorio y 5 en servidor
+
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+Ubuntu Desktop / Ubuntu Server Edition / Ubuntu Server Edition JeOS
+
+Variantes de Ubuntu: Kubuntu, Xubuntu, Gobuntu, Ubuntu Studio 
+
+
+
+\end{frame}
+
+
+%--------------------------------------------------------------
+\subsection{apt}
+%--------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{apt}
+
+\begin{itemize}
+\item La herramienta más sencilla de usar y más potente.
+\item Usa \emph{repositorios}: sitios centralizados
+donde se almacenan paquetes
+\item Las direcciones de los repositorios se indican en el       
+  fichero 
+
+\verb|/etc/apt/sources.list|
+\item
+Los repositorios de ubuntu se dividen en 4 componentes
+\begin{enumerate}
+\item
+\emph{Main}. Soportado oficialmente por ubuntu. Libre
+\item
+\emph{Restricted}. Soportado oficialmente. No libre
+\item
+\emph{Universe}. No soportado oficialmente. Libre
+\item
+\emph{Multiverse}. No soportado oficialmente. No libre
+\end{enumerate}
+
+Además, se pueden añadir componentes de terceros 
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+
+\begin{scriptsize}
+\begin{verbatim}
+# deb cdrom:[Ubuntu 6.06 _Dapper Drake_ - Release i386 (20060531)]/ dapper main restricted
+deb http://archive.ubuntu.com/ubuntu edgy main restricted
+deb http://security.ubuntu.com/ubuntu edgy-security main restricted
+deb http://archive.ubuntu.com/ubuntu edgy-updates main restricted
+
+## All community supported packages, including security- and other updates
+deb http://archive.ubuntu.com/ubuntu edgy universe multiverse
+deb http://security.ubuntu.com/ubuntu edgy-security universe multiverse
+deb http://archive.ubuntu.com/ubuntu edgy-updates universe multiverse
+
+# Google Picasa for Linux repository
+deb http://dl.google.com/linux/deb/ stable non-free
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Uso básico de apt}
+
+El primer \emph{front-end} fue \verb|dselect|, muy potente y con un pésimo
+interfaz de usuario
+
+Desde línea de mandatos se puede usar \verb|apt-get|
+
+A partir de 2005, debian recomienda usar \verb|aptitude|, que tiene la
+misma sintaxis que \verb|apt-get|
+
+\begin{itemize}
+\item 
+\verb|aptitude update|  $\equiv$  \verb|apt-get update|
+
+Actualizar lista de paquetes: 
+\item 
+\verb|aptitude safe-upgrade|
+
+Actualizar todos los paquetes instalados a la última versión disponible
+(sin cambiar de distribución)
+\item 
+\verb|aptitude install paquete|
+
+Instalar un paquete (resolviendo conflictos)  
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+Aunque indiquemos a nuestro sistema de paquetería que instale
+la última versión de un paquete, tal vez no sea posible. Se dice
+que el paquete está \emph{retenido} (\emph{hold})
+
+\begin{itemize}	
+\item
+El paquete depende de otro no incluido en la distribución actual
+\item 
+El administrador lo ha retenido \emph{a mano} (no le gusta,
+da problemas...)
+
+Un paquete retenido para \verb|apt-get| puede no estar retenido
+para \verb|aptitude|. Y viceversa. 
+\begin{itemize}	
+\item
+\begin{verbatim}
+aptitude:
+sudo aptitude hold nombre_del paquete
+sudo aptitude unhold nombre_del paquete
+\end{verbatim}
+
+
+\item
+\begin{verbatim}
+apt-get:
+sudo install feta
+sudo feta hold nombre_del paquete
+sudo feta unhold nombre_del paquete
+\end{verbatim}
+
+
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}	
+\item 
+\verb|aptitude remove paquete|
+
+Desinstalar un paquete (resolviendo conflictos)  
+
+\item 
+\verb|aptitude --purge remove paquete|
+
+Purgar un paquete (resolviendo conflictos)  
+\item 
+\verb|aptitude  dist-upgrade|
+
+Actualiza \emph{agresivamente} todos los paquetes instalados, lo que
+puede incluir el paso a la versión más reciente de la distribución
+
+\item 
+\verb|aptitude clean|
+
+Borrar las copias descargadas de los .deb
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Otros mandatos interesantes}
+En los repositorios hay muchos paquetes
+¿Cómo saber cuál necesito?
+
+\begin{itemize}
+\item 
+\verb|aptitude search cadena| 
+
+Buscar una cadena en el nombre o descripción de un paquete. Indica
+el estado del paquete (instalado, no instalado, borrado...)
+%(usa regexps)
+
+%ejemplo
+%  apt-cache search ssh --names-only|grep server
+
+
+%\item 
+%\verb|apt-cache search cadena.* --names-only| 
+%
+%Buscar una cadena en el nombre de paquete
+\item 
+\verb|aptitude show paquete|
+
+Muestra descripción del paquete
+
+\item 
+\verb|dpkg-reconfigure paquete|
+
+Reconfigurar un paquete
+
+%\item 
+%Buscar si existe un cierto nombre de paquete.  (usa comodines)
+%
+%\verb|dpkg -l paquete*|\
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{frame}[fragile]
+
+%\begin{itemize}
+%\item 
+%\verb|dpkg -L paquete|
+%
+%Listar los contenidos de un paquete instalado
+
+%\item 
+%\verb|dpkg -S fich|
+%
+%Buscar a qué paquete pertenece un fichero
+%\end{itemize}
+
+%\end{frame}
+
+
+
+
+
+
+%%---------------------------------------------------------------
+
+
+%\begin{frame}[fragile]
+%%\section{Instalación de paquetes rpm}
+%Paquetes RPM
+%\begin{itemize}
+%\item
+%Instalar paquete\\
+%\verb|rpm -Uvh  nombre.rpm|
+%\item
+%Desinstalar\\
+%\verb|rpm -e nombre.rpm|
+%\item
+%Preguntar si está instalado\\
+%\verb|rpm -q paquete.rpm  | 
+%\item
+%Mostrar todos los paquetes instalados\\
+%\verb|rpm -qa | 
+%\end{itemize}
+
+%\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\subsection{Sistemas de paquetes en OS X}
+\frametitle{Sistemas de paquetes en OS X}
+
+Apple no tiene previsto el uso de estos sistemas para
+usuarios \emph{normales}. Pero sí son muy útiles para usuarios
+con perfil de desarrollador o administrador. Se usan prácticamente
+igual que apt-get o aptitude
+
+Actualmente podemos 
+optar por tres sistemas
+\begin{enumerate}
+\item
+fink 
+
+El más antiguo. Basado en apt-get. Poco usado hoy
+\item
+macports
+
+Basado en los ports de FreeBSD. Muy completo. Muy independiente de Apple
+
+\item
+homebrew
+
+El más moderno y mejor integrado con Apple. Tal vez el más popular
+hoy
+\end{enumerate}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Localizar ficheros}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Localizar ficheros}
+\begin{itemize}
+\item 
+\verb|find                   | Busca un fichero  \\
+\verb!find . | grep fichero  ! Filtra la búsqueda
+\item 
+\verb|locate     | Busca un fichero (en una base de datos)
+\item 
+\verb|updatedb   | Actualiza la base de datos
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\section{Hora. Parada del sistema}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+\frametitle{Hora. Parada del sistema}
+  \begin{itemize}
+        \item \texttt{\textbf{shutdown -P now}} $\equiv$
+          \texttt{\textbf{poweroff}}
+
+Apaga el sistema
+        \item \texttt{\textbf{shutdown -r now}} $\equiv$
+          \texttt{\textbf{reboot}} 
+
+Reinicia el sistema
+\item 
+\verb|sleep n|
+
+Duerme la shell segundos  
+\item 
+\verb!sleep 28800 ; halt ! \\Detiene la máquina al cabo de 8 horas
+  \end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{itemize}
+  
+\item 
+Poner fecha y hora:
+\begin{itemize}
+\item
+Automáticamente: Demonio \emph{ntpd}, cliente de \emph{Network Time Protocol}
+
+\item
+Manualmente
+
+\verb|date -s AAAA-MM-DD| \\
+\verb|date -s HH:MM| 
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Casi siempre hay varias soluciones para una tarea. Generales o particulares
+\begin{itemize}	
+\item 
+\verb@find . |grep cadena@
+
+\verb@find . -name cadena\*@
+\item 
+\verb@sleep 60 | shutdown -h now@
+
+\verb@shutdown -h 1@
+
+\item 
+etc, etc
+\end{itemize}
+Todas sirven. ¿No? ¿Cuál es \emph{mejor}?
+\begin{itemize}	
+\item 
+Cuando somos novatos en un sistema, con una solución general
+sabremos resolver ese problema y otros parecidos
+\item 
+Cuando conocemos mejor un sistema y dominamos las soluciones
+generales, las soluciones particulares
+suelen ser más eficientes
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\section{rsync}
+%sincroniza un directorio respecto a otro
+
+%\verb|rsync [opciones] [origen] [destino]|
+
+%\begin{itemize}
+%\item 
+%pueden estar en diferentes máquinas
+%\item 
+%útil para \emph{backups} y \emph{mirrors}
+%\end{itemize}
+
+%\begin{scriptsize}
+%\begin{verbatim}
+%#!/bin/bash
+%rsync -e ssh --verbose --archive --delete --exclude *.mp3 --exclude *.MP3  \
+%mortuno@pantuflo:/tmp/aa /tmp/bb
+%
+%# a:archive. preserva permisos, subdirectorios...
+%#  --delete: borra en el destino lo que no esté en el origen
+%\end{verbatim}
+%\end{scriptsize}
+%\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\section{Copias de seguridad}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Copias de seguridad}
+
+\begin{itemize}	
+\item
+\verb|tar| o similares
+
+Problema: Siempre se duplican los directorios enteros
+\item 
+\verb|rsync|
+
+\emph{Mirror} unidireccional. Permite mantener una réplica 
+de un directorio. Solo se actualizan las novedades.
+No permite modificar la réplica
+\item 
+\verb|FreeFileSync, Synkron|
+
+Herramientas libres para sincronización bidireccional (Windows, Linux, OS X). 
+
+Sincronizan dos (o más) directorios: Cualquiera de los dos directorios puede modificarse
+
+\end{itemize}
+\end{frame}
+
+%-------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+
+\item 
+Sistemas de almacenamiento permanente
+
+\verb|Time Machine| (OS X)
+
+\verb|dumpfs| (bsd) 
+
+\verb|pdumpfs| (Linux, Windows)
+
+\verb|TimeVault, FlyBack| (Linux)
+
+%timevault es para gnome ubuntu
+%flyback es para linux en general
+\verb|venti| (Plan 9)
+
+\begin{itemize}
+\item 
+Se registran los cambios en los ficheros, sin borrar nunca nada
+\item 
+Mantienen una 
+\emph{foto} del estado diario del sistema de ficheros, en
+un directorio con formato yyyy/mm/dd 
+\item 
+Parece mucho, pero hoy el almacenamiento es muy barato. P.e. si 
+generamos 10 Mb diarios, necesitamos unos 4Gb
+anuales
+\end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\section{Administración de los demonios}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Administración de los demonios}
+
+Los demonios son programas relativamente \emph{normales}, con algunas particularidades
+\begin{itemize}	
+\item
+Ofrecen servicios (impresión, red, ejecución periódica de tareas, logs, etc)
+\item 
+Suelen estar creados por el proceso de arranque \emph{init}  (ppid=1)
+\item 
+Sus nombres suelen acaban en \emph{d}
+\item 
+Se ejecutan en \emph{background}
+\item 
+No están asociados a un usuario en una terminal
+\item
+El grueso de su configuración suele hacerse desde un 
+único fichero 
+
+En el caso de debian,
+\verb|/etc/midemonio.conf|
+\item 
+Se inician y se detienen de manera uniforme
+%Se inicia y se detiene desde un script en \verb|/etc/init.d|
+\end{itemize}
+
+Pueden organizarse de dos maneras: 
+
+\begin{itemize}
+\item
+System V
+\item
+Upstart
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Unix System V}
+Versión de Unix comercializada en 1983 por AT\&T 
+
+
+\begin{itemize}
+\item
+La mayoría de los Unix, incluyendo Linux, son derivados de System V
+\item
+Otros Unix son derivados del Unix BSD de aquella época: esto incluye los BSD actuales
+y OS X (Apple) 
+\end{itemize}
+
+
+System V introduce
+una forma de organizar los demonios basada en 
+\begin{itemize}
+\item
+\emph{Niveles de ejecución}
+\item
+Scripts en \verb|/etc/init.d|
+\item
+Ordenación lineal de sucesos: 
+
+Las tareas se ordenan secuencialmente en orden preestablecido, solo cuando una está completamente
+acabada empieza la siguiente
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Upstart}
+
+%http://www.netsplit.com/blog/articles/2006/08/26/upstart-in-universe
+\subsection{upstart}
+
+\begin{itemize}
+\item
+El sistema de arranque tradicional de Linux (System V)
+no es adecuado para las máquinas actuales
+\begin{itemize}
+\item
+Son externos: aparecen y desaparecen
+\item
+Están en red
+\item
+Ahorran energía
+\item \ldots
+\end{itemize}
+
+% Storage buses allow more than a fixed number of drives, so they must be scanned for; this operation frequently does not block.
+% Firmware may need to be loaded after the device has been detected, but before it is usable by the system.
+% Mounting a partition in /etc/fstab may require tools in /usr which is a network filesystem that cannot be mounted until after networking has been brought up.
+
+\item
+\emph{Upstart} es un sistema de arranque basado en eventos
+(pueden suceder en cualquier orden, puede haber tareas
+en paralelo)
+\item
+Mantiene una capa adicional de sofware para que las órdenes
+al estilo System V sigan funcionando
+
+
+
+\end{itemize}
+\end{frame}
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+
+\item
+Desarrollado por Ubuntu, con el propósito de extenderlo
+a todos los Linux
+
+Aparece en Ubuntu 6.10 \emph{edgy} (Octubre de 2006)
+\item
+También lo usan los S.O. de google (chrome, chromium) y algunas versiones
+de Red Hat
+
+La mayoría de los Linux siguen empleando System V
+\item
+En Fedora y Debian es opcional y poco frecuente. Upstart es
+una de las mayores diferencias entre Debian y Ubuntu
+
+\item
+Alternativas: \emph{launchd} (OS X), \emph{initng},  SMF, systemd 
+%smf: solaris
+
+%\item
+%Está previsto que reemplace a \emph{cron} y tal vez a  \emph{inetd}, manteniendo siempre la compatibilidad
+\end{itemize}
+En 2014, Debian anuncia que pasará a usar systemd, y Ubuntu anuncia que en el futuro abandonará upstart y también usará systemd
+
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ficheros de configuración}
+Los ficheros donde se configura un demonio son:
+\begin{itemize}
+\item
+Fichero principal de configuración 
+
+\verb|/etc/midemonio.conf|
+
+\item
+Configuración de puesta en marcha y parada 
+
+
+\begin{itemize}
+\item
+System V
+
+\verb|/etc/init.d/midemonio|
+\item
+Upstart
+
+\verb|/etc/init/midemonio.conf|
+
+\end{itemize}
+
+
+\item
+Configuración del administrador local
+
+\verb|/etc/default/midemonio|
+
+Solo existe en Debian y
+derivados (también en Ubuntu con Upstart). No lo usan todos los
+paquetes
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Directorio /etc/default}
+\begin{itemize}
+\item
+La inmensa mayoría de los parámetros de \verb|/etc/midemonio.conf|
+y de 
+\verb|/etc/init.d/midemonio|
+o de
+\verb|/etc/init/midemonio.conf|
+los ha escrito el desarrollador del demonio o el empaquetador de
+la distribución, es normal que el administrador local
+de cada máquina concreta solo modifique unos pocos
+\item
+En algún momento habrá que actualizar el demonio a una versión nueva,
+que frecuentemente incluirá cambios en sus ficheros de configuración,
+escritos por el desarrollador o el empaquetador
+
+
+\begin{itemize}
+\item
+¿Instalamos los ficheros nuevos y  \emph{machacamos} los viejos?
+
+Problema: se pierde la configuración que ha personalizado el
+administrador local
+\item
+¿Mantenemos los viejos y descartamos los nuevos?
+
+Problema: se pierden los cambios de la versión actual, el fichero
+de configuración (antiguo) podría incluso se incompatible con el demonio
+(actual)
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Solución: fichero \verb|/etc/default/midemonio|
+\begin{itemize}
+\item
+Es un fichero muy corto, con muy pocos parámetros, muy importantes,
+que se sabe que serán modificados por el administrador local
+\item
+Cuando se instalan versiones nuevas del demonio, este fichero se mantiene
+\item
+Los cambios introducidos por las nuevas versiones de los demonios estarán
+en \verb|/etc/midemonio.conf| o en 
+\verb|/etc/init.d/midemonio|
+o 
+\verb|/etc/init/midemonio.conf|
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Administración estilo System V}
+El código de un demonio puede estar en cualquier lugar
+del sistema de ficheros.
+Pero siempre se coloca en \verb|/etc/init.d/midemonio| un script
+para manejarlo
+
+\begin{itemize}	
+\item
+\verb|/etc/init.d/midemonio start|
+
+Inicia el servicio
+\item
+\verb|/etc/init.d/midemonio stop|
+
+Detiene el servicio
+\item 
+\verb|/etc/init.d/midemonio restart|
+
+Detiene e inicia el servicio. Suele ser 
+%\textcolor{red}{necesario para releer los ficheros de configuración}
+\textbf{\textcolor{red}{necesario para releer los ficheros de configuración}}
+si se han modificado (\verb|/etc/midemonio.conf|)
+
+
+\end{itemize}
+
+Con frecuencia también está disponible
+\begin{itemize}	
+\item
+\verb|/etc/init.d/midemonio reload|
+
+Lee el fichero de configuración sin detener el servicio
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\subsection{Niveles de ejecución}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Niveles de ejecución}
+%Esto es el System V Init
+%Otras distribuciones, como Gentoo o Slackware, tienen el método de inicio bastante distinto (Gentoo es SystemV modificado, y Slackware usa el BSD Init),
+
+%http://en.wikipedia.org/wiki/Runlevel
+%http://tldp.org/HOWTO/From-PowerUp-To-Bash-Prompt-HOWTO-6.html#ss6.1
+
+% http://www.debian.org/doc/debian-policy/ch-opersys.html
+¿Qué demonios se ponen en marcha cuando se inicia el sistema?
+
+%La mayoría de los Linux usan el sistema de arranque de System V
+
+%BSD tiene su propio sistema (que también lo emplea Slackware)
+
+Un Nivel de ejecución (\emph{runlevel}) es una configuración de arranque.
+Para cada nivel, se define un conjunto de demonios que deben ejecutarse
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+Supongamos una fábrica. 
+Diferentes niveles (estados), no secuenciales.
+Al entrar en un nivel se apagan ciertos sistemas y se encienden otros
+\begin{scriptsize}
+\begin{verbatim}
+    Nivel 1 - Noche
+        Al entrar en este nivel apagar
+            01 motores
+            02 luces principales
+        Al entrar en este nivel encender
+            01 alarma
+            02 luces_auxiliares
+    Nivel 2 - Producción normal
+        Al entrar en este nivel apagar
+            01 alarma
+            02 luces auxiliares
+        Al entrar en este nivel encender
+            ....
+    Nivel 3-  Mantenimiento     
+        Al entrar en este nivel apagar
+            01 motores
+            ....
+\end{verbatim}
+\end{scriptsize}
+    %Nivel 4 - Vacaciones, solo mantenimiento
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+El responsable de conectar y desconectarlo todo será
+el vigilante de seguridad, así que hay que dejarle
+unas instrucciones muy claras:
+
+\vspace{0.6cm}
+
+\begin{scriptsize}
+
+\verb%ordinal            [encender|apagar]           nombre_del_sistema%
+\vspace{0.2cm}
+
+\begin{tabular}[h]{|l|l|l|}\hline
+\bf{Código} & \bf{Significado} & \bf{Mandato } \\
+\hline \hline
+S10motor-ppal &1º encender motor principal & \verb|/etc/init.d/motor-ppal start|\\ \hline
+S20motor-aux & 2º encender motor auxiliar & \verb|/etc/init.d/motor-aux start|\\ \hline
+\hline
+K10alarma    & 1º apagar alarma& \verb|/etc/init.d/alarma stop|\\ \hline
+  \end{tabular}
+
+\end{scriptsize}
+\vspace{0.6cm}
+
+Dentro de cada nivel, las tareas se ordenan desde 00 hasta 99 (con un cero a la izquierda para
+los valores del 0 al 9)
+
+\end{frame}
+
+%-------------------------
+\begin{frame}[fragile]
+
+El \emph{vigilante de seguridad} es el proceso \verb|init|.  
+
+Hay un directorio por nivel:
+
+Debian y derivados
+\begin{scriptsize}
+    \begin{verbatim}
+    /etc/rc0.d
+    /etc/rc1.d
+    ...
+\end{verbatim}
+\end{scriptsize}
+
+Red Hat y derivados
+\begin{scriptsize}
+\begin{verbatim}
+    /etc/rc.d/rc0.d
+    /etc/rc.d/rc1.d
+    ...
+\end{verbatim}
+\end{scriptsize}
+
+
+Hay otro directorio cuyos servicios se activan siempre, en cualquier nivel
+
+\begin{scriptsize}
+    \begin{verbatim}
+     /etc/rcS.d
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+%-------------------------
+\begin{frame}[fragile]
+%\item \texttt{/etc/rcS.d}, \texttt{/etc/rc0.d}, \texttt{/etc/rc1.d}, \texttt{/etc/rc.d/rc2.d} \dots
+
+Dentro de los directorios hay enlaces simbólicos
+\begin{itemize}
+\item
+Apuntan al script en \verb|/etc/init.d| que controla el demonio
+\item
+Cada nombre del enlace indica conexión/desconexión, ordinal y script a manejar
+\end{itemize}
+
+Cuando entra en el nivel N, el proceso init se encarga de
+
+\begin{itemize}
+
+\item Ejecutar por orden
+todos los scripts en \verb|/etc/rcN.d| que empiezen por K (de Kill).
+Les pasa el parámetro \emph{stop}
+
+\item A continuación, ejecuta por orden
+todos los scripts en \verb|/etc/rcN.d| que empiezen por S (de Start). 
+Les pasa
+el parámetro \emph{start}
+
+
+
+
+\end{itemize}
+\begin{verbatim}
+who -r
+\end{verbatim}
+Indica el nivel de ejecución actual
+\end{frame}
+
+%-------------------------
+\begin{frame}[fragile]
+Niveles comunes:
+\begin{scriptsize}
+\begin{verbatim}
+      0   Halt (Parada del sistema)
+      1   Modo monousuario, usuario root, sin red
+      2-5 Diversos modos multiusuario
+      6   Reboot (Reiniciar el sistema) 
+\end{verbatim}
+\end{scriptsize}
+
+Red Hat y derivados:
+\begin{scriptsize}
+\begin{verbatim}
+      2   No se utiliza (definible por el administrador)
+      3   Modo multiusuario completo, solo consola de texto
+      4   No se utiliza (definible por el administrador)
+      5   Modo multiusuario completo, con X Window
+\end{verbatim}
+\end{scriptsize}
+
+Debian y derivados:
+
+\begin{scriptsize}
+\begin{verbatim}
+      No hay diferencia del 2 al 5. Se usa el 2 por omisión,
+      el resto queda libre para el administrador
+\end{verbatim}
+\end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+Ejemplo del contenido de \verb|/etc/rc2.d/|
+
+\begin{scriptsize}
+\begin{verbatim}
+S10acpid            S18hplip         S20postfix        S89atd              
+S10powernowd.early  S19cupsys        S20powernowd      S89cron
+S10sysklogd         S20apmd          S20rsync          S90binfmt-support
+S10wacom-tools      S20festival      S20ssh            S98usplash
+\end{verbatim}
+\end{scriptsize}
+
+Ejemplo del contenido de \verb|/etc/rc6.d/|
+\begin{scriptsize}
+\begin{verbatim}
+K19cupsys       K25mdadm            S15wpa-ifupdown     S50lvm
+K19setserial    K25nfs-user-server  S20sendsigs         S50mdadm-raid
+K20dbus         K30etc-setserial    S30urandom          S60umountroot
+K20laptop-mode  K50alsa-utils       S31umountnfs.sh     S90halt
+\end{verbatim}
+\end{scriptsize}
+
+
+\end{frame}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "admin-main"
+%%% End: 
+
+
+%%---------------------------------------------------------------
+  \section{Tareas periódicas}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \frametitle{Tareas periódicas}
+
+  \begin{itemize}
+  \item Automatizan la gestión del sistema
+  \item Fiabilidad. Protegen frente a olvidos 
+  \item Se ejecutan en el momento preciso (día y hora)
+  \item Ayudan o detectan situaciones de error
+  \item Facilitan el control del sistema
+  \item Programas: 
+\begin{itemize}
+\item
+\texttt{\textbf{cron}} 
+\item
+\texttt{\textbf{anacron}}.
+Permite ejecutar algo programado para un momento
+en que el sistema estaba apagado
+% solo puede usarlo el root. Se ejecuta en algún momento
+% del día
+\item
+\texttt{\textbf{at}}.
+Ejecuta una tarea a la hora indicada por \emph{stdin}
+\end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+Usos de las tareas periódicas
+%%  \subsection{Usos de las tareas periódicas}
+
+  \begin{itemize}
+  \item Generación de informes periódicos (fin de mes, etc.)
+  \item Estado de las comunicaciones
+  \item Borrado de ficheros temporales (\texttt{\textbf{/tmp}},
+    \texttt{\textbf{/var/tmp}})
+  \item Tareas de respaldo de información
+  \item Control de los procesos presentes en el sistema
+  \item Parada del sistema según horarios de trabajo
+  \item Recordatorios
+  \item Descarga de \emph{software} en horarios de poco tráfico
+  \end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+  \subsection{cron}
+% man 5 cron
+
+  \begin{itemize}
+  \item Es uno de los demonios esenciales de un sistema, siempre está
+    arrancado (\texttt{\textbf{/usr/sbin/cron}})
+  \item Se encarga de ejecutar tareas programadas para un determinado
+    momento, bajo la identidad del usuario que lo programó y con
+    precisión de 1 minuto
+  \item Se controla a través del uso de determinados ficheros de
+    configuración (solo para el superusuario) y mediante el uso de la
+    orden ``\texttt{\textbf{crontab}}'' (para todos los usuarios).
+  \end{itemize}
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\subsection{Tabla de cron}
+
+
+\begin{scriptsize}
+\begin{verbatim}
+SHELL=/bin/bash
+MAILTO=koji
+PATH=/usr/local/bin:/usr/bin:/bin
+#   m    h   dayofmonth  month  dow   command
+   16    *       *        *     *    ping 193.147.71.119  -c 1
+   0     9       4        8     *    echo "regar plantas"
+   0   15,18     *        *    1-5   echo "hora de salir" | wall
+\end{verbatim}
+\end{scriptsize}
+
+m: Minuto. De 0 a 59\\
+h: Hora. De 0 a 23\\
+dayofmonth: de 0 a 31\\
+month: de 1 a 12\\
+dayofweek: de 0 a 7. 0=7=domingo, 1=lunes, 2=martes\ldots
+
+Cada línea es una tarea
+\end{frame}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item
+Se pueden poner comentarios con
+\verb|#| pero no en cualquier posición, solo siguiendo
+el patrón \emph{principio de línea, 0 o más espacios, almohadilla}
+\item
+En las asignaciones \verb|variable=valor|, el valor no se expande.
+Por tanto, no pueden hacerse cosas como p.e. \verb|PATH = $HOME/bin:$PATH|
+\item
+Es necesario dejar una linea en blanco al final de la tabla
+%Un rango como 23-7 no es legal, porque $23>7$
+\end{itemize}
+\end{frame}
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Lista de tareas para \texttt{\textbf{cron}}}
+%
+%  \begin{itemize}
+%  \item Cada tarea se especifica en una línea diferente, en la que se
+%    indica el momento en el que debe realizarse, y qué se debe
+%    ejecutar.
+%  \item Cada línea contiene 6 campos separados por espacios:
+%    \begin{itemize}
+%    \item minuto (0--59)
+%    \item hora (0--23)
+%    \item día del mes (1--31)
+%    \item mes (1--12)
+%    \item día de la semana (0--7). 0=7=domingo, 1=lunes, 2=martes\ldots
+%    \item orden a ejecutar
+%    \end{itemize}
+%  \end{itemize}
+%\end{frame}
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+\begin{small}
+\begin{verbatim}
+*         -> todos            
+1-4       -> 1,2,3 y 4    
+1,4       -> 1 y 4 
+*/3       -> cada 3 
+1-15/3    -> los primeros 15, cada 3 
+\end{verbatim}
+
+Ejemplos y contraejemplos:
+
+\begin{scriptsize}
+\begin{verbatim}
+#   m    h   dayofmonth  month  dow   command
+   *   14-15     *        *     *    echo "OJO: de 14 a 15:59"
+   *   23-7      *        *     *    echo "RANGO ILEGAL, 23>7"
+\end{verbatim}
+\end{scriptsize}
+
+
+\end{small}
+\end{frame}
+
+
+%--------------------------
+\begin{frame}[fragile]
+
+
+\begin{itemize}
+\item 
+\verb|crontab -e|   \\Edita la tabla de cron del usuario. Usa el editor
+por omisión (normalmente vi). Podemos usar otro cambiando la variable 
+de entorno EDITOR
+\item 
+\verb|crontab -l|   \\Muestra tabla de cron
+\item 
+\verb|crontab mi_tabla|   \\El fichero \emph{mi\_tabla} pasa a ser nueva tabla de cron
+\end{itemize}
+
+\end{frame}
+
+%--------------------------------------
+%
+%\begin{frame}[fragile]
+%  \subsection{\texttt{\textbf{crontab}}}
+%
+%\begin{verbatim}
+%       crontab [ -u usuario ] fichero
+%       crontab [ -u usuario ] { -l | -r | -e }
+%\end{verbatim}
+%
+%  \begin{itemize}
+%  \item ``\texttt{\textbf{-u usuario}}'': disponible solo para
+%    \texttt{\textbf{root}}, permite ver o modificar las tareas
+%    programadas para otro usuario.
+%  \item ``\texttt{\textbf{fichero}}'': Reemplaza la lista de tareas
+%    programadas por las que aparezcan en el fichero indicado.
+%  \item ``\texttt{\textbf{-l}}'': Muestra la lista de todas las tareas
+%    programadas.
+%  \item ``\texttt{\textbf{-r}}'': Elimina todas las tareas
+%    programadas.
+%  \item ``\texttt{\textbf{-e}}'': Edita la lista de tareas
+%    programadas.
+%  \end{itemize}
+%\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Formato de cada línea en \texttt{\textbf{cron}}}
+%
+%  Cada campo numérico (del primero al quinto de cada línea), puede tener:
+%    \begin{itemize}
+%    \item Un ``\texttt{\textbf{*}}'', que indica ``todos''.
+%    \item Un número, que indica un momento exacto (``\texttt{\textbf{4}}'').
+%    \item Lista de números separadas por comas (``\texttt{\textbf{3,4,6}}'').
+%    \item Rango de números separados por guiones (``\texttt{\textbf{3-7}}'').
+%    \end{itemize}
+%
+%    Ejemplo: \\
+%    \texttt{\textbf{0 9,18 * * 1-5 echo "hora de comer" | wall}} \\
+%    (ejecuta la orden de lunes a viernes a las 9:00 y a las 18:00).
+%\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+
+  \frametitle{Ambigüedades en la especificación del momento de ejecución}
+
+  \begin{itemize}
+  \item El día en el que se ejecuta cada orden se puede indicar de 2
+    maneras:
+    \begin{itemize}
+    \item día del mes ($3^{er}$ campo)
+    \item día de la semana ($5^o$ campo)
+    \end{itemize}
+
+    En caso de aparecer los dos campos (esto es, que ninguno es
+    ``\texttt{\textbf{*}}''), la interpretación que hace
+    \texttt{\textbf{cron}} es que la orden debe ejecutarse cuando se
+    cumpla \emph{cualquiera} de ellos
+
+    Ejemplo: \\
+    \texttt{\textbf{0,30 * 13 * 5 echo 'Viernes 13!' | wall}} \\
+    %(ejecuta la orden cada media hora, \textbf{todos los viernes} y
+    %además \textbf{todos los días 13 de cada mes}).
+    (ejecuta la orden cada media hora, todos los viernes y
+    además todos los días 13 de cada mes)
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+  \frametitle{Momentos ``especiales'' (solo Linux)}
+
+  En lugar de especificar los 5 primeros campos, se puede usar
+  una cadena de las siguientes:
+  \begin{itemize}
+  \item \texttt{\textbf{@reboot}}: Se ejecuta al iniciarse la máquina.
+  \item \texttt{\textbf{@yearly}}: Se ejecuta una vez al año.
+  \item \texttt{\textbf{@monthly}}: Se ejecuta una vez al mes.
+  \item \texttt{\textbf{@weekly}}: Se ejecuta una vez por semana.
+  \item \texttt{\textbf{@daily}}: Se ejecuta una vez al día.
+  \item \texttt{\textbf{@hourly}}: Se ejecuta una vez por hora.
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \frametitle{Entorno de ejecución de las tareas}
+  \begin{itemize}
+  \item Cada tarea de cron se ejecuta por una \emph{shell}
+ \texttt{\textbf{/bin/sh}}. (a menos que definamos otra cosa en SHELL)
+  \item Causa de
+\textbf{\textcolor{red}{errores frecuentes:}}
+ El PATH con el que cron busca
+ el mandato no es el del usuario, sino \verb|/usr/bin:/bin|. Soluciones:
+
+\begin{itemize}
+\item Indicar PATH en la tabla
+\item Especificar el path abosoluto del mandato (p.e. \verb|/usr/local/bin/mimandato|)
+\end{itemize}
+
+  \item
+Quien ejecuta las tareas no es el dueño de la tabla, sino cron.
+Aunque emplea algunas variables de entorno del dueño
+de la tabla, como
+    \texttt{\textbf{LOGNAME}} y
+    \texttt{\textbf{HOME}}.
+  
+  \item La entrada estándar de cada tarea se redirige de
+    \texttt{\textbf{/dev/null}}, la salida estándar y la de error se
+    envían por correo electrónico al propietario de la tarea (si 
+hay servidor de correo)
+  \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+
+%\begin{frame}[fragile]
+%  \subsection{\texttt{\textbf{cron}} para el administrador}
+%
+%  \begin{itemize}
+%  \item La orden \texttt{\textbf{crontab}} almacena la lista de tareas
+%    para cada usuario en el fichero
+%    ``\texttt{\textbf{/var/spool/cron/crontabs/\emph{usuario}}}''.
+%  \item \texttt{\textbf{cron}} examina periódicamente estos ficheros,
+%    y además el contenido del fichero \texttt{\textbf{/etc/crontab}},
+%    que tiene una lista de tareas periódicas de \emph{administración}.
+%  \item Estas tareas periódicas de administración tienen el mismo
+%    formato que la lista de tareas de usuarios, pero con un campo más:
+%    el nombre del usuario que ha de llevar a cabo la tarea.
+%    Ejemplo: \\
+%    \texttt{\textbf{0 8 * * * root /etc/init.d/gdm restart}} \\
+%    (reinicia el servicio ``\texttt{\textbf{gdm}}'', como usuario
+%    \texttt{\textbf{root}}, todos los días a las 8:00).
+%  \end{itemize}
+%\end{frame}
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%%  \subsection{\texttt{\textbf{cron}} para el administrador (2)}
+%
+%  \begin{itemize}
+%  \item Además, lee todos los ficheros del directorio
+%    \texttt{\textbf{/etc/cron.d}} como extensiones del
+%    \texttt{\textbf{/etc/crontab}} (esto es, contienen también el
+%    campo ``usuario'').
+%  \end{itemize}
+%
+%  Normalmente, el contenido del fichero \texttt{\textbf{/etc/crontab}}
+%  es siempre el mismo, y similar a este:
+%  {\flushleft\fontsize{8pt}{8pt}\selectfont
+%\begin{verbatim}
+%17 *    * * *   root    run-parts --report /etc/cron.hourly
+%25 6    * * *   root    run-parts --report /etc/cron.daily
+%47 6    * * 7   root    run-parts --report /etc/cron.weekly
+%52 6    1 * *   root    run-parts --report /etc/cron.monthly
+%\end{verbatim}
+%  }
+
+%  Esto es, ejecuta con la periodicidad indicada todos los
+%  \emph{scripts} que se encuentren en esos directorios.
+%
+%  Si algún paquete del sistema necesita realizar algún tipo de tarea
+%  periódica, añade \emph{scripts} al directorio
+%  \texttt{\textbf{/etc/cron.*}} adecuado, o, si sus necesidades no se
+%  ajustan a ninguno de ellos, añaden un fichero con formato de
+%  \texttt{\textbf{cron}} al directorio \texttt{\textbf{/etc/cron.d}}.
+%\end{frame}
+
+%%---------------------------------------------------------------
+%
+%\begin{frame}[fragile]
+%  \subsection{\texttt{\textbf{anacron}}}
+%
+%  Las tareas periódicas indicadas en los directorios
+%  \texttt{\textbf{/etc/cron.daily}},
+%  \texttt{\textbf{/etc/cron.weekly}}\ldots, suelen ser tareas
+%  rutinarias del sistema que conviene realizar de vez en cuando, como
+%  limpiar los temporales, gestionar colas de correo, realizar
+%  \emph{back-up}s, etc.
+%
+%  Estas tareas se realizan en horas de poco uso de la máquina (de
+%  madrugada).
+%
+%  Pero es habitual que haya máquinas que no estén encendidas 24 horas
+%  al día: estaciones de trabajo que se encienden y apagan para cada
+%  uso, y no suelen estar encendidas en el momento planificado para
+%  llevar a cabo estas tareas periódicas.
+%
+%  \texttt{\textbf{anacron}}: Servicio que se inicia al encender la
+%  máquina, se da cuenta de qué tareas periódicas deberían haberse
+%  realizado desde la última vez que se apagó esta, y las realiza.
+%\end{frame}
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Ficheros de configuración de \texttt{\textbf{crontab}}}
+%
+%  Normalmente, la orden \texttt{\textbf{crontab}} puede ejecutarla
+%  cualquier usuario, permitiendo que incluya tareas periódicas en el
+%  sistema, pero se puede limitar su uso con
+%  \texttt{\textbf{/etc/cron.allow}} y
+%  \texttt{\textbf{/etc/cron.deny}}.
+%  \begin{itemize}
+%  \item Si no exiten estos ficheros, todos pueden usar cron
+%  \item Si existe el fichero
+%``\texttt{\textbf{/etc/cron.allow}}'', solo los usuarios aquí indicados
+%pueden ejecutar cron (un usuario por línea)
+%
+%  \item ``\texttt{\textbf{/etc/cron.deny}}''. Si no existe
+%    \texttt{\textbf{/etc/cron.allow}}, y existe este fichero, los
+%    usuarios incluidos en él no tienen permiso para utilizar
+%    \texttt{\textbf{crontab}}.
+%  \end{itemize}
+%\end{frame}
+
+%%---------------------------------------------------------------
+
+
+%\begin{frame}[fragile]
+%  \subsection{\texttt{\textbf{at}}}
+%
+%  \begin{itemize}
+%  \item El demonio \texttt{\textbf{cron}} se utiliza para realizar
+%    tareas periódicas, que se realizan en un momento determinado y se
+%    vuelven a realizar pasado un período de tiempo.
+%  \item \texttt{\textbf{at}} y \texttt{\textbf{atd}} se utilizan para
+%    ejecutar una tarea concreta \emph{en un instante determinado}, y
+%    no volver a ejecutarla más.
+%  \item ``\texttt{\textbf{atd}}'' es un demonio, que siempre está
+%    arrancado, y se encarga de ejecutar las tareas programadas.
+%  \item ``\texttt{\textbf{at}}'' se ejecuta para añadir tareas nuevas a la
+%    lista de tareas por realizar.
+%  \item ``\texttt{\textbf{atq}}'' lista las tareas pendientes para el
+%    usuario que las ejecuta.
+%  \item ``\texttt{\textbf{atrm}}'' elimina una tarea de la lista de
+%    tareas pendientes.
+%  \end{itemize}
+%\end{frame}
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Ficheros de configuración de \texttt{\textbf{at}}}
+%
+%  Son similares a los de \texttt{\textbf{crontab}}:
+%  \begin{itemize}
+%  \item ``\texttt{\textbf{/etc/at.allow}}''. Si existe, indica que
+%    solamente la lista de usuarios incluidos en ese fichero (un
+%    usuario por línea) tiene permiso para utilizar
+%    \texttt{\textbf{at}}, \texttt{\textbf{atq}} y
+%    \texttt{\textbf{atrm}}.
+%  \item ``\texttt{\textbf{/etc/at.deny}}''. Si no existe
+%    \texttt{\textbf{/etc/at.allow}}, y existe este fichero, los
+%    usuarios incluidos en él no tienen permiso para utilizar
+%    \texttt{\textbf{at}}, \texttt{\textbf{atq}} y
+%    \texttt{\textbf{atrm}}.
+%  \item Si ninguno de los dos ficheros existe, solo el superusuario
+%    puede utilizar estas órdenes.
+%  \end{itemize}
+%
+%  Normalmente, ``\texttt{\textbf{at.allow}}'' no existe, y
+%  ``\texttt{\textbf{at.deny}}'' es un fichero vacío, lo cual permite
+%  el uso de \texttt{\textbf{at}} para todos los usuarios del sistema.
+%\end{frame}
+%
+%%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%  \subsection{Uso de \texttt{\textbf{at}}}
+%
+%  \begin{itemize}
+%  \item \texttt{\textbf{at \emph{fecha/hora}}}. Lee órdenes de la
+%    entrada estándar, para que se realicen en la \emph{fecha/hora}
+%    especificadas.
+%
+%    \texttt{\textbf{\emph{fecha/hora}}} puede ser:
+%    \begin{itemize}
+%    \item \texttt{\textbf{HH[:]MM[am|pm]}} [\texttt{\textbf{Mes día}}]
+%    \item ``\texttt{\textbf{now}}'', ``\texttt{\textbf{midnight}}'',
+%      ``\texttt{\textbf{noon}}'', ``\texttt{\textbf{teatime}}'',
+%      ``\texttt{\textbf{today}}'' o ``\texttt{\textbf{tomorrow}}''.
+%    \item \texttt{\textbf{\emph{fecha/hora} + \emph{número}
+%          (minutes,hours,days,weeks)}}
+%    \end{itemize}
+
+%%    Ejemplos:
+%    \begin{itemize}
+%    \item \texttt{\textbf{1550 Feb 14 + 3 days}}
+%    \item \texttt{\textbf{10am Jul 31}}
+%    \item \texttt{\textbf{1am tomorrow}}
+%    \end{itemize}
+%  \end{itemize}
+%\end{frame}
+
+
+\end{document}
+

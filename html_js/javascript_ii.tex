@@ -1,0 +1,875 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+%\usepackage{hthtml}
+%\usepackage{html}
+
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={JavaScript II},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[JavaScript II]{JavaScript II}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+\section{Excepciones}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Excepciones}
+Las excepciones son similares a las de cualquier otro lenguaje
+\begin{itemize}
+\item
+Con la particularidad de que el argumento de \verb|throw| (la excepción), 
+puede ser una cadena, un número, un booleano o un objeto
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+try {
+  throw 'xxx27';
+} catch (e) {
+  console.log('capturada excepción ' + e);
+     // capturada excepción xxx27
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Cuando el motor de JavaScript lanza una excepción, es un objeto,
+con las propiedades 
+\verb|name| y
+\verb|message|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+
+'use strict'
+
+try{
+    console.log( no_definido);
+} catch (e) {
+    console.log("capturada excepción ",e.name,e.message);
+}
+capturada excepción  ReferenceError no_definido is not defined
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Captura de un tipo concreto de excepción. P.e. \verb|ReferenceError|
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+try {
+  console.log(no_definido);
+} catch (e) {
+  console.log("Capturada excepción");
+  switch (e.name) {
+    case ('ReferenceError'):
+      console.log(e.name + " Objeto no definido");
+      break;
+    default:
+      console.log(e.name + " Excepción inesperada");
+      break;
+  }
+}
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Hay 7 nombres de error
+    \begin{itemize}
+    \item
+Error
+
+Unspecified Error
+    \item
+EvalError	
+
+An error has occurred in the eval() function
+    \item
+RangeError
+
+A number \emph{out of range} has occurred
+    \item
+ReferenceError
+
+An illegal reference has occurred
+    \item
+SyntaxError	
+
+A syntax error has occurred
+    \item
+TypeError	
+
+A type error has occurred
+    \item
+URIError
+
+An error in encodeURI() has occurred
+    \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Aunque nuestros programas pueden lanzar simplemente cadenas, números o booleanos,
+es preferible lanzar objetos 
+
+Hay un constructor para cada nombre de error
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+try{
+    throw new RangeError('xxx28');
+} catch (e) {
+    console.log('capturada excepción ',e.name,e.message);
+    // capturada excepción  RangeError xxx28
+}
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+\section{Módulos}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Módulos}
+Un Módulo es
+
+\begin{itemize}
+\item
+ Un fichero que contiene código JavaScript
+
+\item
+Que es invocado desde otro fichero distinto, que contiene el código principal
+
+\end{itemize}
+En otros lenguajes se les llama bibliotecas o librerías
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+En ECMAScript 5 no había una forma nativa de usar módulos, pero se
+desarrollaron diferentes herramientas, incompatibles entre sí, que permitían su uso
+
+Las principales son:
+
+    \begin{itemize}
+    \item
+CommonJS
+
+Para Node.js
+
+    \item
+RequireJS
+
+Para el navegador
+    \end{itemize}
+
+En ECMASCript 6 sí hay soporte nativo para módulos. Una mezcla de las dos sintaxis, 
+ambas están soportadas
+
+
+    \begin{itemize}
+    \item
+Pero en la actualidad, año 2017, tanto los navegadores como node.js tienen muy
+mal soporte para los módulos de ECMAScript 6
+    \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Librerias en node.js}
+
+Fichero \verb|lib01.js|
+  \begin{scriptsize}
+  \begin{verbatim}
+function f(){
+    return "efe";
+}
+function g(){
+    return "ge";
+}
+function h(){  // esta función no la exportamos
+    return "hache";
+}
+
+module.exports={
+    f,g,
+};
+  \end{verbatim}
+  \end{scriptsize}
+
+Fichero principal
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+let lib01=require('./lib01.js');
+console.log(lib01.f());
+console.log(lib01.g());
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+\section{Fecha y Hora}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Fecha y Hora }
+La fecha (con su hora) se guarda en objetos de tipo 
+\verb|Date|
+
+\begin{itemize}
+\item
+Siempre es una hora UTC (Coordinated Universal Time), anteriormente
+llamada hora de Greenwich 
+
+\item
+Se guarda como milisegundos transcurridos desde el 1 de enero de 1970.
+
+    \begin{itemize}
+    \item
+Es recomendable almacenar, procesar y transmitir este formato en todo momento, y solo 
+inmediatamente antes de presentarlo al usuario, realizar la conversión necesaria
+    \end{itemize}
+
+\item
+Atención, no es el \emph{tiempo unix} (segundos transcurridos desde el 
+instante \emph{epoch}), como en otros sistemas. Aquí son milisegundos
+
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+// Objeto con la hora actual
+d=new Date();
+console.log(d); // (Fecha y hora UTC actual)
+
+// Objeto con una hora concreta, expresada como hora local
+// P.e. 1 de septiembre de 2017, a las 9 de España
+// Cuidado: 0 es enero, 11 es diciembre
+d=new Date(2017, 8, 1, 9, 0, 0);
+console.log(d); // 2017-09-01T07:00:00.000Z
+
+// Objeto con una hora concreta, expresada como hora UTC
+d=Date.UTC(2017, 8, 1, 9, 0, 0);
+console.log(d);
+
+// Objeto con una hora concreta, expresada en tiempo Unix
+d=new Date(0);
+console.log(d); // 1970-01-01T00:00:00.000Z
+
+let hora_unix=1504256400;
+d=new Date(hora_unix*1000);  //JavaScript espera milisegundos
+console.log(d); // 2017-09-01T09:00:00.000Z
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+d=new Date(2017, 8, 1, 9, 0, 0);  // 9:00 hora española
+                                  // Mes 8: septiembre
+
+// Acceso a cada unidad, expresada como hora local
+console.log(d.getFullYear());   // 2017
+console.log(d.getMonth());  // 8 (septiembre)
+console.log(d.getDate());  // 1
+console.log(d.getDay()); //5  (viernes)
+console.log(d.getHours()); // 9  hora española 
+console.log(d.getMinutes()); // 0
+console.log(d.getSeconds()); // 0 
+console.log(d.getMilliseconds()); // 
+
+// Acceso a cada unidad, expresada como hora UTC
+console.log(d.getUTCFullYear());   // 2017
+console.log(d.getUTCMonth());  // 8 (septiembre)
+console.log(d.getUTCDate());  // 1
+console.log(d.getUTCDay()); //5  (viernes)
+console.log(d.getUTCHours()); // 7  hora UTC
+console.log(d.getUTCMinutes()); // 0
+console.log(d.getUTCSeconds()); // 0 
+console.log(d.getUTCMilliseconds()); // 0
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Cálculo del tiempo transcurrido entre dos fechas
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let d1,d2;
+
+// 1 de septiembre de 2017, a las 9 de España
+d1=new Date(2017, 8, 1, 9, 0, 0);
+
+// las 9 y 10
+d2=new Date(2017, 8, 1, 9, 10, 0);
+
+console.log(d2-d1) // 600000 (600 segundos)
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let d1,d2,s, ms_año, edad;
+
+//  8 de julio de 1996, creación de la URJC
+d1=new Date(1996, 6, 8, 0, 0, 0);
+d2=new Date();
+console.log(d1); //  1996-07-07T22:00:00.000Z
+console.log(d2); // 2017-11-01T17:09:03.193Z
+
+s= (d2-d1) ;  // milisegundos transcurridos
+
+ms_año= 31536000000  // 1000*60*60*24*365
+edad= (s/ms_año).toFixed(2);  // Redondeo a 2 decimales
+
+console.log('Edad de la URJC:', edad);   // 21.33
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+\section{POO basada en prototipos}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{POO basada en herencia vs POO basada en prototipos}
+
+La gran mayoría de lenguajes y herramientas diversas que emplean
+POO (programación orientada a objetos) aplican POO basada en herencia
+
+    \begin{itemize}
+    \item
+Es la forma tradicional.
+De hecho, es frecuente considerar que
+\emph{POO} necesariamente implica herencia
+    \end{itemize}
+
+
+En POO tradicional, hay un principio generalmente aceptado:
+\emph{Favor object composition over class inheritance}
+%E. Gamma et al.  \emph{Design Patterns}.Addison-Wesley, 1994
+
+(E. Gamma et al.  \emph{Design Patterns}. 1994)
+
+La POO basada en prototipos 
+va un paso más allá
+
+\begin{itemize}
+\item
+Para solucionar una serie de problemas bien conocidos en la POO tradicional. 
+No \emph{prefiere}
+la composición frente  a la herencia, sino que omite por completo
+la herencia y se basa solo en composición.
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Problemas de la herencia (1)}
+\begin{itemize}
+% programming javascript, pg 49
+
+\item
+Código yo-yo
+
+En jerarquías de cierta longitud, el programador se ve
+obligado a subir y bajar por las clases continuamente
+
+\item
+La herencia es una relación fuertemente acoplada. Los hijos
+heredan todo sobre sus padres, necesitan conocer todo sobre
+sus padres (y abuelos, bisabuelos...)
+
+\item
+Problema del gorila y el plátano
+
+\emph{Yo solo quería un plátano, pero me dieron el plátano, el  gorila que sostenía
+el plátano y la jungla entera}
+
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Problemas de la herencia (2)}
+
+\begin{itemize}
+\item
+La herencia es inflexible 
+
+Por muy bien que se diseñe una jerarquía
+de clases, en dominios medianamente complejos acaban apareciendo casos no previstos
+que  no encajan en la taxonomía inicial
+
+\item
+Herencia múltiple
+
+Heredar de diferentes clases es deseable, y
+teóricamente posible. Pero en la práctica
+resulta
+muy complicado
+
+\item
+Arquitectura frágil
+
+Rediseñar una clase obliga a modificar todos sus descendientes
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{POO basada en prototipos}
+
+\begin{itemize}
+\item
+Aparece en el lenguaje Self, a mediados de los años 1980
+
+\item
+No hay clases como instancias de objetos: solo hay objetos, que se producen
+mediante funciones denominadas \emph{factorías de objetos}
+
+\item
+Un objeto es una unidad de código que soluciona un problema concreto. No es
+necesario (o al menos no es crítico) pensar cómo usar variantes de ese objeto
+en otros casos
+
+\item
+A partir de ese objeto, según se va necesitando, se crean nuevos objetos
+añadiendo o eliminando las propiedades (datos y métodos) necesarias.
+
+\item
+Metáfora. 
+
+Herencia: piezas de Ikea 
+
+Prototipo: piezas de Lego
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Problemas de la POO basada en prototipos (1)}
+\begin{itemize}
+\item
+Poco conocida
+
+Pocos programadores la usan bien, pocos libros
+la explican bien
+
+\item
+No adecuada para principiantes 
+
+Una vez que se conoce su uso resulta
+sencillo, pero su curva de aprendizaje es pronunciada
+
+Ejemplo: en JavaScript es necesario manejar al menos los siguiente conceptos:
+
+    \begin{itemize}
+    \item
+Lambdas
+    \item
+Cierres
+    \item
+Funciones flecha
+    \item
+Prototipos
+    \item
+Factoria de objetos
+    \item
+Extensiones dinámicas de objetos: mezclas, composición, agregación
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Problemas de la POO basada en prototipos (2)}
+\begin{itemize}
+\item
+La flexibilidad del paradigma añade complejidad al intérprete/compilador,
+lo que afecta al rendimiento
+
+    \begin{itemize}
+    \item
+Aunque los motores modernos son muy eficientes y este problema solo es relevante
+en casos extremos
+    \end{itemize}
+
+\item
+La flexibilidad del paradigma puede hacer más difícil el garantizar que los
+resultados sean correctos
+
+    \begin{itemize}
+    \item
+Crítica análoga a la que hacen los partidarios de lenguajes de tipado
+estático frente a lenguajes de tipado dinámico
+
+    \item
+Una clase es un contrato estricto sobre lo que puede o no puede hacer un
+objeto. Estas restricciones no existen con los prototipos
+
+\emph{With great power comes great responsibility}
+
+% aparece en la revolución francesa. Lo repiten Churchill y Roosevelt. Popularizado por spider-man
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Enlaces sobre POO basada en prototipos}
+\begin{itemize}
+\item
+Composition over Inheritance
+
+Video en YouTube del canal \emph{Fun Fun Funtions}
+
+\begin{tiny}
+\begin{flushright}
+\url{https://youtu.be/wfMtDGfHWpA}
+\end{flushright}
+\end{tiny}
+
+\item
+Master the JavaScript Interview: What’s the Difference Between Class \& Prototypal Inheritance?
+
+Eric Elliott
+\begin{tiny}
+\begin{flushright}
+\url{http://tinyurl.com/zbtjruf}
+\end{flushright}
+\end{tiny}
+
+\item
+Programming JavaScript Applications
+
+Eric Elliott. O'Reilly, 2015
+\begin{tiny}
+\begin{flushright}
+\url{http://proquest.safaribooksonline.com/book/programming/javascript/9781491950289}
+\end{flushright}
+\end{tiny}
+
+\item
+The Principles of Object-Oriented JavaScript
+
+Nicholas Zakas.
+No Starch Press, 2014
+\begin{tiny}
+\begin{flushright}
+\url{http://proquest.safaribooksonline.com/book/programming/javascript/9781457185304}
+\end{flushright}
+\end{tiny}
+\end{itemize}
+\end{frame}
+
+\section{POO basada en herencia}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{POO basada en herencia en JavaScript}
+El lenguaje JavaScript usa POO basada en prototipos.
+
+Tras una cierta polémica,
+ECMASCript 6 soporta POO basada en herencia
+
+    \begin{itemize}
+    \item
+En realidad es \emph{azúcar sintáctico}. Internamente siguen siendo prototipos
+    \end{itemize}
+
+Los argumentos principales por los que se acepta este \emph{paso atrás}
+son
+
+    \begin{enumerate}
+    \item
+Muchos programadores insisten en usarla. Distintas librerías, distintas
+soluciones ad-hoc. Es preferible una implementación oficial
+
+    \item
+Para principiantes con problemas sencillos, resulta más adecuado
+    \end{enumerate}
+
+Por este último motivo, en la presente asignatura veremos POO basada en herencia, no
+POO basada en prototipos
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Clases}
+\begin{itemize}
+\item
+Definimos clases con la palabra reservada
+\verb|class|, el nombre de la clase y entre llaves, sus propiedades
+
+\item
+Por convenio, los nombres de clase empiezan por letra mayúscula
+
+\item
+A diferencia de lo que ocurre en los objetos, las propiedades no van separadas
+por comas
+
+\item
+Las propiedades de los objetos se crean en el método
+\verb|constructor()|
+
+\item
+Se accede a las propiedes mediante la palabra reservada
+\verb|this|, que representa al objeto
+
+\item
+Para crear una clase heredera de otra:
+\verb| class Hija extends Madre{ ....} |
+
+\item
+Para llamar a un método de la clase padre, se usa la palabra reservada
+\verb|super|
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+class Circunferencia{
+    constructor(x,y,r){
+        this.x=x;
+        this.y=x;
+        this.r=r;
+    }
+    aCadena(){
+        return '('+this.x+','+this.y+','+this.r+')';
+    }
+}
+class Circulo extends Circunferencia{
+    constructor(x,y,r,color){
+        super(x,y,r);
+        this.color=color;
+    }
+    aCadena(){
+        return super.aCadena()+ " color:"+ this.color;
+    }
+}
+let a=new Circunferencia(2,2,1);
+console.log(a.aCadena());   // (2,2,1)
+let b=new Circulo(2,2,1,"azul");
+console.log(b.aCadena());  // (2,2,1) color: azul
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Métodos}
+Para declarar los métodos de una clase no es necesario usar la palabra reservada \verb|function|
+
+Las clases tienen tres tipos de métodos.
+\begin{itemize}
+\item
+\verb|constructor()|
+
+Es un método especial para crear inicializar los objetos de esta clase
+
+\item
+Métodos de prototipo (métodos \emph{normales})
+
+\item
+Métodos estático. (métodos \emph{de clase})
+
+Se crean anteponiendo la palabra reservada
+\verb|static|
+
+Se invocan sin instanciar las clases en objetos, no pueden llamarse a través de una instancia
+de clase (a través de un objeto), solo a través de la clase
+
+¿En qué casos un método  debería ser estático?
+
+    \begin{itemize}
+    \item
+Cuando tenga sentido sin que se haya declarado un objeto
+    \item
+Cuando procese 2 o más objetos, sin que uno tenga más relevancia que otro
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+class Circunferencia{
+    constructor(x,y,r){
+        this.x=x;
+        this.y=x;
+        this.r=r;
+    }
+    aCadena(){
+        return '('+this.x+','+this.y+','+this.r+')';
+    }
+    static distanciaCentros( a, b){
+        return Math.sqrt( Math.pow(a.x-b.x, 2) + Math.pow(a.y-b.y, 2));
+    }
+    longitud(){
+        return 2*Math.PI*this.r;
+    }
+}
+
+let p=new Circunferencia(0,0,1);
+let q=new Circunferencia(1,1,1);
+console.log(p.aCadena());  // (0,0,1)
+console.log( Circunferencia.distanciaCentros(p,q));  // 1.4142135623730951
+console.log(p.longitud()); // 6.283185307179586
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Enlaces sobre clases en JavaScript}
+\begin{itemize}
+\item
+MDN Web Docs. Classes
+
+\begin{tiny}
+\begin{flushright}
+\url{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes}
+\end{flushright}
+\end{tiny}
+\item
+\emph{Exploring ES6. Upgrade to the next version of JavaScript}
+
+Axel Rauschmayer
+
+\begin{tiny}
+\begin{flushright}
+\url{http://exploringjs.com/es6/ch_classes.html#sec_overview-classes}
+\end{flushright}
+\end{tiny}
+\end{itemize}
+\end{frame}
+
+\end{document}

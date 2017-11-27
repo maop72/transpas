@@ -1,0 +1,452 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[greek,spanish]{babel}   %greek permite usar euro 
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={Introducción a los Servicios Telemáticos},%
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[Introducción a los Servicios Telemáticos]{Introducción a los Servicios Telemáticos }
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Tec. Sup. Ingeniería Telecomunicación}
+\institute{gsyc-profes (arroba) gsyc.es}
+\date[2016]{Enero de 2016}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0\\
+}
+\end{flushright}  
+\end{frame}
+
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+%the practice of system and network administration
+%t limoncelli
+
+%principles of network and system administration
+%m burgess
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Convenciones empleadas}
+En español, la conjunción disyuntiva \emph{o} tiene dos significados opuestos
+\begin{itemize}
+\item
+Diferencia, separación, términos contrapuestos
+
+\emph{carne o pescado, blanco o negro}
+\item
+Equivalencia
+
+%\emph{profesor o docente}
+%\emph{alumno o estudiante}, 
+\emph{alquiler o arrendamiento},
+\emph{arreglar o reparar}
+\end{itemize}
+Para evitar esta ambigüedad, en esta asignatura usaremos dos siglas muy
+comunes en inglés
+
+\begin{itemize}
+\item
+Para indicar oposición, 
+\emph{versus},  
+abreviada como
+\emph{vs}  
+
+
+p.e. \emph{comprar vs alquilar}
+\item
+Para indicar equivalencia, \emph{also known as}, abreviado \emph{aka}
+
+p.e.
+el rey 
+ \emph{aka}
+el monarca
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Definiciones}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Definicición de Servicio Telemático}
+\begin{itemize}
+\item
+Según la RAE, servicio es \emph{Organización y personal destinados a cuidar intereses o satisfacer necesidades del público o de alguna entidad oficial o privada. Servicio de correos, de incendios, de reparaciones}
+
+Reemplazando \emph{organización y personal} por \emph{software}, y \emph{entidad} por \emph{sistema informático},
+nos puede servir como aproximación
+
+\item
+Telemática=TELEcomunicaciones+inforMÁTICA
+
+\item
+En esta asignatura el término \emph{servicio telemático} será prácticamente equivalente a 
+servicio web (\emph{web service}) o simplemente \emph{servicio}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Definición de web service}
+Según el W3C (\emph{ World Wide Web Consortium }), un servicio web es 
+\emph{un sistema software diseñado para soportar interacción máquina-máquina sobre una 
+red de comunicaciones}
+
+Hay dos categorías principales
+\begin{itemize}
+\item
+Servicios REST (\emph{representational state transfer}) , donde el objetivo principal del servicio
+es manipular representaciones de recursos web mediante a un conjunto uniforme de operaciones sin estado
+\item
+Servicios de cualquier otro tipo, donde el servicio expone un conjunto arbitrario de operaciones
+
+P.e. RPC (\emph{Remote Procedure Call}), XML-RPC, SOAP (\emph{Simplified Object Access Protocol})
+
+\end{itemize}
+Por tanto, un servicio web es una clase particular de API (\emph{Application programming interface})
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El concepto de \emph{servicio web} está muy ligado con el de \emph{Rich Internet Application, RIA}
+\begin{itemize}
+\item
+Enfoque web tradicional:
+
+Toda la lógica de la aplicación está en el servidor. El web está centrado en el humano
+\item
+Enfoque RIA
+
+El servidor proporciona datos al cliente, y almacena datos del cliente. Entre servidor y cliente hay API. 
+El cliente ofrece la lógica del negocio al humano
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{}
+%\begin{itemize}
+%\item
+%El API de un servicio web es independiente del leguaje de programación y del sistema operativo
+%\item
+%El servicio web normalmente emplea WSDL (\emph{Web Services Description Language}), una
+%definición en lenguaje XML que describe la funcionalidad ofrecida por el servicio
+%
+%\end{itemize}
+%
+%\end{frame}
+
+
+
+\section{Falacias de la computación distribuida}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Las falacias de la computación distribuida}
+Fallacies of distributed computing, Peter Deutsch, 1994
+
+Los desarrolladores de aplicaciones distribuidas con frecuencia parten
+de las siguientes premisas, que resultan ser falsas
+\begin{enumerate}
+\item
+La red es fiable
+\item
+La latencia es nula
+\item
+El ancho de banda es infinito
+\item
+La red es segura
+\item
+La topología no cambia
+\item
+Hay un administrador único en la red
+\item
+El coste de las comunicaciones es nulo
+\item
+La red es homogenea
+
+\end{enumerate}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La red no es fiable}
+\begin{itemize}
+\item
+
+No basta con considerar los elementos de red a bajo nivel
+
+Cualquier fallo hardware o software, de cualquier entidad participante en el proceso,
+provocará un fallo en la red
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La latencia no es nula}
+
+La definición exacta de \emph{latencia} depende del contexto
+\begin{itemize}
+\item
+En un disco duro, es el tiempo que tarda el cabezal en posicionarse en el sector
+requerido
+
+Por tanto, es un tiempo muy elevado para el primer bit, nulo para los siguientes
+(del mismo sector)
+\item
+En el nivel de red, p.e. una red de conmutación de paquetes, el tiempo desde que comienza el envío
+de un paquete hasta que comienza su recepción. Es frecuente que la latencia del 
+primer paquete sea superior a la de paquetes sucesivos
+\item
+En el nivel físico, p.e. un cable de fibra óptica, es el tiempo que tarda 1 bit
+desde que se envía hasta que se recibe
+% por tanto no hay que considerar el acceso al medio
+%\item
+%En simuladores, es el tiempo que transcurre entre la primera entrada 
+% En realidad virtual y realidad aumentada, la diferencia de tiempo
+% entre un objeto real y su correspondiente virtual
+
+\end{itemize}
+
+% en el último ejemplo (cable), la latencia es muy homogénea,
+% en el segundo, menos. p.e. con datagramas no tendría por qué pasar,
+% pero pasa
+% en el primer ejemplo, hay una diferencia enorme entre primer bit y resto
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+La latencia suele ser bastante buena en LAN, pero empeora mucho en WAN
+\item
+Hay mucha diferencia entre accesos locales y accesos LAN
+\item
+Mejora mucho más despacio que el ancho de banda. Algunos estudios mencionan que desde los años 1990 hasta
+los 2000, el ancho de banda se multiplicó por 1400, la latencia por 11
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{El ancho de banda no es infinito}
+\begin{itemize}
+\item
+Aunque el ancho de banda aumenta continuamente, también las exigencias de las aplicaciones
+\item
+TCP no es un protocolo especialmente eficiente
+\item
+En computación móvil el ancho de banda es especialmente costoso
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La red no es segura}
+\begin{itemize}
+\item
+El diseño original de TCP/IP no considera participantes maliciosos
+\item
+Las conexiones globales dejan cualquier sistema muy expuesto
+\item
+Cualquier sistema podrá sufrir tanto ataque dirigidos intencionadamente contra él
+como ataques automatizados indiscriminados, vandalismo, etc
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La topología de red cambia continuamente}
+\begin{itemize}
+\item
+Los servidores y su configuración suelen cambiar de vez en cuando
+\item
+Los clientes cambian continuamente
+\end{itemize}
+
+Es importante no depender de \emph{endpoints} fijos (direcciones IP, direcciones de ficheros, etc)
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{El administrador de red no es único}
+\begin{itemize}
+\item
+Es normal que en cualquier proyecto haya varias organizaciones implicadas
+\item
+Las organizaciones cada vez externalizan más los servicios
+\item
+Los administradores no siempre consideran parte de su trabajo colaborar
+con los desarrollos
+\item
+No es fácil localizar el origen de los problemas
+% tendencia a echar balones fuera
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Las comunicaciones no son gratuitas}
+Las \emph{tarifas planas} son habitual es todos los entornos, pero eso
+no implica gratuidad
+\begin{itemize}
+\item
+Es necesario considerar costes de estructura de red, tanto hardware como
+software, costes de configuración, de seguridad, etc
+\item
+El coste del personal implicado suele ser especialmente alto
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La red no es homogénea}
+\begin{itemize}
+\item
+Aunque TCP/IP es la norma universal, en los niveles superiores los protocolos son
+mucho más variados
+\item
+En cualquier entorno hay gran cantidad
+de hardware, software y sistemas operativos diferentes
+\item
+Un \emph{host} no solo es un ordenador: puede ser un smartphone, tablet,
+impresora, NAS, cámara IP,etc etc
+\item
+Deberíamos procurar usar siempre protocolos estándar, dentro de lo posible
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{La abstracción}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{La abstracción}
+Principio por el que se extrae la información relevante en cierto contexto y se ignora la no relevante. Se obtienen 
+las características esenciales y el comportamiento de un objeto
+\begin{itemize}
+\item
+El mismo objeto puede ser abstraido de diferente forma, dependiendo del entorno
+\begin{itemize}
+\item
+Desarrollando aplicaciones, un \emph{ordenador} puede ser: sistema operativo (nombre y versión) + navegador (nombre y versión)
+\item
+En un servicio técnico, un \emph{ordenador} puede ser: fabricante, placa, video, ram, discos, etc
+\end{itemize}
+
+\end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Un programa es una descripción abstracta de un procedimiento o fenómeno del mundo real
+\begin{itemize}
+\item
+La abstracción es crucial para comprender cualquier fenómeno
+\item
+La abstracción es un proceso mental básico, una herramienta muy potente para tratar la complejidad 
+\item
+La abstracción es clave para diseñar cualquier software, incluyendo por supuesto un servicio web
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}

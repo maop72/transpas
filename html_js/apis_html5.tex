@@ -1,0 +1,584 @@
+\documentclass[ucs]{beamer}
+\usetheme{GSyC}
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+\usepackage{enumerate}
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={APIs de HTML 5},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[APIs de HTML5]{APis de HTML5}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+% $Id$
+%
+
+\section{APIs de HTML5}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+HTML 5 define algunas nuevas APIS. Podemos englobar en este conjunto
+otras tecnologías que aunque en rigor no son parte de HTML5,
+están muy relacionadas y definidas por el W3C 
+\begin{itemize}
+\item
+Web Storage
+\item
+Web Workers
+\item
+Geolocation
+\item
+Canvas
+
+API para dibujar imágenes vectoriales 2D y 
+\emph{bitmap}. 
+
+Hay librerías como jCanvas que facilitan su uso
+
+\item
+Web Messaging 
+
+Para comunicación entre documentos de disintos orígenes, de manera
+razonablemente segura y sin las limitaciones de la
+\emph{same-origin policy}
+
+\item
+y algunas otras
+
+\url{https://en.wikipedia.org/wiki/HTML5#New_APIs}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\section{Web Storage}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Web Storage}
+
+
+\emph{Web Storage}
+ es una API del W3C que permite almacenar información en el navegador 
+en una forma que 
+generalmente se considera más conveniente que las cookies
+
+
+\begin{itemize}
+\item
+Espacio reservado para este almacenamiento depende del navegador, normalmente
+entre 2.5Mb y 5 Mb por origen 
+
+    \begin{itemize}
+    \item
+Mucho más que las cookies, limitadas a 4 K
+    \end{itemize}
+
+\item
+
+La información de 
+\emph{Web Storage} 
+la escribe el navegador y permanece en el navegador, solo se envía al servidor
+si se programa explícitamente
+
+    \begin{itemize}
+    \item
+Las cookies las escribe el servidor y luego viajan en cada petición,
+consumen ancho de banda. 
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Por todo ello
+
+    \begin{itemize}
+    \item
+Si la información la necesita el cliente, 
+\emph{Web Storage} 
+es mucho más conveniente
+
+    \item
+Si la información la necesita el servidor, 
+\emph{Web Storage} 
+no es tan útil, porque
+el servidor no tiene acceso directamente a ella
+%, hay que enviarla
+%(p.e. en un campo oculto de un formulario o con Ajax)
+    \end{itemize}
+
+
+\begin{tiny}
+\begin{flushright}
+\url{https://stackoverflow.com/questions/3220660/local-storage-vs-cookies}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\emph{Web Storage} 
+es una estructura de diccionario: clave-valor
+
+
+Incluye dos mecanismos:
+\begin{itemize}
+\item
+
+\emph{sessionStorage}
+
+Un diccionario que dura tanto como la sesión. Se borra al cerrar el navegador
+
+
+\item
+\emph{localStorage} 
+
+Un diccionario persistente, el diccionario se mantiene aunque se cierre el navegador. Solo
+se borra si el usuario o la página lo borran explícitamente
+
+\end{itemize}
+
+Cada uno de estos diccionarios es distinto para cada origen (protocolo, puerto y host)
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Almacenamiento de un valor}
+
+
+  \begin{verbatim}
+localStorage.setItem(clave) = valor;
+sesionStorage.setItem(clave) = valor;
+  \end{verbatim}
+
+
+\begin{itemize}
+\item
+El valor y la clave han de ser cadenas 
+
+\item
+Si se intenta usar otro tipo de datos para el valor,
+muchos navegadores lo convierten a cadena 
+
+\item
+Es preferible convertir el dato en JSON explícitamente
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Recuperación de un valor}
+
+
+  \begin{verbatim}
+localStorage.getItem(clave);
+sesionStorage.getItem(clave);
+  \end{verbatim}
+
+\begin{itemize}
+\item
+Estos métodos devuelven el valor asociado a la clave
+
+\item
+O \emph{undefined} si la clave no existe
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Borrado de valores}
+
+\verb|localStorage.removeItem(clave)|
+
+\verb|sesionStorage.removeItem(clave)|
+
+    \begin{itemize}
+    \item
+Borran la clave
+    \item
+Devuelven 
+\emph{undefined}, tanto si la clave existía como si no
+    \end{itemize}
+
+
+\verb|localStorage.clear()|
+
+\verb|sesionStorage.clear()|
+
+\begin{itemize}
+\item
+Borran el diccionario completo (del origen)
+\end{itemize}
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Este programa pregunta al usuario su nombre solamente
+la primera vez que se ejecuta
+
+  \begin{scriptsize}
+  \begin{verbatim}
+  <script>
+    'use strict'
+    let nombreUsuario = localStorage.getItem('nombreUsuario');
+    if (!nombreUsuario) {
+      let input= prompt("¿Cómo te llamas?");
+      localStorage.setItem('nombreUsuario',input);
+    }
+    for (let clave in localStorage) {
+      let valor = localStorage[clave];
+      console.log(clave+": "+valor)
+    }
+  </script>
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{flushright}
+\url{http://ortuno.es/localStorage.html}
+\end{flushright}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Este programa borra el nombre de usuario, si estaba definido
+
+  \begin{scriptsize}
+  \begin{verbatim}
+    let clave = 'nombreUsuario';
+    let valor=localStorage.getItem(clave);
+    if (valor){
+        localStorage.removeItem(clave);
+        alert(clave+ ' valía '+valor+ '. Ahora lo he borrado');
+    }else{
+        alert(clave+" no definido");
+    };
+  \end{verbatim}
+  \end{scriptsize}
+\begin{flushright}
+\url{http://ortuno.es/localStorage2.html}
+\end{flushright}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Referencias}
+\begin{itemize}
+\item
+\url{https://en.wikipedia.org/wiki/Web_storage}
+
+
+\item
+\begin{tiny}
+\url{https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage}
+\end{tiny}
+
+\item
+\begin{tiny}
+\url{https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API}
+\end{tiny}
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Web Workers}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Web Workers}
+Un
+\emph{web worker} es un programa en JavaScript que se ejecuta en el navegador web en segundo plano, independiente
+de la página principal
+
+
+    \begin{itemize}
+    \item
+Es útil para realizar tareas intensivas en CPU
+
+    \item
+Es útil para aprovechar los ordenadores multi núcleo (prácticamente todos los actuales)
+
+
+    \item
+Se crea como instancia del objeto/la función \verb|Worker()|, que recibe
+como argumento el nombre del script
+
+    \item
+El web worker se comunica con el documento mediante el paso de mensajes:
+basta asignar el manejador a la propiedad \emph{onmessage} del worker
+
+    \item
+Se puede finalizar desde la página principal invocando al método \verb|.terminate()|
+del worker
+
+    \item
+Por motivos de seguridad, algunos navegadores como Chrome no permiten que se ejecuten
+en páginas cargadas localmente, solo en aquellas servidas desde un web
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+El siguiente ejemplo calcula dos números aleatorios, y cuando 
+coinciden, envía un mensaje
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function random(x){
+    return Math.floor((Math.random() * x) + 1);
+}
+
+let tamanio=1000000;
+let x,y;
+let c=100;
+while (c>0){
+    x=random(tamanio);
+    y=random(tamanio);
+    if (x===y) {
+          postMessage(x);
+          c-=1;
+    }
+}
+  \end{verbatim}
+  \end{scriptsize}
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/worker.js.txt}
+\end{flushright}
+\end{tiny}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<body>
+  <span id=resultado>--</span>
+  <script>
+  'user strict'
+    $(document).ready(function() {
+          let worker = new Worker('js/worker.js');
+          worker.onmessage = function(event) {
+            $("#resultado").text(event.data);
+          };
+    });
+  </script>
+</body>
+  \end{verbatim}
+  \end{scriptsize}
+
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/worker.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+
+
+
+\section{Geolocation}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Geolocation}
+Los navegadores modernos pueden conocer, si el usuario lo permite,
+su ubicación geográfica
+
+Posiblemente el más preciso es Google Chrome
+\begin{itemize}
+\item
+En dispositivos con GPS, la información proviende del GPS
+
+\item
+En conexiones cableadas, obtiene información a partir de la dirección IP
+
+\item
+En conexiones WiFi
+
+    \begin{itemize}
+    \item
+Obtiene las MAC de los Access Point WiFi colindantes
+    \item
+La compara con la base de datos de Google de la posición de los Access Point
+    \end{itemize}
+
+\item
+En conexiones de telefonía móvil
+    \begin{itemize}
+    \item
+Compara el identificador de la celda con su base de datos de posiciones
+de celdas de telefonía
+    \end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+¿Cómo obtiene Google la base de datos de Access Point y celdas de
+telefonía móvil?
+\begin{itemize}
+\item
+Con los coches que capturan datos para Google Maps. (Aunque esto le causó
+problemas legales)
+
+\item
+Con la información de los millones de dispositivos Android con GPS
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Para aceder a las coordenadas basta usar el método
+\verb|navigator.geolocation.getCurrentPosition()|
+pasándole como parámetro
+
+\begin{itemize}
+\item
+La función que procesará las coordenadas
+
+\item
+La función que se invocará en caso de error
+
+\item
+Un objeto con opciones
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+      let options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+      function success(pos) {
+        let x = pos.coords;
+        let mensaje = 'Posición actual\n';
+        mensaje += 'Latitud :' + x.latitude;
+        mensaje += '\nLongitud :' + x.longitude;
+        mensaje += '\nPrecisión :' + x.accuracy + " metros";
+        alert(mensaje);
+      }
+      function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+      };
+      navigator.geolocation.getCurrentPosition(success, error, options);
+  \end{verbatim}
+  \end{scriptsize}
+\begin{tiny}
+\begin{flushright}
+\url{http://ortuno.es/geoloc.html}
+\end{flushright}
+\end{tiny}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,2736 @@
+
+\documentclass[ucs]{beamer}
+
+\usetheme{GSyC}
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{gsyc-bg.png}}
+
+
+\usepackage[spanish]{babel}   
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb} % Simbolos matematicos
+\usepackage{lmodern,textcomp}  % para usar el carácter € tal cual
+%\usepackage{hthtml}
+%\usepackage{html}
+
+
+
+% Metadatos del PDF, por defecto en blanco, pdftitle no parece funcionar
+   \hypersetup{%
+     pdftitle={JavaScript I},
+     %pdfsubject={Diseño y Administración de Sistemas y Redes},%
+     pdfauthor={GSyC},%
+     pdfkeywords={},%
+   }
+%
+
+% Para colocar un logo en la esquina inferior de todas las transpas
+%   \pgfdeclareimage[height=0.5cm]{gsyc-logo}{gsyc}
+%   \logo{\pgfuseimage{gsyc-logo}}
+
+
+% Para colocar antes de cada sección una página de recuerdo de índice
+%\AtBeginSection[]{
+%  \begin{frame}<beamer>{Contenidos}
+%    \tableofcontents[currentframetitle]
+%  \end{frame}
+%}
+
+
+\begin{document}
+
+% Entre corchetes como argumento opcional un título o autor abreviado
+% para los pies de transpa
+\title[JavaScript]{JavaScript I}
+%\subtitle{Diseño y Administración de Sistemas y Redes}
+\author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
+Universidad Rey Juan Carlos}
+\institute{gsyc-profes (arroba) gsyc.urjc.es}
+\date[2017]{Noviembre de 2017}
+
+%% TÍTULO
+\begin{frame}
+  \titlepage
+  % Oportunidad para poner otro logo si se usó la opción nologo
+  % \includegraphics[width=2cm]{logoesp}  
+\end{frame}
+
+
+%% LICENCIA DE REDISTRIBUCIÓN DE LAS TRANSPAS
+%% Nota: la opción b al frame le dice que justifique el texto
+%% abajo (por defecto c: centrado)
+\begin{frame}[b]
+\begin{flushright}
+{\tiny
+\copyright \insertshortdate~\insertshortauthor \\
+  Algunos derechos reservados. \\
+  Este trabajo se distribuye bajo la licencia \\
+  Creative Commons Attribution Share-Alike 4.0
+}
+\end{flushright}
+\end{frame}
+
+%% ÍNDICE
+%\begin{frame}
+%  \frametitle{Contenidos}
+%  \tableofcontents
+%\end{frame}
+
+
+
+% $Id$
+%
+
+\section{Introducción}
+
+
+%%---------------------------------------------------------------
+
+\begin{frame}
+\frametitle{Introducción a JavaScript}
+
+JavaScript es un lenguaje de programación. Junto con HTML y CSS, es una
+de las principales tecnologías para presentar contenidos en la World Wide Web
+
+\begin{itemize}
+\item
+Creado por Brendan Eich, de Netscape, en 1995 como lenguaje de scripting para el navegador. Tardó 10
+días en contruir el primer prototipo
+
+\item
+Está presente en el 100\% de los navegadores web modernos, donde no tiene
+rival
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+El nombre \emph{JavaScript} es poco afortunado. En su día se eligió por
+motivos de marqueting, para destacar que su sintaxis es similar
+a la de Java. Pero ahí acaba el parecido, es un lenguaje completamente distinto
+
+\item
+En 1996, Netscape encarga a Ecma International la normalización del lenguaje.
+La marca  \emph{java} pertenecía a Sun (luego a Oracle), así que el nombre
+formal del lenguaje se cambió a ECMAScript, aunque en la práctica lo normal
+es seguir llamándolo JavaScript
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{JavaScript Everywhere (1)}
+
+El éxito de internet lleva este lenguaje a ser masivamente utilizado,
+no solo en el navegador, se habla de 
+\emph{JavaScript everywhere}.
+
+Aunque no fue inicialmente diseñado para esto, hoy puede usarse también en
+    \begin{itemize}
+    \item
+node.js
+
+Entorno de ejecución de JavaScript para el servidor.
+    \item
+nw.js (antiguo node webkit)
+
+Electron (antiguo Atom Shell)
+
+Son entornos que permiten desarrollar aplicaciones nativas de escritorio
+mediante tecnologías web (JavaScript, html, css...)
+\end{itemize}
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{JavaScript Everywhere (2)}
+
+\begin{itemize}
+    \item
+Mozilla Rhino. Implementación de JavaScript en java. Permite ejecutar
+código JavaScript fuera del navegador, en cualquier entorno donde esté
+disponible java
+    \item
+Express.js
+
+Es un \emph{Web Application Framework}, permite desarrollar aplicaciones web en el
+servidor. Basado en Node.js. Alternativa a Django o Ruby on Rails
+    \end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Críticas a JavaScript}
+
+Es frecuente hacer críticas negativas a JavaScript, por diferentes motivos,
+algunos justificados, otros no tanto
+
+\begin{itemize}
+\item
+No es un lenguaje especialmente elegante, sobre todo las
+primeras versiones. Fue diseñado apresuradamente y eso se nota. 
+Pero ha ido mejorando mucho con el tiempo
+
+    \begin{itemize}
+    \item
+ En
+JavaScript moderno, si el programador usa la técnicas adecuadas,
+se puede generar código de gran calidad
+    \end{itemize}
+
+\item
+Los primeros intérpretes eran lentos. Esto también ha mejorado mucho.
+Incluso hay subconjuntos estáticos de JavaScript como asm.js cuyos
+programas pueden ejecutarse al 70\% de la velocidad del código
+compilado en C++
+\begin{itemize}
+\item
+Esto es muy adecuado para algoritmos que verdaderamente lo necesiten
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Todos los números son del mismo tipo: float
+
+\item
+La distinción entre los tipos \emph{undefined} y
+\emph{null} es bastante arbitraria
+
+\item
+Hasta ECMAScript 3 no tenía excepciones. Los programas fallaban silenciosamente
+
+\item
+Hasta ECMAScript 6, no tenía variables limitadas a un bloque, solo globales o limitadas a la función
+
+\item
+Hasta ECMAScript 6, no tenía soporte (nativo) para módulos
+
+\item
+Los números se representan como
+Binary Floating Point Arithmetic (IEEE 754).
+Esto tiene sus ventajas para trabajar con binarios, pero representa muy
+mal las fracciones decimales
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> 0.3===0.3
+true
+> 0.1+0.2===0.3
+false
+> 0.3-(0.1+0.2)
+-5.551115123125783e-17
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+\item
+La barrera de entrada para empezar a programar en JavaScript es baja.
+Como \emph{cualquiera puede programar en JavaScript}, el resultado es
+que \emph{en JavaScript acaba programando cualquiera}. Esto es, hay
+mucho código de mala calidad
+
+\item
+Es orientado a objetos. Pero en las versiones anteriores a 
+ECMAScript 6, solo admitía orientación a objetos basada
+en 
+ \emph{prototipos}. Este modelo es distinto al de lenguajes
+ como C++ o Java, que están basados en clases y herencia.
+Si el programador fuerza al lenguaje a un uso como el de C++ o Java,
+el resultado es antinatural, incómodo y problemático.
+
+\emph{It's not a bug, it's a feature}
+
+\item
+ECMASCript 6 admite programación orientada a objetos basada en prototipos
+y programación orientada a objetos basada en clases
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de JavaScript (1)}
+\begin{itemize}
+\item
+Brendan Eich crea JavaScript. 1995
+
+\item
+ECMAScript 1. 1997. Primera versión normalizada
+
+\item
+ECMAScript 2. 1998. Pequeños cambios
+
+\item
+ECMAScript 3. 1999
+
+do-while, regexp, excepciones, mejor tratamiento de cadenas (entre otros)
+
+\item
+ECMAScript 4. 
+
+Abandonado en 2008, por falta de acuerdo sobre si las mejoras
+deberían ser más o menos drásticas
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Versiones de JavaScript (2)}
+
+\begin{itemize}
+
+\item
+ECMAScript 5. Año 2009.
+Modo strict, nuevos arrays, soporte JSON (entre otros)
+
+
+\item
+ECMAScript 6. Año 2015
+
+Cambios muy relevantes: módulos, orientación a objetos basada en clases,
+parámetros opcionales en funciones, variables locales a un bloque
+
+    \begin{itemize}
+    \item
+En el año 2015 los navegadores en general no soportaban ECMAScript 6,
+era necesario \emph{transpilar} el código a ECMAScript 5.
+
+    \item
+En la actualidad (finales del año 2017) cualquier navegador medianamente actualizado
+lo soporta. Con alguna excepción, por ejemplo el uso de módulos. La necesidad del transpilador es cada vez menor
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Características de JavaScript}
+% (speaking, pg 39)
+\begin{itemize}
+\item
+Muy integrado con internet y el web
+
+\item
+La práctica totalidad de las herramientas necesarias para su uso son software libre
+
+\item
+El lenguaje no especifica si es interpretado o compilado, eso depende
+de la implementación
+
+
+    \begin{itemize}
+    \item
+%https://softwareengineering.stackexchange.com/questions/138521/is-javascript-interpreted-by-design
+Técnicas modernas como la compilación JIT (\emph{Just In Time}) y el uso
+de bytecodes hacen que la división entre compiladores e intérpretes resulta difusa
+
+    \item
+Podemos considerarlo un híbrido.
+Los \emph{script engines} (motores) de JavaScript modernos tienden a ser más compilados
+que las primeras versiones
+
+    \item
+Se acerca más a un lenguaje interpretado: el motor necesita estar siempre presente, la
+compilación se hace en cada ejecución y siempre se distibuye el fuente y solo el fuente
+    \end{itemize}
+
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+
+
+\item
+Es dinámico. Los objetos se crean sobre la marcha, sin definir una clase.
+A los objetos se les puede añadir propiedades en tiempo de ejecución
+
+\item
+Es dinámicamente tipado.
+El tipo de las variables y objetos puede cambiar en tiempo de ejecución
+
+\item
+Multiparadigma,
+admite los paradigmas de programación:
+\begin{itemize}
+    \item
+Imperativa
+
+    \item
+Funcional
+
+    \item
+Basada en eventos (\emph{event-driven})
+
+    \item
+Orientada a objetos basada en prototipos
+
+    \item
+Desde ECMAScript 6, orientada a objetos basada en clases (orientación a 
+objetos \emph{tradicional}) 
+
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\section{Holamundo}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Holamundo}
+JavaScript no tiene una forma nativa de mostrar texto, emplea distintos
+objetos, dependiendo de en qué entorno se ejecute
+
+\begin{itemize}
+\item
+En el navegador puede escribir HTML mediante 
+\verb|document.write()|
+
+\item
+Puede usar
+\verb|console.log()|
+
+    \begin{itemize}
+    \item
+En el navegador el texto saldrá por una consola (del propio navegador)
+    \item
+En node.js, por la salida estándar
+    \end{itemize}
+
+\item
+Puede abrir una ventana con 
+\verb|window.alert()|
+
+\end{itemize}
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Holamundo en HTML, incrustrado}
+  \begin{scriptsize}
+  \begin{verbatim}
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Hola, mundo</title>
+   </head>
+   <body>
+      <script>
+      document.write("Hola, mundo");
+      </script>
+   </body>
+</html>
+  \end{verbatim}
+  \end{scriptsize}
+
+El elemento
+\verb|<script>|
+puede aparecer 1 o más veces, tanto en la cabecera como en el cuerpo
+del documento HTML
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Holamundo en HTML, fichero externo}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Hola, mundo</title>
+      <script src="js/holamundo.js"></script>
+   </head>
+   <body>
+   </body>
+</html>
+  \end{verbatim}
+  \end{scriptsize}
+
+holamundo.js:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+console.log("Hola, mundo");
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Si la codificación del script es diferente de la codificación del fichero HTML,
+se indica con un atributo \verb|charset| en el elemento 
+\verb|<script>|
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Holamundo mínimo aceptado}
+
+Apurando la norma de HTML, pueden incluso omitirse los 
+elementos 
+\verb|<html>|,
+\verb|<body>| y
+\verb|<head>|. Se consideran entonces sobreentendidos, el siguiente ejemplo
+también sería válido, aunque no recomendable en absoluto
+
+
+%ej002.html
+  \begin{scriptsize}
+  \begin{verbatim}
+<!DOCTYPE html>
+  <meta charset="utf-8">
+  <title>Hola, mundo</title>
+  <script  src="js/holamundo.js"></script>
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+\section{node.js}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{node.js}
+\begin{itemize}
+\item
+El entorno Node.js permite usar JavaScript como un lenguaje de programación
+en el servidor o en la consola
+
+\item
+También es útil para desarrollar código que luego vaya a ejecutarse en el navegador
+\end{itemize}
+
+¿Donde colocar el código?
+
+    \begin{itemize}
+    \item
+Nunca es recomendable incrustar el JavaScript dentro del HTML, excepto tal
+vez para páginas muy sencillas
+
+    \item
+Un defecto muy habitual es organizar el código de la lógica de negocio en función de las \emph{pantallas}, (aunque
+sea en un fichero externo)
+
+    \item
+O peor aún: repartirlo por los botones y formularios
+    \end{itemize}
+
+Sugerencia: desarrolla la lógica de negocio en Node.js, luego
+intégralo en el HTML
+
+    \begin{itemize}
+    \item
+Excepto tal vez cosas muy sencillas
+    \end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{¿nodejs o node?}
+
+El intérprete de Node.js en principio se llama 
+\verb|node|
+
+    \begin{itemize}
+\item
+En Linux
+
+    \begin{itemize}
+    \item
+
+Este nombre ya estaba ocupado por otro programa. Así que las
+distribuciones Linux lo renombran a 
+\verb|nodejs|
+
+\item
+Si el \emph{otro} node no está instalado, normalmente 
+\verb|/usr/bin/node| es un enlace a
+\verb|/usr/bin/nodejs| 
+
+Por tanto, podemos usar indistintamente cualquiera de las dos formas
+
+\item
+
+En resumen:
+según esté configurado nuestro Linux, el intérprete será
+\verb|node|,
+\verb|nodejs| o 
+ambos indistintamente
+    \end{itemize}
+\item
+En MacOS 
+
+Generalmente se mantiene el nombre
+\verb|node|
+    \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Entorno Linux
+
+    \begin{itemize}
+    \item
+Instalación 
+  \begin{scriptsize}
+  \begin{verbatim}
+apt-get install nodejs
+  \end{verbatim}
+  \end{scriptsize}
+
+    \item
+Ejecución 
+
+  \begin{scriptsize}
+  \begin{verbatim}
+nodejs holamundo.js
+  \end{verbatim}
+  \end{scriptsize}
+
+O bien
+  \begin{scriptsize}
+  \begin{verbatim}
+node holamundo.js
+  \end{verbatim}
+  \end{scriptsize}
+
+
+    \item
+También podemos ejecutar el script directamente 
+
+  \begin{scriptsize}
+  \begin{verbatim}
+jperez@alpha:~$ ./holamundo.js
+  \end{verbatim}
+  \end{scriptsize}
+
+Para ello escribimos en la primera línea el siguiente comentario
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/nodejs
+  \end{verbatim}
+  \end{scriptsize}
+O bien
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/env nodejs
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Entorno MacOS
+\begin{itemize}
+    \item
+
+Podemos ejecutar node y pasarle como primer argumento el nombre
+del script
+  \begin{scriptsize}
+  \begin{verbatim}
+node holamundo.js
+  \end{verbatim}
+  \end{scriptsize}
+
+    \item
+O podemos añadir la siguiente primera línea al script
+  \begin{scriptsize}
+  \begin{verbatim}
+#!/usr/bin/env nodejs
+  \end{verbatim}
+  \end{scriptsize}
+    \end{itemize}
+
+
+Entorno del Navegador
+
+    \begin{itemize}
+    \item
+El código que vaya a ejecutarse en el navegador  no puede
+empezar por \verb|#!/usr/....|
+
+
+(la almohadilla
+normalmente no significa comentario en JavaScript)
+    \end{itemize}
+
+\end{frame}
+
+
+\section{Sintaxis}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Comentarios}
+
+Los comentarios se pueden indicar de dos formas
+
+    \begin{itemize}
+    \item
+  \begin{verbatim}
+//Comentarios de una sola línea, con dos barras
+  \end{verbatim}
+    \item
+
+  \begin{verbatim}
+/* Comentarios con barra y asterisco.
+   Pueden ocupar varias líneas, pero no anidarse */
+  \end{verbatim}
+    \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Sentencias y expresiones}
+
+
+En JavaScript hay
+\begin{itemize}
+\item
+Sentencias. \emph{Hacen cosas}
+
+\verb|x = x+1;|
+
+Un programa en JavaScript podemos considerarlo como una
+secuencia de sentencias (\emph{statements})
+
+\item
+Expresiones. \emph{Devuelven valores}
+
+\verb|x + 1|
+
+En cualquier lugar donde JavaScript espera una sentencia, también puede haber una expresión.
+Se denomina entonces \emph{sentencia expresión},
+(\emph{expression statement})
+    \begin{itemize}
+    \item
+Con tal de que la expresión no empiece ni por llave ni por la
+palabra reservada \emph{function}, porque esto provocaría
+ambiguedad con objetos y funciones
+    \item
+Donde se espera una expresión, no puede ir una sentencia
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Uso del punto y coma}
+Un bloque es una secuencia de sentencias, entre llaves (\verb|{}|)
+
+    \begin{itemize}
+    \item
+Las sentencias acaban en punto y coma
+    \item
+Excepto las sentencias que acaban en un bloque
+
+    \begin{itemize}
+    \item
+ En este caso también se
+puede añadir un punto y coma, que se considera una sentencia vacia
+    \end{itemize}
+
+    \item
+
+Si el programador no incluye los puntos y coma, el parser los añade con la
+\emph{automatic semicolon insertion}. De hecho el JavaScript moderno tiende
+a omitir los puntos y coma, lo que en ciertos casos puede producir errores
+y confusiones.
+    \end{itemize}
+Aquí recomendamos incluir siempre punto y coma al final de cada sentencia
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{use strict}
+
+En ECMAScript 5 aparece el 
+\emph{modo estricto} 
+
+Consiste en una serie de restricciones que producen un código
+de más calidad, menos propenso a errores. En general debemos usarlo siempre, 
+para ello basta poner como primera sentencia del script 
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+  \end{verbatim}
+  \end{scriptsize}
+
+Es una cadena, no una sentencia. Aparece entre comillas.
+
+
+Si tenemos que mezclar nuestro código con código antiguo, incompatible
+con el modo estricto, entonces podemos aplicar este
+modo función a función
+
+  \begin{scriptsize}
+  \begin{verbatim}
+function f(){
+    'use strict'
+    ...
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Requisitos del modo estricto}
+
+Las principales normas de este modo son:
+    \begin{itemize}
+    \item
+Es necesario declarar explícitamente todas las variables
+    \item
+Las funciones se deben declarar en
+\emph{top level} o como mucho con un nivel de anidamiento
+(una función dentro de otra función). Pero no se admiten
+niveles más profundos de anidamiento.
+    \item
+No se puede repetir el nombre un parámetro en la misma función
+    \item
+El intento de modificar propiedades inmutables genera una excepción
+    \item
+No se permite el uso de la sentencia \emph{with}
+    \item
+Un número que comienza por 0 no se considera que es un número octal
+    \end{itemize}
+
+%(speaking, pg 63
+
+\end{frame}
+
+
+\section{Tipos de datos}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Tipos de datos}
+
+En JavaScript hay dos tipos de valores
+
+    \begin{itemize}
+\item
+\emph{primitive values}:
+
+boolean, number, string, null, undefined
+
+\item
+Objetos
+
+Los principales son: 
+\emph{plain objects}, arrays, regexp
+
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Booleanos
+    \begin{itemize}
+    \item
+
+  \begin{scriptsize}
+  \begin{verbatim}
+true
+false
+  \end{verbatim}
+  \end{scriptsize}
+\end{itemize}
+
+
+Números
+
+    \begin{itemize}
+    \item
+A diferencia de la mayoría de los lenguajes de programación, 
+solo hay un tipo para todos los números, incluyendo enteros y reales
+    \end{itemize}
+
+
+Strings (cadenas)
+
+    \begin{itemize}
+    \item
+Se puede usar la comila doble o la simple indistintamente (obviamente la
+comilla de apertura debe coincidir con la de cierre)
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'lorem'  "ipsum"
+  \end{verbatim}
+  \end{scriptsize}
+
+Ya que HTML usa la comilla doble, es más habitual usar en JavaScript la comilla simple
+
+Excepto en JSON donde es obligatorio usar la cadena doble
+
+    \end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+En JavaScript hay dos tipos de datos para indicar que falta información
+
+    \begin{itemize}
+    \item
+\emph{undefined}
+
+%Situaciones donde se usa: (speaking, pg 10)
+
+    \begin{itemize}
+    \item
+Una variable no ha sido inicializada
+    \item
+Se ha llamado a una función sin especificar algún parametro
+    \item
+Se intenta leer una propiedad no existente de un objeto
+    \end{itemize}
+
+
+    \item
+\emph{null}
+
+Es un objeto que no tiene valor. Más o menos podríamos decir que es un objeto vacío
+(auque el verdadero objeto vacío es \verb|{}|)
+
+    \end{itemize}
+
+%https://stackoverflow.com/questions/5076944/what-is-the-difference-between-null-and-undefined-in-javascript?rq=1
+
+
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+
+La distinción entre undefined y null es algo arbitraria, en ocasiones
+%(por ejemplo en las funciones)
+puede aparecer cualquiera de los dos, así que es normal escribir cosas como
+
+  \begin{scriptsize}
+  \begin{verbatim}
+if (x===undefined || x===null){
+}
+  \end{verbatim}
+  \end{scriptsize}
+Esto equivale a
+  \begin{scriptsize}
+  \begin{verbatim}
+if (!x) {
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+Aunque es menos claro, porque hay otros valores que también son
+considerados \emph{false} (false, 0, NaN y la cadena vacía)
+
+    \begin{itemize}
+    \item
+El objeto vacío \verb|{}| y el array vacío \verb|[]| se consideran \emph{cierto}
+    \end{itemize}
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> var x
+undefined
+> typeof(x)
+'undefined'
+> x=null
+null
+> typeof(x)
+'object'
+  \end{verbatim}
+  \end{scriptsize}
+
+
+Sería más razonable que el tipo de null fuera undefined, pero la
+primera implementación de JavaScript hacía esto (por error) y luego ya se
+tomó como norma
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Conversión de tipos}
+\begin{itemize}
+\item
+La función global
+\verb|Number()|
+convierte una cadena en número.
+
+Devuelve \verb|NaN| en caso de error
+\item
+La función global
+\verb|String()|
+convierte un número en cadena
+\end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+let x,y;
+x=Number("  3 ");
+console.log(x,typeof(x))  // 3  'number'
+y=String(x)
+console.log(y,typeof(y))  // 3  string
+
+console.log(Number("23j"));  // NaN
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+\section{Identificadores}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Identificadores}
+Símbolos que nombran entidades del lenguaje: nombres de variables, de funciones, etc
+\begin{itemize}
+\item
+Deben empezar por letra unicode, barra baja o dolar.
+El segundo caracter y posteriores pueden ser cualquier
+carácter unicode
+
+\item
+Aunque los carecteres internacionales como eñes y tildes
+son fuentes potenciales de problemas: falta de soporte en 
+el teclado del desarrollador, configuración del idioma en el sistema operativo, etc
+
+
+
+\item
+¿Sensible a mayúsculas?
+
+\begin{itemize}
+\item
+JavaScript: Sí
+
+\item
+HTML: No
+
+\item
+CSS: Sí
+
+\end{itemize}
+
+
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+Para facilitar la difusión del software
+en proyecto reales, es recomendable el uso del inglés 
+en el código fuente.
+
+Obviamente el interfaz de usuario estará en español
+o en cualquier otro idioma conveniente para el usuario. 
+
+    \begin{itemize}
+    \item
+Aunque aquí no lo haremos, la ventaja de un identificador en español,
+cuando estamos aprendiendo, es que 
+queda claro que no es parte del lenguaje ni de ninguna librería estándar
+    \end{itemize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+Identificadores válidos:
+    \begin{itemize}
+    \item
+
+$\alpha$   \verb|//Correcto, pero no recomendable| 
+
+\verb|alpha|
+
+\verb|contraseña //Discutible|
+
+\verb|$f //Discutible|
+
+\verb|_valor|
+
+\verb|x5|
+    \end{itemize}
+
+
+Identificadores incorrectos:
+
+    \begin{itemize}
+    \item
+\verb|5x|
+
+\verb|#x|
+
+    \end{itemize}
+
+
+
+
+\end{frame}
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Palabras reservadas}
+Las siguientes palabras tienen un significado especial y no
+son válidas como identificador:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+abstract    arguments   await   boolean
+break   byte    case    catch
+char    class   const   continue
+debugger    default delete  do
+double  else    enum    eval
+export  extends false   final
+finally float   for function
+goto    if  implements  import*
+in  instanceof  int interface
+let long    native  new
+null    package private protected
+public  return  short   static
+super   switch  synchronized    this
+throw   throws  transient   true
+try typeof  var void
+volatile    while   with    yield
+  \end{verbatim}
+  \end{scriptsize}
+Tampoco son identificadores válidos
+  \begin{scriptsize}
+  \begin{verbatim}
+Infinity NaN undefined
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Números especiales}
+JavaScript define algunos valores numéricos especiales:
+
+\verb|NaN| (Not a number), 
+\verb|Infinity|,
+\verb|-Infinity|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let x,y;
+x=1/0;
+y= -1/0;
+console.log(x);  // Infinity
+console.log(y);   // -Infinity
+console.log(typeof(x)); // number
+console.log(typeof(y));  // number
+console.log(typeof(NaN)) // number
+  \end{verbatim}
+  \end{scriptsize}
+
+Paradójicamente, 
+\verb|NaN| es un
+\emph{number}
+\end{frame}
+
+
+
+
+\section{Operadores}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Operadores}
+Los principales operadores son
+\begin{itemize}
+\item
+Operadores aritméticos
+
+\verb|+ - * / % ++  --|
+
+\item
+Operadores de asignación
+
+\verb|= += -=|
+
+\item
+Operadores de cadenas
+
+\verb|+ +=|
+
+\end{itemize}
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let x;
+x=0;
+++x;
+console.log(x) // 1
+x+=2;
+console.log(x) // 3
+--x;
+console.log(x) // 2
+x-=2;
+console.log(x) // 0
+
+x='hola'+'mundo'
+console.log(x); // 'holamundo'
+x+="!"
+console.log(x); // 'holamundo!'
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Comparador de igualdad tolerante}
+
+    \begin{itemize}
+    \item
+JavaScript 1.0 solo incluía el 
+\emph{lenient equality operator},
+comparador de igualdad tolerante 
+
+\verb|==  !=|
+
+Hace conversión automática de tipos.
+  \begin{scriptsize}
+  \begin{verbatim}
+> '4'==4
+true
+  \end{verbatim}
+  \end{scriptsize}
+Esto produce muchos resultados problemáticos
+  \begin{scriptsize}
+  \begin{verbatim}
+> 0==false
+true
+> 1==true
+true
+> 2==false
+false
+> 2==true
+false
+> ''==0
+true
+> '\t123\n'==123
+true
+> 'true'==true
+false
+  \end{verbatim}
+  \end{scriptsize}
+
+    \end{itemize}
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Comparador de igualdad estricto}
+
+    \begin{itemize}
+    \item
+Comparador de igualdad estricto.
+
+Aparece en JavaScript 1.3,  es
+el que deberíamos usar siempre 
+
+\verb|===  !==|
+
+    \item
+Mayor y menor
+
+\verb|>   <   >=   <=|
+    \item
+Operador condicional
+
+\verb|condición? valor_si_cierto : valor_si_falso|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> edad=18
+18
+> (edad>17)? "mayor_de_edad":"menor"
+'mayor_de_edad'
+  \end{verbatim}
+  \end{scriptsize}
+    \item
+Operadores lógicos
+
+\verb@&&  ||   !@
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> !(true && false)
+true
+  \end{verbatim}
+  \end{scriptsize}
+
+    \end{itemize}
+
+\end{frame}
+
+
+\section{Funciones}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Funciones}
+
+Una función es una secuencia de instrucciones empaquetada como una unidad.
+Acepta 0 o más valores y devuelve 1 valor.
+
+
+Las funciones en JavaScript pueden cumplir tres papeles distintos
+
+
+    \begin{itemize}
+    \item
+\emph{Nonmethod functions}. Funciones \emph{normales}, no son una propiedad
+de un objeto.
+Por convenio, su nombre empiezan por letra minúscula
+
+    \item
+\emph{Constructor}. Sirven para crear objetos. Se invocan con el constructor
+\verb|new|.
+
+Por convenio, su nombre empiezan por letra mayúscula
+
+\verb|new Cliente()|
+
+    \item
+Métodos. Funciones almacenadas como propiedad de un objeto
+    \end{itemize}
+\end{frame}
+
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Declaración de funciones}
+
+Hay tres formas de declarar una función
+
+
+    \begin{itemize}
+    \item
+Mediante una declaración. Es la forma más habitual
+
+  \begin{scriptsize}
+  \begin{verbatim}
+function suma(x,y){
+    return x+y;
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+
+    \item
+Mediante una expresión. Función anónima. Habitual por ejemplo
+en JQuery
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+function(x,y){
+    return x+y;
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+
+    \item
+Mediante el constructor
+\verb|Function()|. Crea la función a partir de una cadena.
+No recomendable.
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+new Function('x','y','return x+y');
+  \end{verbatim}
+  \end{scriptsize}
+    \end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Hoisting}
+
+JavaScript hace \emph{hoisting} (elevación) con las funciones.
+
+El motor de JavaScript mueve las declaración al principio del bloque,
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+console.log(f(1));   //2
+
+function f(x){
+   return x+1;
+}
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Paso por valor}
+En JavaScript, el paso de parámetros a una función es por valor (por copia).
+La función recibe una copia del valor del argumento. Si la función modifica este
+valor, el argumento original no queda modificado
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function f(x){
+    x = x + 1;
+}
+var a=0;
+console.log(a);  // 0 
+f(a);
+console.log(a);  // 0
+  \end{verbatim}
+  \end{scriptsize}
+
+Se puede simular el paso por referencia envolviendo el valor en un array
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Valor devuelto}
+
+Una función siempre devuelve exactamente 1 valor. En caso de que 
+la función no incluya la sentencia
+\verb|return|,
+el valor es
+\verb|undefined|
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+function f(){
+}
+
+console.log(f());   // undefined
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Número de parámetros}
+Muchos lenguajes de programación obligan a que el número
+de parámetros en la declaración de una función sea igual al número
+de argumentos cuando se invoca.
+
+JavaScript, no. 
+Si faltan argumentos, se consideran \verb|undefined|
+y si \emph{sobran} se ignoran 
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+function f(x,y){
+    return x+y;
+};
+console.log(f(1));   // NaN
+console.log(f(2,2));  // 4
+console.log(f(1,1,1)); // 2
+
+
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Valores por omisión}
+Para dar un valor por omisión a un parámetro omitido en la invocación
+de una función, podríamos hacer lo siguiente
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+function f(x){
+    if (x===undefined) {
+        x=0};
+     return x + 1 ;
+};
+console.log(f()); //1
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+
+Aunque la forma habitual en JavaScript 5 y anteriores era esta otra:
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+function f(x){
+    x = x || 0;   //  línea 4
+    return x + 1;
+};
+
+console.log(f());   //1
+  \end{verbatim}
+  \end{scriptsize}
+
+Línea 4:
+Si x se omite, valdrá
+\verb|undefined|
+y el operador \verb"||" (or) devolverá
+el valor a su derecha
+
+
+    \begin{itemize}
+    \item
+En general deberíamos evitar construcciones rebuscadas y poco claras.
+Pero este caso concreto podemos considerarlo idiomático en JavaScript,
+resultaba aceptable
+    \end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En ECMAScript 6 es mucho más sencillo
+
+  \begin{scriptsize}
+  \begin{verbatim}
+function f(x=0){
+    return x + 1;
+}
+
+console.log(f(2));  // 3
+console.log(f());  // 1
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+\section{Tipos de variables}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Ámbito de las variables}
+Ámbito (\emph{scope}) 
+
+ Zona del código donde una variable es accesible
+
+Hay tres tipos de variables
+
+\begin{itemize}
+\item
+Globales
+
+Declaradas fuera de una función
+
+\item
+Locales
+
+Declaradas con 
+\verb|var|. O declaradas implícitamente (sin no usamos el modo estricto)
+
+\item
+Locales, declaradas con 
+\verb|let|
+
+Aparecen en ECMAScript 6
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variables Globales}
+
+Son variables accesibles desde todo el script (dentro del mismo fichero .js
+o entre un par de etiquetas \verb|<script>|)
+
+En el caso de JavaScript incrustado en HTML, todo el código de la
+mismpa página HTML comparte el objeto Window y por tanto,
+las variables globales
+
+
+\begin{itemize}
+\item
+Algunas metodologías recomiendan que las variables globales se usen lo menos posible
+\item
+Otras, que no se usen nunca
+\end{itemize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+%js009
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+var x=0;
+function f(){
+  x=3;
+}
+
+function g(){
+  return(x)
+}
+
+f();
+console.log(g());  //3
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variables locales con var}
+Las variables declaradas con \verb|var| son locales a su función
+
+    \begin{itemize}
+    \item
+Esto incluye a las funciones anidadas dentro de la función
+    \end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function f(){
+  var x=0;
+  g();
+  console.log(x);  //0
+}
+
+function g(){
+  var x=3;
+}
+
+f();
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variables locales con let}
+Las variables declaradas con 
+\verb|let|
+
+
+    \begin{itemize}
+    \item
+Son locales a su bloque
+
+    \item
+Tienen el comportamiento habitual en la mayoría de los lenguajes
+de programación
+
+    \item
+Aquí recomendaremos usar siempre 
+\verb|let|
+y no
+\verb|var|
+a menos que
+
+    \begin{itemize}
+    \item
+Queramos alguna variable global
+    \item
+Tengamos que programar en una versión antigua de JavaScript
+    \end{itemize}
+
+    \end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function f() {
+  var x = 1;
+  if (true) {
+    var x = 2;  // La misma variable
+    console.log(x);  // 2
+  }
+  console.log(x);  // 2
+}
+
+function g() {
+  let x = 1;
+  if (true) {
+    let x = 2;  // Variable diferente
+    console.log(x);  // 2
+  }
+  console.log(x);  // 1
+}
+f();
+g();
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En ECMAScript 5 y precedentes, para conseguir algo similar a esto se usaba
+un truco no muy elegante denominado IIFE (immediately invoked function expression)
+
+
+    \begin{itemize}
+    \item
+Consiste en declarar una función sin nombre, abrir y cerrar paréntesis a continuación para que se invoque
+inmediatamente y ponerlo todo entre paréntesis
+    \end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+(funtion() {
+    }());
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+\section{Sentencias de control}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Condicional}
+
+La sentencia \verb|if| funciona como en muchos otros
+lenguajes de programación
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+var x="ejemplo";
+if (x.length < 4){
+    console.log("Cadena muy corta");
+};
+
+
+if (2 > 0) {
+    console.log("cierto");
+}
+else {
+    console.log("falso");
+};
+  \end{verbatim}
+  \end{scriptsize}
+
+Es recomendable usar siempre los bloques de sentencias
+(las llaves). Aunque si la sentencia es única, pueden omitirse
+
+  \begin{scriptsize}
+  \begin{verbatim}
+if (2 > 0) console.log("cierto");
+else console.log("falso");
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{switch}
+
+Evalúa la expresión entre paréntesis después de
+\verb|switch|
+y salta a la cláusula
+\verb|case|
+cuyo valor coincida con la expresión. O a la cláusula
+\verb|default|
+si ninguna coincide.
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+let y;
+let x=":";
+switch(x){
+    case(';'):
+        y="punto y coma";
+        break;
+    case(':'):
+        y="dos puntos";
+        break;
+    default:
+        y="caracter desconocido";
+}
+console.log(y);  // dos puntos
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+
+Después de cada 
+\verb|case|
+se indican una o más sentencias,
+lo habitual es que la última de ellas sea
+\verb|break|
+
+
+    \begin{itemize}
+    \item
+También se puede concluir lanzando una excepción con
+\verb|throw| o saliendo de la función 
+\verb|return|, aunque esto último no es recomendable
+    \end{itemize}
+
+Si no se incluye ninguna sentencia de finalización,
+la ejecución continúa.
+
+    \begin{itemize}
+    \item
+Si esa es la intención del programador (y no un olvido), es recomendable
+indicarlo de forma explícita
+    \item
+Tradicionalmente se usa la expresión
+\verb|fall through| (\emph{cae a través, pasa, se cuela})
+    \end{itemize}
+
+\end{frame}
+
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+let x='ubuntu';
+let so="";
+switch(x){
+    case('ubuntu'):
+        //fall through
+    case('debian'):
+        //fall through
+    case('fedora'):
+        //fall through
+    case('redhat'):
+        so='linux';
+        break;
+    case('macos'):
+        so="macos"
+        break;
+    default:
+        so='no soportado';
+}
+
+console.log(so);
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+La expresión de cada case puede ser cualquiera:
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function cuadrante(x,y){
+    let r;
+    switch(true){
+        case( x>= 0 && y>=0):
+            r=1;
+            break;
+        case( x< 0 && y>=0):
+            r=2;
+            break;
+        case( x< 0 && y<0):
+            r=3;
+            break;
+        case( x>= 0 && y<0):
+            r=4;
+            break;
+        default:
+            r=NaN;
+    }
+    return r;
+}
+console.log(cuadrante(1,-1));  // 4
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{while}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+var x=5;
+var cadena="";
+
+while(x>0){
+    --x;
+    cadena+="*"
+}
+console.log(cadena);  //*****
+
+
+x=5;
+cadena="";
+
+while(true){
+    if(x<1) break;
+    --x;
+    cadena+="*"
+}
+console.log(cadena);  //*****
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{for}
+La sentencia 
+\verb|for| también es como en C y muchos otros lenguajes
+
+    \begin{itemize}
+    \item
+Entre paréntesis y separado por punto y coma se indica la sentencia inicial, la condición de permanencia
+y la sentencia que se ejecuta después de cada ejecución del cuerpo
+    \item
+A continuación, el bloque (o sentencia) a ejecutar
+    \end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let cadena="";
+for(let i=0; i<5; ++i){
+    cadena+="*";
+}
+console.log(cadena);  //*****
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+\section{Procesamiento de cadenas}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bucles sobre cadenas}
+
+    \begin{itemize}
+    \item
+Podemos acceder a los caracteres individuales de una cadena
+mediante corchetes
+
+    \item
+La primera posición es la 0
+
+    \item
+La longitud de la cadena se puede consultar con 
+la propiedad 
+\verb|length|
+de la cadena
+    \end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let x;
+
+x="Lorem Ipsum"
+
+for (let i=0; i<x.length; ++i){
+    console.log(x[i]);
+}
+
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+JavaScript tiene una característica que puede ser
+fuente de problemas: si intentamos acceder a una propiedad
+inexistente de un objeto, simplemente devuelve
+\verb|undefined|
+
+Supongamos que, por error, escribamos
+\verb|x.lengh|
+en vez de 
+\verb|x.length|
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+for (let i=0; i<x.lengh; ++i){   //ERROR!
+    console.log(x[i]);
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\begin{itemize}
+\item
+En la primera iteración, la condición del bucle
+será \verb|0 < undefined|
+
+\item
+Esto se evalúa como
+\verb|false|
+
+\item
+El bucle concluye silenciosamente, sin generar ningún error
+\end{itemize}
+
+
+Generalmente esto es un comportamiento no deseado, puede resultar un
+error difícil de trazar
+
+% y no tiene remedio, no se puede forzar que salte una excepción, por ejemplo
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+En ECMAScript podemos recorrer una cadena de forma muy conveniente
+con for-of
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let x="Lorem Ipsum";
+
+for (let c of x){
+    console.log(c);
+};
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Manipulación de cadenas}
+
+Las cadenas tienen diversos métodos que permiten su manipulación
+Todos estos métodos devuelven una nueva cadena, dejando la original
+intacta
+
+    \begin{itemize}
+    \item
+\verb|toUpperCase()|
+y
+\verb|toLowerCase()|
+devuelven la cadena en mayúsculas/minúsculas
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> 'contraseña'.toUpperCase()
+'CONTRASEÑA'
+> 'LoReM IPsum'.toLowerCase()
+'lorem ipsum'
+  \end{verbatim}
+  \end{scriptsize}
+
+    \item
+El método
+\verb|trim()|
+devuelve la cadena eliminando los espacios a la izquierda
+y a la derecha
+
+    \begin{itemize}
+    \item
+Espacios en sentido amplio, incluye tabuladores y el caracter
+fin de línea
+    \end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> '    ABC  '.trim()
+'ABC'
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+\begin{itemize}
+    \item
+El método 
+\verb|indexOf()|
+devuelve la posición de la primera aparición de una
+subcadena. O el valor -1 si no está incluida
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> '__abc'.indexOf('abc')
+2
+> '__abc'.indexOf('xxx')
+-1
+  \end{verbatim}
+  \end{scriptsize}
+
+    \item
+\verb|lastIndexOf()|
+devuelve la última aparición de una subcadena. O el valor -1
+si no está incluida
+  \begin{scriptsize}
+  \begin{verbatim}
+> 'a.tar.gz'.lastIndexOf('.')
+5
+  \end{verbatim}
+  \end{scriptsize}
+
+    \end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+\verb|slice(x,y)|
+devuelve la subcadena comprendida entre la posición 
+\verb|x| 
+(incluida)
+y la 
+\verb|y| 
+(excluida)
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> '0123'.slice(0,3)
+'012'
+  \end{verbatim}
+  \end{scriptsize}
+\item
+Si 
+\verb|x| 
+o 
+\verb|y| 
+exceden las dimensiones de la cadena, no es problema
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> 'abc'.slice(0,7)
+'abc'
+> 'abc'.slice(-5,7)
+'abc'
+  \end{verbatim}
+  \end{scriptsize}
+\item
+Si 
+\verb|x| 
+es mayor o igual que 
+\verb|y| 
+, devuelve la cadena vacía
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> 'abc'.slice(3,2)
+''
+> 'abc'.slice(2,2)
+''
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+El método
+\verb|split(c)| 
+trocea una cadena, usando el caracter 
+\verb|c| 
+como separador. Devuelve un array
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> "a,b,c".split(',')
+[ 'a', 'b', 'c' ]
+  \end{verbatim}
+  \end{scriptsize}
+
+\item
+El método
+\verb|replace(x,y)| 
+devuelve una cadena donde la subcadena
+\verb|x| 
+ha sido reemplazada por
+\verb|y| 
+
+  \begin{scriptsize}
+  \begin{verbatim}
+> 'color beige'.replace('beige','crema')
+'color crema'
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Arrays}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Arrays}
+Un array es un objeto donde se hace corresponder un número natural con
+un valor
+    \begin{itemize}
+    \item
+Se declara entre corchetes, en el interior habrá elementos, separados por comas
+
+    \item
+A diferencia de otros lenguajes de programación, es una estructura dinámica: no
+es necesario fijar su tamaño a priori
+    \end{itemize}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+
+let a,b,c,d;
+
+a=[ ] ; //  array vacío
+b=[7, 8, 9] // array con números
+c=['rojo', 3, 0] // array con elementos heterogéneos
+d=[ [0, 1], [1, 1]]  // array con arrays anidados
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Los arrays en JavaScript tienen muchos métodos disponibles. Mostramos algunos
+de los principales
+\begin{itemize}
+\item
+Atención: algunos son
+\emph{destructivos}, esto es, modifican el array
+
+\item
+Otros, devuelven un array con la modificación requerida
+\end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let a,x;
+a=['sota', 'caballo']
+
+// Longitud del array
+console.log(a.length);  // 2
+
+// Acceso a un elemento individual
+console.log(a[1]);  // caballo
+
+// Añadir un elemento al final
+a.push('rey');
+console.log(a);   // [ 'sota', 'caballo', 'rey' ]
+
+// Extraer un elemento al final
+x=a.pop() //
+console.log(x); // rey
+console.log(a);   // [ 'sota', 'caballo']
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+// Extraer un elemento al principio
+x=a.shift();
+console.log(x); // sota
+console.log(a);   // [ 'caballo']
+
+// Añadir un elemento al principio
+a.unshift('alfil');
+console.log(a); // ['alfil', 'caballo']
+
+// Añadir un elemento, creando huecos
+a[3]="torre";
+console.log(a);   // ['alfil', 'caballo', , 'torre']
+
+// La propiedad length incluye los huecos
+console.log(a.length);  // 4
+
+// Truncar un array
+a.length=0;
+console.log(a);   //   []
+
+a=['alfil', 'caballo', 'torre']
+a.reverse();
+console.log(a);   //  ['torre', 'caballo', 'alfil']
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Hay diversas formas de recorrer un array
+\begin{itemize}
+\item
+Al estilo C
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let a;
+function recorreFor(a){
+    for(let i=0; i< a.length; ++i){
+        console.log(a[i]);
+    }
+}
+
+a=[7, ,8];
+recorreFor(a);  // 7 undefined 8
+  \end{verbatim}
+  \end{scriptsize}
+
+
+También itera sobre los huecos
+
+\end{itemize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+\begin{itemize}
+
+\item
+Con el método 
+\verb|forEach| 
+
+    \begin{itemize}
+    \item
+Recibe una función, que se aplicará a cada elemento
+del array
+
+    \item
+Es habitual pasar una función anónima
+    \end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+
+function recorreForEach(a){
+    a.forEach(function(x){
+        console.log(x);
+    });
+}
+
+a=[7, ,8];
+recorreForEach(a);  // 7  8
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{itemize}
+
+Se ignoran los huecos
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+Especialmente conveniente es \verb|for-of|, disponible en ECMAScript 6
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+function recorreForOf(a){
+    for (let x of a){
+        console.log(x);
+    }
+}
+
+a=[7, ,8];
+recorreForOf(a);  // 7 undefined 8
+  \end{verbatim}
+  \end{scriptsize}
+
+
+También itera sobre los huecos
+\end{itemize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+No debemos usar for-in para recorrer un array, porque
+los arrays, además de índice, pueden tener otras propiedades
+que también se recorrerían
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let a,x;
+a=[7, 8];
+a.color='azul'
+for (x in a){
+    console.log(x); // 0, 1, color
+}
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Los métodos
+\verb|indexOf()|
+y
+\verb|lastIndexOf()|
+se comportan de igual forma que sobre las cadenas
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let a;
+a=[7, 8, 9, 7];
+
+console.log(a.indexOf(9)); // 2
+console.log(a.indexOf(3)); // -1
+console.log(a.lastIndexOf(7)) // 3
+  \end{verbatim}
+  \end{scriptsize}
+
+
+\end{frame}
+
+
+\section{Objetos}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Objetos}
+Los objetos de JavaScript son similares a los diccionarios de otros lenguajes,
+son estructuras que tienen 
+
+
+    \begin{itemize}
+    \item
+Valores, llamados propiedades. 
+
+Puedes ser valores primitivos (booleano, número, cadena, null, undefined) o bien una función o bien otro objeto.
+
+    \item
+Claves
+
+Cada valor está asociado a una clave. La clave es una cadena.
+    \end{itemize}
+
+
+Los más sencillos son los objetos literales
+o \emph{plain objectos}.
+
+\begin{itemize}
+\item
+Se declaran entre llaves.
+\item
+Cada propiedad tiene la forma
+nombre, dos puntos, valor
+\item
+Las propiedades van separadas por comas. Desde JavaScript 5 se permite
+que la última propiedad también acabe en coma
+
+\end{itemize}
+
+\end{frame}
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let x={
+    unidades:2,
+    color:'verde',
+    tamaño:'grande',
+};
+console.log(x); // { unidades: 2, color: 'verde', 'tamaño': 'grande' }
+console.log(x.unidades);  // 2
+console.log(x.precio); //undefined
+  \end{verbatim}
+  \end{scriptsize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Una función solo devuelve 1 argumento. Si necesitamos que devuelva
+más, podemos usar estos objetos
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+function f(x,y){
+    let r={};
+    r.suma=x+y;
+    r.producto=x*y;
+    return r;
+};
+console.log(f(2,3)); // { suma: 5, producto: 6 }
+console.log(f(2,3).suma);   // 5
+console.log(f(2,3).producto);  // 6
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+\section{Referencias}
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Referencias}
+\begin{itemize}
+\item
+\emph{Speaking JavaScript. An In-Depth Guide for Programmers}
+
+Axel Rauschmayer. O'Reilly Media, 2014
+
+
+\begin{tiny}
+\begin{flushright}
+\url{http://proquest.safaribooksonline.com/book/programming/javascript/9781449365028}
+\end{flushright}
+\end{tiny}
+
+\item
+\emph{JavaScript: The Definitive Guide, 6th Edition}
+
+David Flanagan. O'Reilly Media, 2011
+
+\begin{tiny}
+\begin{flushright}
+\url{http://proquest.safaribooksonline.com/book/programming/javascript/9781449393854}
+\end{flushright}
+\end{tiny}
+
+
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
+
+

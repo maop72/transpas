@@ -46,7 +46,7 @@
 \author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
 Universidad Rey Juan Carlos}
 \institute{gsyc-profes (arroba) gsyc.urjc.es}
-\date[2017]{Noviembre de 2017}
+\date[2017]{Diciembre de 2017}
 
 %% TÍTULO
 \begin{frame}
@@ -2473,15 +2473,11 @@ Al estilo C
   \begin{scriptsize}
   \begin{verbatim}
 'use strict'
-let a;
-function recorreFor(a){
-    for(let i=0; i< a.length; ++i){
-        console.log(a[i]);
-    }
+let l=["a",,"c"]
+for(let i=0; i<l.length; ++i){
+    console.log(l[i])
 }
-
-a=[7, ,8];
-recorreFor(a);  // 7 undefined 8
+// a undefined c
   \end{verbatim}
   \end{scriptsize}
 
@@ -2512,15 +2508,13 @@ Es habitual pasar una función anónima
 
   \begin{scriptsize}
   \begin{verbatim}
+'use strict'
+let l=["a",,"c"]
+l.forEach(function(x){
+    console.log(x)
+});
+// a c
 
-function recorreForEach(a){
-    a.forEach(function(x){
-        console.log(x);
-    });
-}
-
-a=[7, ,8];
-recorreForEach(a);  // 7  8
   \end{verbatim}
   \end{scriptsize}
 
@@ -2541,14 +2535,12 @@ Especialmente conveniente es \verb|for-of|, disponible en ECMAScript 6
 
   \begin{scriptsize}
   \begin{verbatim}
-function recorreForOf(a){
-    for (let x of a){
-        console.log(x);
-    }
+'use strict'
+let l=["a",,"c"]
+for(let x of l){
+    console.log(x)
 }
-
-a=[7, ,8];
-recorreForOf(a);  // 7 undefined 8
+// a undefined c
   \end{verbatim}
   \end{scriptsize}
 
@@ -2633,7 +2625,7 @@ Cada valor está asociado a una clave. La clave es una cadena.
 
 
 Los más sencillos son los objetos literales
-o \emph{plain objectos}.
+o \emph{plain objects}.
 
 \begin{itemize}
 \item
@@ -2668,6 +2660,96 @@ console.log(x.unidades);  // 2
 console.log(x.precio); //undefined
   \end{verbatim}
   \end{scriptsize}
+\end{frame}
+
+
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Además de unar la notación 
+
+\verb|objeto.clave|
+
+se puede usar la notación
+
+\verb|objeto["clave"]|
+
+\begin{itemize}
+\item
+Tiene la ventaja de que permite usar claves calculadas
+\end{itemize}
+
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let p={ latitud:40.3355, longitud:-3.8773 };
+
+console.log(p.latitud);  // 40.3355
+console.log(p["latitud"]);  // 40.3355
+
+let clave="latitud";
+console.log(p[clave]);  // 40.3355
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
+
+Podemos obtener la lista de claves de un objeto usando
+el método 
+\verb|keys()|
+del \emph{built-in object} \verb|Object| 
+
+\verb|Object.keys(miObjeto)|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let p={ latitud:40.3355, longitud:-3.8773 };
+
+let clave, claves;
+claves=Object.keys(p) ;
+console.log(claves); // [ 'latitud', 'longitud' ]
+
+for (clave of claves){
+    console.log(clave, ":", p[clave]);
+}
+/* 
+  latitud : 40.3355
+  longitud : -3.8773
+*/
+  \end{verbatim}
+  \end{scriptsize}
+
+\end{frame}
+
+
+%%---------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+Para saber si un objeto es un array, disponemos de
+la función \verb|Array.isArray()|
+
+  \begin{scriptsize}
+  \begin{verbatim}
+'use strict'
+let miObjeto={color:"verde"}
+let miLista=[1,2]
+
+console.log(typeof(miObjeto))  //object
+console.log(typeof(miLista))  //object
+
+console.log(Array.isArray(miObjeto))  //false
+console.log(Array.isArray(miLista))   //true
+  \end{verbatim}
+  \end{scriptsize}
+
+
 \end{frame}
 
 

@@ -41,7 +41,7 @@
 \author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
 Universidad Rey Juan Carlos}
 \institute{gsyc-profes (arroba) gsyc.urjc.es}
-\date[2017]{Noviembre de 2017}
+\date[2017]{Diciembre de 2017}
 
 
 %% TÍTULO
@@ -135,18 +135,51 @@ el usuario intervenga
 %%---------------------------------------------------------------
 \begin{frame}[fragile]
 \frametitle{Ajax con jQuery}
-jQuery facilita mucho el uso de Ajax
+jQuery facilita mucho el uso de Ajax. El método principal es \verb|ajax()|
+
+Recibe:
+
 \begin{itemize}
 \item
-El método \verb|load()| recibe como argumento una URI, la invoca,
-y reemplaza el contenido indicado por el selector por la respuesta
+Un \emph{plain object} que puede tener varios atributos. El principal es 
+\verb|url|, la dirección del servicio
 \end{itemize}
 
+Devuelve:
+
+    \begin{itemize}
+\item
+Un objeto de tipo \verb|jqXHR|, que tiene varios atributos. Los principales
+son:
+
+
+    \begin{itemize}
+    \item
+Un método
+llamado \verb|done| al que le 
+pasamos la función que se invocará si la petición tiene éxito. Tendrá un
+parámetro, que en nuestro caso será un objeto JSON
+
+    \item
+Un método
+llamado \verb|fail| al que le 
+pasamos la función a invocar en caso de error
+    \end{itemize}
+    \end{itemize}
+
+%El método \verb|load()| recibe como argumento una URI, la invoca,
+%y reemplaza el contenido indicado por el selector por la respuesta
+%\end{itemize}
+
+
+
+\end{frame}
+
+%%----------------------------------------------
+\begin{frame}[fragile]
 El siguiente ejemplo llama a 
 \url{http://fixer.io}, un servicio que ofrece tipos de cambio
 de divisas
-
-
 
     \begin{itemize}
     \item
@@ -161,10 +194,7 @@ Para los servicios sin soporte de JSONP, necesitaríamos un proxy en el
 mismo sitio web que sirve el HTML
 
     \end{itemize}
-
-
 \end{frame}
-
 
 
 %%---------------------------------------------------------------
@@ -173,20 +203,24 @@ mismo sitio web que sirve el HTML
 
   \begin{scriptsize}
   \begin{verbatim}
-<body>
-  <p id="p01">(Precio)</p>
-  <p id="p02">(Precio)</p>
-  <script>
     $(document).ready(function() {
-      $('#p01').load('https://api.fixer.io/latest');
-      });
-    $(document).ready(function() {
-      fecha='2016-12-31'
-      param= 'base=USD&symbols=EUR,GBP'
-      $('#p02').load('https://api.fixer.io/'+fecha, param);
-      });
-  </script>
-</body>
+      let urlServicio = 'https://api.fixer.io/latest';
+
+      peticion = $.ajax({
+        url: urlServicio
+      })
+
+      peticion.done(manejaRespuesta);
+      peticion.fail(manejaError);
+
+      function manejaRespuesta(json) {
+        $("#div01").text(JSON.stringify(json));
+      };
+
+      function manejaError(jqXHR) {
+        $("#div01").text("Error: " + jqXHR.status);
+      };
+    });
   \end{verbatim}
   \end{scriptsize}
 \begin{tiny}
@@ -256,7 +290,8 @@ El siguente ejemplo se ejecutaría cada 60 segundos
   \begin{scriptsize}
   \begin{verbatim}
 setInterval(function() { 
-               $("#p01").load(mi_peticion);
+               miTexto=actualizaTexto();
+               $("#p01").text(miTexto);
             }, 
             60000
 );

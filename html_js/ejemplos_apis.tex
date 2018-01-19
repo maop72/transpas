@@ -41,7 +41,7 @@
 \author[GSyC]{Escuela Técnica Superior de Ingeniería de Telecomunicación\\
 Universidad Rey Juan Carlos}
 \institute{gsyc-profes (arroba) gsyc.urjc.es}
-\date[2017]{Noviembre de 2017}
+\date[2017]{Diciembre de 2017}
 
 
 %% TÍTULO
@@ -122,19 +122,19 @@ invocamos
     let firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    // Creación de un <iframe<, con reproductor de YouTube
+    // Creación de un iframe, con reproductor de YouTube
     let player;
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
+      player = new YT.Player('mi_reproductor', {
         height: '768',
         width: '1024',
-        //videoId: 'YVpyk_Y6ZF8',
         videoId: 'lKCCZTUx0sI',
         events: {
           'onReady': onPlayerReady,
         }
       });
     }
+
     // El API llama a esta función cuando el reproductor esté listo
     function onPlayerReady(event) {
       event.target.playVideo();
